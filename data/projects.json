@@ -1,0 +1,296 @@
+[
+  {
+    "id": "allstate",
+    "slug": "allstate",
+    "title": "Apple / Google Pay Integration",
+    "company": "Allstate",
+    "category": "product-design",
+    "tag": "both",
+    "featured": true,
+    "description": "Led third-party wallet payment integration using behavioral economics principles. Ensured smooth adoption while protecting transaction trust signals.",
+    "role": "Lead UX Designer | Researcher",
+    "duration": "~3 months",
+    "tools": ["Figma", "Mural", "UserZoom"],
+    "process": ["Research", "Workshops", "Iterative Design", "Usability Testing"],
+    "challenge": "Competitive pressure to support modern payment methods without disrupting existing workflows or legal compliance. Reduce abandonments from payment inefficiencies (FTU/new customer) and payment failures.",
+    "solution": "Minimally redesigned the flow and design to accommodate Apple/Google Pay while maintaining compliance, high usability, and high user confidence.",
+    "impact": "Launched 3rd-party wallet payments to improve business transactions by providing users with greater payment flexibility and streamlined workflows.",
+    "metrics": "92% transaction success · 85% user confidence (6/7) · 50% less steps · 25% expected time reduction · <3 months MVP",
+    "summary": "As part of Allstate's existing payment and checkout flow optimization, I was tasked with integrating Apple and Google Pay with minimal disruption to current designs, processes, and legal requirements within a 3 month time frame. Key challenges addressed: Understanding the process and functionality of Apple and Google Pay. Assessing the flexibility of Allstate's payment gateway from both technical and design perspectives. Ensuring seamless payment management on the service side. Maintaining a high standard of usability and user confidence throughout the integration. Determining robust error-handling solutions to manage interactions between the two systems.",
+    "businessChallenges": [
+      "Competitive pressure to support modern payment methods without disrupting existing workflows or legal compliance",
+      "Reduce abandonments from payment inefficiencies (FTU/new customer)",
+      "Reduce payment failures and delays through current payment gateway methods (service/existing customer)",
+      "Reduce cancellations from delayed payments (service/existing customer)"
+    ],
+    "keyOutcomes": [
+      "Launched new payment method with 92% task success rate",
+      "Achieved 90% usability success rate and 6/7 user confidence rating for digital wallet transactions",
+      "Expected 25% efficiency boost for wallet transactions, reduced abandonment rates, and enhanced timeliness in overall payment completion",
+      "Uncovered critical insights about 3rd-party branding's impact on Allstate's design system and usability",
+      "Initiated discussion with leadership with backing of PMs and Technical teams to rethink payment processes for scalability and modernization"
+    ],
+    "methodsUsed": {
+      "competitiveAudit": "Analyzed insurance players like Progressive to understand how they handled 3rd-party wallets (if at all)",
+      "technicalWorkshops": "Collaborated with engineers and PMs to map front/backend flows and processes to understand constraints (e.g., e-signature placement, billing calculations, tokenization process)",
+      "technicalGuidelines": "Researched technical and HCI guidelines for Apple/Google Pay to determine their front and back end functionality and design guidelines"
+    },
+    "uxGoal": "Minimally redesign the flow and design to accommodate Apple/Google Pay while maintaining compliance, high usability, and high user confidence.",
+    "scopeRefinement": [
+      "Focused on minimal disruption to existing sales/service flows to meet legal/technical constraints",
+      "Prioritized web-view integration for native mobile apps due to development timelines",
+      "Uncovered critical insights about 3rd-party branding's impact on Allstate's design system"
+    ],
+    "iterations": [
+      "Tested payment selector designs balancing Apple/Google Pay guidelines with Allstate's design system",
+      "Collaborated with Design system team and engineering partners on iterations to ensure solutions are feasible",
+      "Removed paymarks from microcopy after finding a 12% drop in accuracy during testing"
+    ],
+    "technicalCollaboration": "Facilitated biweekly workshops with engineers to align on technical capabilities (API calls), backend processes (tokenization), and error-handling solutions (e.g., fraud-prevention messages).",
+    "keyInsight": "Branded payment buttons (e.g., 'Buy with Apple Pay') outperformed non-branded CTAs by 20% in usability testing, but paymarks (branded icons) confused users when embedded inline.",
+    "userPainPoints": [
+      "Complexity of e-signature requirements ahead of payment authorization (new customer)",
+      "Current payment method is inefficient/doesn't align with typical/available payment methods",
+      "Potential lack of trust/confidence in payment security for first-time users due to confusion"
+    ],
+    "quantitativeResults": [
+      "Introduced new payment method with 92% task success rate",
+      "Achieved high user confidence rating of payment flow (6/7) with introduction of digital wallet",
+      "Reduced payment/checkout time for wallet users (expected 25% increase)",
+      "Reduced errors and increased efficiency by removing manual payment entry (approx. 50% less steps)"
+    ],
+    "strategicImpact": [
+      "Highlighted design system limitations for scaling 3rd-party integrations (e.g., PayPal, Visa)",
+      "Sparked leadership discussions about overhauling the payment gateway for future flexibility"
+    ],
+    "leadership": [
+      "Mentored a junior designer in how UX can lead the strategy of a system working in a cross-functional team",
+      "Demonstrated the ROI of rapid research cycles by validating and optimizing UXR to ensure the designs are successful at launch"
+    ],
+    "keyTakeaways": [
+      "Tight scope alignment accelerated delivery but limited long-term scalability",
+      "3rd-party branding needs systematic design system guidelines to avoid potential user confusion (e.g. messaging or action outside of a payment flow)"
+    ],
+    "futureRoadmap": [
+      "Advocate for a design system update to support 3rd-party schema (branded elements, error states)",
+      "Explore phased overhaul of payment flows to reduce e-signature friction"
+    ],
+    "clientBrand": {
+      "colors": {
+        "primary": "#002A70",
+        "accent": "#00A3E0",
+        "light": "#E3F2FD"
+      }
+    },
+    "images": {
+      "hero": "/projects/allstate/images/hero.jpg",
+      "featured": [
+        "/projects/allstate/images/frame-133.jpg",
+        "/projects/allstate/images/frame-134.jpg",
+        "/projects/allstate/images/frame-135.jpg",
+        "/projects/allstate/images/frame-137.jpg",
+        "/projects/allstate/images/frame-141.jpg"
+      ]
+    },
+    "contentUrl": "/projects/allstate/content/case-study.html",
+    "externalLink": null,
+    "tags": ["UX Design", "Product Design", "Payment Integration", "Research", "Cross-functional Leadership"]
+  },
+  {
+    "id": "mcdonalds",
+    "slug": "mcdonalds",
+    "title": "Account-Based Ordering",
+    "company": "McDonald's",
+    "category": "product-design",
+    "tag": "both",
+    "featured": false,
+    "description": "Led cross-functional team to design an omni-channel ordering system integrating loyalty and payments across mobile and in-store.",
+    "challenge": "Fragmented ordering experience across channels with poor loyalty integration",
+    "solution": "Designed unified account-based ordering system connecting all channels",
+    "impact": "Global mobile app with seamless loyalty integration",
+    "metrics": "Global mobile app · loyalty integration",
+    "clientBrand": {
+      "colors": {
+        "primary": "#DA291C",
+        "accent": "#FFC72C",
+        "light": "#FFF3CD"
+      }
+    },
+    "images": {
+      "hero": "/projects/mcdonalds/images/hero.jpg",
+      "featured": []
+    },
+    "contentUrl": null,
+    "externalLink": null,
+    "tags": ["Product Design", "Omnichannel", "Loyalty"]
+  },
+  {
+    "id": "verizon",
+    "slug": "verizon",
+    "title": "Carrier Switch Flow Optimization",
+    "company": "Verizon",
+    "category": "product-design",
+    "tag": "both",
+    "featured": false,
+    "description": "Audited the existing carrier switch flow for efficiency gaps, then redesigned it in close collaboration with legal teams to balance conversion goals with regulatory viability — reducing unique pages by 66%.",
+    "challenge": "Complex carrier switch flow with excessive pages and regulatory constraints",
+    "solution": "Streamlined flow while maintaining legal/regulatory compliance",
+    "impact": "Reduced pages significantly while improving conversion",
+    "metrics": "–66% pages · higher conversion",
+    "clientBrand": {
+      "colors": {
+        "primary": "#CC0000",
+        "accent": "#FF6B35",
+        "light": "#FFE5E0"
+      }
+    },
+    "images": {
+      "hero": "/projects/verizon/images/hero.jpg",
+      "featured": []
+    },
+    "contentUrl": "/projects/verizon/content/case-study.html",
+    "externalLink": null,
+    "tags": ["Product Design", "Flow Optimization", "Regulatory"]
+  },
+  {
+    "id": "meta-sfi",
+    "slug": "meta-sfi",
+    "title": "SFI Email Capture Adoption",
+    "company": "Meta · Seller Funded Initiatives",
+    "category": "ux-research",
+    "tag": "moderated",
+    "featured": true,
+    "description": "Identified seller hesitations via moderated testing to improve email capture adoption.",
+    "challenge": "Low seller adoption of email capture feature in Seller Funded Initiatives",
+    "solution": "Conducted moderated research to identify hesitations and barriers",
+    "impact": "Insights drove feature adoption improvements",
+    "metrics": "+0.63% GMV · 16% churn reduction",
+    "clientBrand": {
+      "colors": {
+        "primary": "#1877F2",
+        "accent": "#E7F3FF",
+        "light": "#F0F2F5"
+      }
+    },
+    "images": {
+      "hero": "/projects/meta-sfi/images/hero.jpg",
+      "featured": []
+    },
+    "contentUrl": null,
+    "externalLink": null,
+    "tags": ["UX Research", "Moderated", "Seller Tools"]
+  },
+  {
+    "id": "meta-benchmark",
+    "slug": "meta-benchmark",
+    "title": "Commerce Manager Usability Benchmark",
+    "company": "Meta · Commerce Manager",
+    "category": "ux-research",
+    "tag": "unmoderated",
+    "tagLabel": "Unmoderated · n=33",
+    "featured": false,
+    "description": "Findability flagged as top issue for 52% of sellers via unmoderated testing.",
+    "challenge": "Low findability in Commerce Manager impacting seller productivity",
+    "solution": "Conducted unmoderated usability benchmark with 33 sellers",
+    "impact": "Prioritized IA/UI redesign to improve task completion and seller spend",
+    "metrics": "Findability issue for 52% of users · n=33",
+    "clientBrand": {
+      "colors": {
+        "primary": "#1877F2",
+        "accent": "#0A66C2",
+        "light": "#E7F3FF"
+      }
+    },
+    "images": {
+      "hero": "/projects/meta-benchmark/images/hero.jpg",
+      "featured": []
+    },
+    "contentUrl": "/projects/meta-benchmark/content/case-study.html",
+    "externalLink": null,
+    "tags": ["UX Research", "Unmoderated", "Benchmark"]
+  },
+  {
+    "id": "google-hedwig",
+    "slug": "google-hedwig",
+    "title": "Hedwig Notification Framework",
+    "company": "Google · Ads Platform",
+    "category": "ux-research",
+    "tag": "workshop",
+    "featured": false,
+    "description": "Established urgency hierarchy balancing alert prominence with workflow continuity for advertiser trust.",
+    "challenge": "Notification fatigue impacting advertiser workflow and trust",
+    "solution": "Designed notification framework with urgency hierarchy",
+    "impact": "Balanced alert visibility with workflow continuity",
+    "metrics": "Urgency hierarchy framework",
+    "clientBrand": {
+      "colors": {
+        "primary": "#1F2937",
+        "accent": "#4285F4",
+        "light": "#E8F0FE"
+      }
+    },
+    "images": {
+      "hero": "/projects/google-hedwig/images/hero.jpg",
+      "featured": []
+    },
+    "contentUrl": null,
+    "externalLink": null,
+    "tags": ["UX Research", "Workshop", "Notifications"]
+  },
+  {
+    "id": "google-editor",
+    "slug": "google-editor",
+    "title": "Editor Ads Tool Redesign",
+    "company": "Google",
+    "category": "ia-tooling",
+    "tag": "both",
+    "featured": false,
+    "description": "Strategic redesign reducing cognitive working load, aligning with M2 design system, and improving efficiency via task-flow optimization and phased rollout.",
+    "challenge": "High cognitive load in Editor tool with misaligned design system",
+    "solution": "Redesigned for M2 system with optimized task flows",
+    "impact": "Reduced cognitive load and improved efficiency",
+    "metrics": "Redesigned tool aligned with M2 design system",
+    "clientBrand": {
+      "colors": {
+        "primary": "#1F2937",
+        "accent": "#4285F4",
+        "light": "#E8F0FE"
+      }
+    },
+    "images": {
+      "hero": "/projects/google-editor/images/hero.jpg",
+      "featured": []
+    },
+    "contentUrl": null,
+    "externalLink": null,
+    "tags": ["Information Architecture", "Tooling", "Design System"]
+  },
+  {
+    "id": "cigna",
+    "slug": "cigna",
+    "title": "Self-Service Data Visualization",
+    "company": "Cigna",
+    "category": "ia-tooling",
+    "tag": "both",
+    "featured": false,
+    "description": "Led stakeholder discovery to surface critical metrics and reporting needs, then translated those mental models into an intuitive self-service dashboard accessible to users at every skill level.",
+    "challenge": "Complex data visualization needs across different skill levels",
+    "solution": "Designed intuitive self-service dashboard based on user mental models",
+    "impact": "Dashboard accessible to all skill levels",
+    "metrics": "Self-service dashboard implementation",
+    "clientBrand": {
+      "colors": {
+        "primary": "#003D7A",
+        "accent": "#0071C5",
+        "light": "#E3F2FD"
+      }
+    },
+    "images": {
+      "hero": "/projects/cigna/images/hero.jpg",
+      "featured": []
+    },
+    "contentUrl": null,
+    "externalLink": null,
+    "tags": ["Information Architecture", "Data Visualization", "Dashboard"]
+  }
+]

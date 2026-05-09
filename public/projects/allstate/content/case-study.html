@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apple / Google Pay Integration | Joseph Grgic — UX Design</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        var(--k-text-primary);
+      --navy-deep:   var(--k-text-primary);
+      --slate:       var(--k-text-secondary);
+      --slate-mid:   var(--k-text-muted);
+      --slate-light: var(--k-border-mid);
+      --slate-bg:    rgba(200,200,200,0.12);
+      --accent:      #00A3E0;
+      --accent-light:#E3F2FD;
+      --white:       var(--k-surface);
+      --off-white:   var(--k-bg);
+      --text-body:   var(--k-text-secondary);
+      --text-muted:  var(--k-text-muted);
+      --border:      var(--k-border-light);
+      --radius:      0px;
+      --nav-h:       56px;
+
+      /* Case study spacing — aligned with Kronos 8px scale */
+      --s-1:  4px;
+      --s-2:  8px;
+      --s-3:  12px;
+      --s-4:  16px;
+      --s-5:  24px;
+      --s-6:  32px;
+      --s-7:  48px;
+      --s-8:  64px;
+      --s-9:  96px;
+
+      /* Case study custom spacing (off-scale, scoped to this case study) */
+      --case-px-20: 20px;  /* Mobile/edge padding */
+      --case-px-28: 28px;  /* Card internal padding */
+      --case-px-40: 40px;  /* Horizontal padding */
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'IBM Plex Sans', 'Inter', -apple-system, sans-serif;
+      background: var(--white);
+      color: var(--navy);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── STICKY NAV ─── */
+    #site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      gap: 24px;
+    }
+    .nav-brand {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-brand span { color: var(--slate); font-weight: 400; }
+    .nav-links {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--slate);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-link:hover { background: var(--slate-bg); color: var(--navy); }
+    .nav-link.active { background: var(--navy); color: var(--white); }
+
+    /* ─── PROGRESS BAR ─── */
+    #read-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--accent);
+      z-index: 300;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      padding: 96px 40px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .hero-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate);
+      background: var(--slate-bg);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .hero-date { font-size: 13px; color: var(--text-muted); }
+    .hero-title {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--navy);
+      max-width: 820px;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+    .hero-meta-group { display: flex; flex-direction: column; gap: 4px; }
+    .hero-meta-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+    }
+    .hero-meta-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--navy);
+    }
+
+    /* ─── HERO IMAGE ─── */
+    .hero-image-wrap {
+      width: 100%;
+      max-height: 520px;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--off-white);
+    }
+    .hero-image-wrap img {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+
+    /* ─── SECTIONS ─── */
+    .section {
+      padding: 80px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section + .section { padding-top: 0; }
+
+    .section-full {
+      padding: 80px 40px;
+      background: var(--off-white);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .section-full .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--k-text-muted);
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--k-border-heavy);
+    }
+    .section-title {
+      font-size: clamp(22px, 3vw, 36px);
+      font-weight: 500;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 40px;
+    }
+
+    /* ─── TL;DR GRID ─── */
+    .tldr-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    @media (max-width: 800px) { .tldr-grid { grid-template-columns: 1fr; } }
+    .tldr-card {
+      background: var(--white);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .tldr-card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate);
+    }
+    .tldr-card-body {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+    .tldr-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      list-style: none;
+    }
+    .tldr-list li {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-body);
+      padding-left: 18px;
+      position: relative;
+    }
+    .tldr-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--slate-mid);
+      font-size: 13px;
+    }
+
+    /* ─── STATS ─── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 900px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+    .stat-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .stat-num {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 500;
+      color: var(--navy);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ─── INFO ROWS ─── */
+    .info-rows { display: flex; flex-direction: column; gap: 0; }
+    .info-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 24px 40px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .info-row:first-child { border-top: 1px solid var(--border); }
+    @media (max-width: 700px) { .info-row { grid-template-columns: 1fr; gap: 8px; } }
+    .info-row-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate);
+      padding-top: 2px;
+    }
+    .info-row-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-body);
+    }
+    .info-row-body strong { font-weight: 600; color: var(--navy); }
+
+    /* ─── METHOD CARDS ─── */
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 800px) { .method-grid { grid-template-columns: 1fr; } }
+    .method-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: var(--white);
+    }
+    .method-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(0,163,224,0.08);
+    }
+    .method-card-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+    }
+    .method-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .method-card-body {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+
+    /* ─── FINDINGS / KEY DECISIONS ─── */
+    .findings-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 900px) { .findings-list { grid-template-columns: 1fr; } }
+    .finding-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .finding-item:hover {
+      border-color: var(--slate-light);
+      box-shadow: 0 4px 16px rgba(28,43,51,0.06);
+    }
+    .finding-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+    }
+    .finding-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .finding-body-inner {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-body);
+    }
+    .dc-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+      margin-top: 8px;
+      align-self: flex-start;
+      background: var(--accent-light);
+      color: var(--navy);
+    }
+
+    /* ─── SCREEN BLOCKS ─── */
+    .screens-container {
+      display: flex;
+      flex-direction: column;
+      gap: 72px;
+    }
+    .screen-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    @media (max-width: 1000px) { .screen-block { grid-template-columns: 1fr; gap: 32px; } }
+    .screen-block.reverse { direction: rtl; }
+    .screen-block.reverse > * { direction: ltr; }
+    .screen-image {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,42,112,0.12);
+      background: var(--off-white);
+      border: 1px solid var(--border);
+    }
+    .screen-image img { width: 100%; height: auto; display: block; }
+    .screen-content h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 16px;
+      margin-top: 0;
+    }
+    .screen-content p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 16px;
+    }
+    .screen-content p:last-child { margin-bottom: 0; }
+    .screen-highlights {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .screen-highlights li {
+      font-size: 14px;
+      color: var(--text-body);
+      padding-left: 24px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .screen-highlights li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ─── IMAGE CAPTION ─── */
+    .img-caption {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    /* ─── HEATMAP GRID ─── */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 800px) { .heatmap-grid { grid-template-columns: 1fr; } }
+    .heatmap-block {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--white);
+    }
+    .heatmap-block img { width: 100%; height: auto; display: block; }
+    .heatmap-block-caption {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--off-white);
+    }
+    .heatmap-block-caption strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .heatmap-block-caption span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ─── INSIGHT CALLOUT ─── */
+    .insight-callout {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      background: var(--accent-light);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .insight-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    .insight-body {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--navy);
+      font-weight: 500;
+    }
+
+    /* ─── OUTCOMES GRID ─── */
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 800px) { .outcomes-grid { grid-template-columns: 1fr; } }
+    .outcome-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .outcome-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .outcome-card-body {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+
+    /* ─── FOOTER ─── */
+    #footer {
+      background: var(--off-white);
+      border-top: 1px solid var(--border);
+      padding: 48px 40px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    #footer .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    #footer a { color: var(--navy); font-weight: 500; text-decoration: none; }
+    #footer a:hover { text-decoration: underline; }
+
+    /* ─── REVEAL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      #site-nav { padding: 0 20px; }
+      .section { padding: 60px 20px; }
+      .section-full { padding: 60px 20px; }
+      #hero { padding: 60px 20px 50px; }
+      #footer .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- READ PROGRESS BAR -->
+<div id="read-progress"></div>
+
+<!-- STICKY NAV -->
+<nav id="site-nav">
+  <a href="/" class="nav-brand">Joseph Grgic <span>/ Apple &amp; Google Pay</span></a>
+  <div class="nav-links">
+    <a href="#overview" class="nav-link active">Overview</a>
+    <a href="#background" class="nav-link">Background</a>
+    <a href="#process" class="nav-link">Process</a>
+    <a href="#decisions" class="nav-link">Key Decisions</a>
+    <a href="#testing" class="nav-link">Testing</a>
+    <a href="#outcomes" class="nav-link">Outcomes</a>
+  </div>
+</nav>
+
+<!-- ─── 1. HERO ─── -->
+<section id="hero">
+  <div class="hero-eyebrow">
+    <span class="hero-tag">Payment UX · Product Design</span>
+    <span class="hero-date">2024</span>
+  </div>
+  <h1 class="hero-title">Integrating Apple &amp; Google Pay into Allstate's checkout — without breaking what works</h1>
+  <div class="hero-meta">
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Company</div>
+      <div class="hero-meta-value">Allstate</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Role</div>
+      <div class="hero-meta-value">Lead UX Designer · Researcher</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Timeline</div>
+      <div class="hero-meta-value">~3 months (MVP)</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Tools</div>
+      <div class="hero-meta-value">Figma · Mural · UserZoom</div>
+    </div>
+  </div>
+  <div class="hero-image-wrap">
+    <img src="/projects/allstate/images/hero.jpg" alt="Allstate Apple / Google Pay Integration" />
+  </div>
+</section>
+
+<!-- ─── 2. OVERVIEW / TL;DR ─── -->
+<section id="overview" class="section">
+  <div class="section-label">Overview</div>
+  <div class="tldr-grid">
+    <div class="tldr-card reveal">
+      <div class="tldr-card-label">The Problem</div>
+      <div class="tldr-card-body">
+        Allstate's checkout didn't support digital wallets — leaving modern payment methods off the table while competitors began offering them. Payment abandonment from inefficient flows was costing conversions.
+      </div>
+    </div>
+    <div class="tldr-card reveal reveal-delay-1">
+      <div class="tldr-card-label">Key Constraints</div>
+      <ul class="tldr-list">
+        <li>Legal/compliance requirements on payment flow sequencing</li>
+        <li>e-signature placement tied to backend billing calculations</li>
+        <li>Apple/Google Pay tokenization limits design flexibility</li>
+        <li>3-month MVP timeline with live production impact</li>
+      </ul>
+    </div>
+    <div class="tldr-card reveal reveal-delay-2">
+      <div class="tldr-card-label">Approach</div>
+      <div class="tldr-card-body">
+        Minimally redesign the checkout flow to accommodate digital wallets while maintaining compliance, high usability, and user confidence. Map constraints with engineering before sketching a single screen.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 3. BACKGROUND ─── -->
+<section id="background" class="section">
+  <div class="section-label">Background</div>
+  <div class="info-rows">
+    <div class="info-row reveal">
+      <div class="info-row-label">Business Challenge</div>
+      <div class="info-row-body">
+        Competitive pressure to support modern payment methods without disrupting existing workflows or legal compliance. Allstate needed to <strong>reduce payment abandonments from first-time users</strong>, reduce payment failures through existing gateway methods, and cut cancellations from delayed payments for service and existing customers.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-1">
+      <div class="info-row-label">UX Goal</div>
+      <div class="info-row-body">
+        Minimally redesign the flow and design to accommodate Apple/Google Pay while <strong>maintaining compliance, high usability, and high user confidence.</strong> Avoid disrupting the existing checkout for the vast majority of users who use legacy payment methods.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-2">
+      <div class="info-row-label">User Pain Points</div>
+      <div class="info-row-body">
+        <strong>First-time users:</strong> e-signature requirements ahead of payment authorization added unexpected friction. The current payment method didn't align with familiar digital wallet patterns, and users lacked trust signals for security.<br><br>
+        <strong>Existing/service customers:</strong> Inefficient payment management flow didn't map to available modern methods, creating unnecessary re-entry friction.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-3">
+      <div class="info-row-label">Scope</div>
+      <div class="info-row-body">
+        Focused on minimal disruption to existing sales/service flows to meet legal/technical constraints. Prioritized web-view integration for native mobile apps due to development timelines. Explicitly scoped out full payment gateway redesign — deferred to future roadmap.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 4. RESEARCH & PROCESS ─── -->
+<section id="process" class="section">
+  <div class="section-label">Research &amp; Process</div>
+  <div class="section-title">Map constraints before designing anything.</div>
+  <div class="method-grid">
+    <div class="method-card reveal">
+      <div class="method-card-num">01 — Competitive Audit</div>
+      <div class="method-card-title">Market Analysis</div>
+      <div class="method-card-body">Analyzed insurance players like Progressive to understand how competitors handled 3rd-party wallets — identifying gaps Allstate could learn from and patterns to avoid.</div>
+    </div>
+    <div class="method-card reveal reveal-delay-1">
+      <div class="method-card-num">02 — Technical Workshops</div>
+      <div class="method-card-title">Engineering Alignment</div>
+      <div class="method-card-body">Biweekly sessions with engineers and PMs to map front/backend flows and constraints — e-signature placement, billing calculation sequencing, and tokenization process — before any design decisions were made.</div>
+    </div>
+    <div class="method-card reveal reveal-delay-2">
+      <div class="method-card-num">03 — Guidelines Research</div>
+      <div class="method-card-title">Platform Standards</div>
+      <div class="method-card-body">Deep dive into Apple/Google Pay HCI guidelines and technical requirements to understand what was mandated (paymarks, button styles, tokenization) vs. what could flex to fit Allstate's system.</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETITIVE AUDIT — STYLED HTML TABLE -->
+<div style="max-width: 1100px; margin: 0 auto; padding: 0 40px 40px;">
+  <div class="reveal" style="border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 24px rgba(0,42,112,0.07);">
+
+    <!-- Header bar -->
+    <div style="background: var(--navy); padding: 20px 32px; display: flex; align-items: center; gap: 12px;">
+      <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent);"></div>
+      <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.7);">Competitive Audit — Digital Wallet Support</span>
+    </div>
+
+    <!-- Column headers -->
+    <div style="display: grid; grid-template-columns: 200px 1fr 1fr 1fr; gap: 0; background: var(--off-white); border-bottom: 1px solid var(--border); padding: 12px 32px;">
+      <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">Competitor</div>
+      <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">Wallet Support</div>
+      <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">Scope</div>
+      <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">Model</div>
+    </div>
+
+    <!-- Row: Progressive -->
+    <div style="display: grid; grid-template-columns: 200px 1fr 1fr 1fr; gap: 0; padding: 20px 32px; border-bottom: 1px solid var(--border); background: var(--white); align-items: center;">
+      <div style="font-size: 14px; font-weight: 600; color: var(--navy);">Progressive</div>
+      <div>
+        <span style="display: inline-flex; align-items: center; gap: 6px; background: #e6f9f0; color: #1a7a4a; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 20px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #1a7a4a; flex-shrink: 0;"></span>
+          Full Support
+        </span>
+      </div>
+      <div style="font-size: 13px; color: var(--text-body);">FTU + existing customers</div>
+      <div style="font-size: 13px; color: var(--text-body);">Checkout model</div>
+    </div>
+
+    <!-- Row: GEICO -->
+    <div style="display: grid; grid-template-columns: 200px 1fr 1fr 1fr; gap: 0; padding: 20px 32px; border-bottom: 1px solid var(--border); background: var(--off-white); align-items: center;">
+      <div style="font-size: 14px; font-weight: 600; color: var(--navy);">GEICO</div>
+      <div>
+        <span style="display: inline-flex; align-items: center; gap: 6px; background: #f2f3f5; color: #5c6b78; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 20px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #9baab5; flex-shrink: 0;"></span>
+          Not Offered
+        </span>
+      </div>
+      <div style="font-size: 13px; color: var(--text-muted);">—</div>
+      <div style="font-size: 13px; color: var(--text-muted);">—</div>
+    </div>
+
+    <!-- Row: Farmers -->
+    <div style="display: grid; grid-template-columns: 200px 1fr 1fr 1fr; gap: 0; padding: 20px 32px; border-bottom: 1px solid var(--border); background: var(--white); align-items: center;">
+      <div style="font-size: 14px; font-weight: 600; color: var(--navy);">Farmers Insurance</div>
+      <div>
+        <span style="display: inline-flex; align-items: center; gap: 6px; background: #fff7e6; color: #b06d00; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 20px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #e08c00; flex-shrink: 0;"></span>
+          Partial
+        </span>
+      </div>
+      <div style="font-size: 13px; color: var(--text-body);">Service (existing) only</div>
+      <div style="font-size: 13px; color: var(--text-body);">Checkout model</div>
+    </div>
+
+    <!-- Row: State Farm -->
+    <div style="display: grid; grid-template-columns: 200px 1fr 1fr 1fr; gap: 0; padding: 20px 32px; background: var(--off-white); align-items: center;">
+      <div style="font-size: 14px; font-weight: 600; color: var(--navy);">State Farm</div>
+      <div>
+        <span style="display: inline-flex; align-items: center; gap: 6px; background: #fff7e6; color: #b06d00; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 20px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #e08c00; flex-shrink: 0;"></span>
+          Partial
+        </span>
+      </div>
+      <div style="font-size: 13px; color: var(--text-body);">Service (existing) only</div>
+      <div style="font-size: 13px; color: var(--text-body);">Checkout model</div>
+    </div>
+
+    <!-- Footer caption -->
+    <div style="padding: 14px 32px; background: var(--white); border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 12px; color: var(--text-muted);">Competitive audit — only Progressive offered full digital wallet support across both FTU and service flows, confirming a market gap and validating the business case for Allstate's integration.</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- DESIGN SCOPE IMAGE -->
+<div style="max-width: 1100px; margin: 0 auto; padding: 0 40px 80px;">
+  <div class="reveal" style="border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 24px rgba(0,42,112,0.07);">
+    <img src="/projects/allstate/images/Design scope.jpg" alt="Design scope mapping — constraints and opportunities" style="width: 100%; height: auto; display: block;" />
+    <div style="padding: 16px 24px; background: var(--off-white); border-top: 1px solid var(--border);">
+      <span style="font-size: 12px; color: var(--text-muted);">Scope mapping — constraints, technical limitations, and design opportunities surfaced from workshops</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── 5. TECHNICAL COLLABORATION ─── -->
+<div class="section-full">
+  <div class="section-inner">
+    <div class="section-label">Technical Collaboration</div>
+    <div class="section-title" style="margin-bottom: 32px;">Workshops with engineering ran before any design work started.</div>
+
+    <div class="reveal" style="background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 40px; margin-bottom: 32px;">
+      <div style="font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 12px;">Biweekly engineering workshops as a design tool</div>
+      <div style="font-size: 14px; color: var(--text-body); line-height: 1.8;">
+        Rather than handing off designs to engineering, I ran biweekly workshops to align on API call sequences, backend processes (tokenization), and error-handling solutions <em>before designing</em>. This prevented late-stage rework and surfaced constraints that would have killed multiple design directions — including a tokenization sequence that locked the placement of payment method selection entirely.
+      </div>
+    </div>
+
+    <!-- 4-Phase Workshop Progression -->
+    <div class="reveal" style="border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 24px rgba(0,42,112,0.07);">
+
+      <!-- Header -->
+      <div style="background: var(--navy); padding: 18px 32px; display: flex; align-items: center; gap: 12px;">
+        <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0;"></div>
+        <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.7);">Workshop Progression — How the Technical Understanding Evolved</span>
+      </div>
+
+      <!-- ── Phase 1: Baseline User Flow ── -->
+      <div style="padding: 24px 32px; border-bottom: 1px solid var(--border); background: var(--white);">
+        <div style="display: flex; gap: 28px; align-items: flex-start;">
+          <div style="flex-shrink: 0; width: 128px;">
+            <div style="font-size: 36px; font-weight: 800; color: rgba(0,42,112,0.06); line-height: 1; margin-bottom: 4px;">01</div>
+            <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--navy); line-height: 1.5;">Baseline<br>User Flow</div>
+          </div>
+          <div style="flex: 1; overflow-x: auto; padding-bottom: 16px;">
+            <div style="display: flex; align-items: flex-start; min-width: max-content; gap: 0;">
+
+              <!-- Circle: Policies selected -->
+              <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 72px;">
+                <div style="height: 42px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--slate-light);"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 11px; color: var(--text-body); text-align: center; line-height: 1.4;">Policies<br>selected</div>
+              </div>
+
+              <!-- Arrow -->
+              <div style="height: 42px; display: flex; align-items: center; flex-shrink: 0; padding: 0 4px;">
+                <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><line x1="0" y1="5" x2="17" y2="5" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round"/><polyline points="12,1 18,5 12,9" fill="none" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+
+              <!-- Diamond: Select payment method -->
+              <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 88px;">
+                <div style="height: 42px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 27px; height: 27px; background: var(--slate-light); transform: rotate(45deg);"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 11px; color: var(--text-body); text-align: center; line-height: 1.4;">Select payment<br>method (list)</div>
+              </div>
+
+              <!-- Arrow -->
+              <div style="height: 42px; display: flex; align-items: center; flex-shrink: 0; padding: 0 4px;">
+                <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><line x1="0" y1="5" x2="17" y2="5" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round"/><polyline points="12,1 18,5 12,9" fill="none" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+
+              <!-- Square: Enter Payment information -->
+              <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 84px;">
+                <div style="height: 42px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 36px; height: 36px; background: var(--slate-light); border-radius: 3px;"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 11px; color: var(--text-body); text-align: center; line-height: 1.4;">Enter Payment<br>information</div>
+              </div>
+
+              <!-- Arrow -->
+              <div style="height: 42px; display: flex; align-items: center; flex-shrink: 0; padding: 0 4px;">
+                <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><line x1="0" y1="5" x2="17" y2="5" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round"/><polyline points="12,1 18,5 12,9" fill="none" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+
+              <!-- Square: Authorize payment -->
+              <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 80px;">
+                <div style="height: 42px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 36px; height: 36px; background: var(--slate-light); border-radius: 3px;"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 11px; color: var(--text-body); text-align: center; line-height: 1.4;">Authorize<br>payment</div>
+              </div>
+
+              <!-- Arrow -->
+              <div style="height: 42px; display: flex; align-items: center; flex-shrink: 0; padding: 0 4px;">
+                <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><line x1="0" y1="5" x2="17" y2="5" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round"/><polyline points="12,1 18,5 12,9" fill="none" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+
+              <!-- Square: e-sign forms -->
+              <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 72px;">
+                <div style="height: 42px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 36px; height: 36px; background: var(--slate-light); border-radius: 3px;"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 11px; color: var(--text-body); text-align: center; line-height: 1.4;">e-sign<br>forms</div>
+              </div>
+
+              <!-- Arrow -->
+              <div style="height: 42px; display: flex; align-items: center; flex-shrink: 0; padding: 0 4px;">
+                <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><line x1="0" y1="5" x2="17" y2="5" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round"/><polyline points="12,1 18,5 12,9" fill="none" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+
+              <!-- Square: Review/checkout -->
+              <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 80px;">
+                <div style="height: 42px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 36px; height: 36px; background: var(--slate-light); border-radius: 3px;"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 11px; color: var(--text-body); text-align: center; line-height: 1.4;">Review /<br>checkout</div>
+              </div>
+
+              <!-- Arrow -->
+              <div style="height: 42px; display: flex; align-items: center; flex-shrink: 0; padding: 0 4px;">
+                <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><line x1="0" y1="5" x2="17" y2="5" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round"/><polyline points="12,1 18,5 12,9" fill="none" stroke="#00A3E0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+
+              <!-- Square: Confirmation (end state, slightly highlighted) -->
+              <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 80px;">
+                <div style="height: 42px; display: flex; align-items: center; justify-content: center;">
+                  <div style="width: 36px; height: 36px; background: var(--slate-light); border-radius: 3px;"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 11px; color: var(--text-body); text-align: center; line-height: 1.4;">Confirmation</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 12px; padding-left: 156px; font-size: 12px; color: var(--text-muted); line-height: 1.7;">Starting point: the existing 6-step payment flow mapped as a simple linear sequence — a shared baseline before any backend complexity was introduced.</div>
+      </div>
+
+      <!-- ── Phase 2: Backend Architecture ── -->
+      <div style="padding: 24px 32px; border-bottom: 1px solid var(--border); background: var(--off-white);">
+        <div style="display: flex; gap: 28px; align-items: flex-start;">
+          <div style="flex-shrink: 0; width: 128px;">
+            <div style="font-size: 36px; font-weight: 800; color: rgba(0,42,112,0.06); line-height: 1; margin-bottom: 4px;">02</div>
+            <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--navy); line-height: 1.5;">Backend<br>Architecture</div>
+          </div>
+          <div style="flex: 1; overflow-x: auto;">
+
+            <!-- FigJam canvas -->
+            <div style="background: #F5F4F0; border-radius: 10px; padding: 24px 28px 28px; border: 1px solid #E2E0DA; min-width: max-content;">
+
+              <!-- Canvas label -->
+              <div style="font-size: 12px; font-weight: 700; color: #2D2B27; margin-bottom: 22px; letter-spacing: -0.01em;">Backend processes</div>
+
+              <!-- ── TOP ROW: main flow notes ── -->
+              <div style="display: flex; align-items: flex-start; gap: 0;">
+
+                <!-- Note 1 -->
+                <div style="background: #F5C842; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.13); transform: rotate(-0.7deg); flex-shrink: 0; width: 106px;">Payment Details page</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Note 2 -->
+                <div style="background: #F9D55E; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.11); transform: rotate(0.5deg); flex-shrink: 0; width: 124px;">We collect sent Payment method intent — apple pay</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Note 3 -->
+                <div style="background: #F5C842; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.13); transform: rotate(-1.1deg); flex-shrink: 0; width: 124px;">the CTA button will trigger the SDK to access the wallet</div>
+                <div style="width: 22px; flex-shrink: 0;"></div>
+
+                <!-- Note 4 -->
+                <div style="background: #F9D55E; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.11); transform: rotate(0.4deg); flex-shrink: 0; width: 62px;">T&amp;Cs</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Note 5 -->
+                <div style="background: #F5C842; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.13); transform: rotate(-0.6deg); flex-shrink: 0; width: 58px;">e-sign</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Note 6 -->
+                <div style="background: #F9D55E; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.11); transform: rotate(0.9deg); flex-shrink: 0; width: 62px;">review</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Note 7 -->
+                <div style="background: #F5C842; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.13); transform: rotate(-0.4deg); flex-shrink: 0; width: 84px;">"buy now" CTA</div>
+                <div style="width: 22px; flex-shrink: 0;"></div>
+
+                <!-- Note 8 -->
+                <div style="background: #F9D55E; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.11); transform: rotate(0.6deg); flex-shrink: 0; width: 112px;">Confirmation Onboarding</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Note 9 -->
+                <div style="background: #F5C842; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.13); transform: rotate(-0.9deg); flex-shrink: 0; width: 128px;">we will not be able to reuse this payment for a new one time payment</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Note 10 -->
+                <div style="background: #F9D55E; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.11); transform: rotate(0.5deg); flex-shrink: 0; width: 130px;">consumer will need to select each and every time (FTU first time payment)</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Note 11 -->
+                <div style="background: #F5C842; border-radius: 3px; padding: 9px 11px; font-size: 10.5px; color: #3D2C00; line-height: 1.5; box-shadow: 1px 2px 5px rgba(0,0,0,0.13); transform: rotate(-0.5deg); flex-shrink: 0; width: 118px;">we need content to communicate</div>
+
+              </div>
+
+              <!-- ── CONNECTOR ZONE ── -->
+              <!-- Dashed verticals drop from notes 1–3, 7, 8, 9 where sub-notes exist -->
+              <div style="display: flex; align-items: flex-start; height: 22px; padding-top: 2px;">
+                <!-- aligns under note1 center (~53px) -->
+                <div style="width: 53px; flex-shrink: 0;"></div>
+                <div style="width: 1.5px; height: 18px; flex-shrink: 0; background: repeating-linear-gradient(to bottom, #B8A870 0px, #B8A870 3px, transparent 3px, transparent 6px);"></div>
+                <!-- gap to note2 center: 106 + 6 + 18 + 6 + 62 = 198 - 53 - 1.5 = 143.5, center of note2 is at 106+30+62=198 -->
+                <div style="width: 89px; flex-shrink: 0;"></div>
+                <div style="width: 1.5px; height: 18px; flex-shrink: 0; background: repeating-linear-gradient(to bottom, #B8A870 0px, #B8A870 3px, transparent 3px, transparent 6px);"></div>
+                <!-- gap to note3 center -->
+                <div style="width: 89px; flex-shrink: 0;"></div>
+                <div style="width: 1.5px; height: 18px; flex-shrink: 0; background: repeating-linear-gradient(to bottom, #B8A870 0px, #B8A870 3px, transparent 3px, transparent 6px);"></div>
+                <!-- gap past T&Cs/e-sign/review to note7 (~buy now CTA) -->
+                <div style="width: 230px; flex-shrink: 0;"></div>
+                <div style="width: 1.5px; height: 18px; flex-shrink: 0; background: repeating-linear-gradient(to bottom, #B8A870 0px, #B8A870 3px, transparent 3px, transparent 6px);"></div>
+                <!-- gap to note8 center -->
+                <div style="width: 78px; flex-shrink: 0;"></div>
+                <div style="width: 1.5px; height: 18px; flex-shrink: 0; background: repeating-linear-gradient(to bottom, #B8A870 0px, #B8A870 3px, transparent 3px, transparent 6px);"></div>
+              </div>
+
+              <!-- ── BOTTOM ROW: sub-process notes ── -->
+              <div style="display: flex; align-items: flex-start; gap: 0;">
+
+                <!-- Sub 1 (long auth note — under note 1) -->
+                <div style="background: #F5C842; border-radius: 3px; padding: 9px 11px; font-size: 10px; color: #3D2C00; line-height: 1.55; box-shadow: 1px 2px 5px rgba(0,0,0,0.12); transform: rotate(0.8deg); flex-shrink: 0; width: 134px;">The ZTM session to trigger authentication should be in the payment/authorization detail view. The SDK already triggers the authentication prompt from that page</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Sub 2 (SDK tokenization — under note 2) -->
+                <div style="background: #F9D55E; border-radius: 3px; padding: 9px 11px; font-size: 10px; color: #3D2C00; line-height: 1.55; box-shadow: 1px 2px 5px rgba(0,0,0,0.11); transform: rotate(-0.6deg); flex-shrink: 0; width: 120px;">payments SDK facilitates the tokenization of the payment method</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Sub 3 (token created — under note 3) -->
+                <div style="background: #F5C842; border-radius: 3px; padding: 9px 11px; font-size: 10px; color: #3D2C00; line-height: 1.55; box-shadow: 1px 2px 5px rgba(0,0,0,0.12); transform: rotate(1.0deg); flex-shrink: 0; width: 106px;">money ball token created</div>
+
+                <!-- spacer over T&Cs / e-sign / review / buy now gap -->
+                <div style="width: 98px; flex-shrink: 0;"></div>
+
+                <!-- Sub 4 (send to Moneyball — under note 7 area) -->
+                <div style="background: #F9D55E; border-radius: 3px; padding: 9px 11px; font-size: 10px; color: #3D2C00; line-height: 1.55; box-shadow: 1px 2px 5px rgba(0,0,0,0.11); transform: rotate(-0.7deg); flex-shrink: 0; width: 112px;">send actual transaction to Moneyball</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Sub 5 (BPO response) -->
+                <div style="background: #F5C842; border-radius: 3px; padding: 9px 11px; font-size: 10px; color: #3D2C00; line-height: 1.55; box-shadow: 1px 2px 5px rgba(0,0,0,0.12); transform: rotate(0.6deg); flex-shrink: 0; width: 106px;">payment processing (response to BPO)</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Sub 6 (Issue Policy) -->
+                <div style="background: #F9D55E; border-radius: 3px; padding: 9px 11px; font-size: 10px; color: #3D2C00; line-height: 1.55; box-shadow: 1px 2px 5px rgba(0,0,0,0.11); transform: rotate(-0.5deg); flex-shrink: 0; width: 106px;">Issue Policy + Billing Account</div>
+
+                <!-- spacer to align sub-notes 7–8 under notes 9–10 -->
+                <div style="width: 50px; flex-shrink: 0;"></div>
+
+                <!-- Sub 7 (auto pay note) -->
+                <div style="background: #F5C842; border-radius: 3px; padding: 9px 11px; font-size: 10px; color: #3D2C00; line-height: 1.55; box-shadow: 1px 2px 5px rgba(0,0,0,0.12); transform: rotate(0.9deg); flex-shrink: 0; width: 134px;">for auto pay and recurring payments, we will store the policy after what has been built</div>
+                <div style="height: 36px; display: flex; align-items: center; padding: 0 6px; flex-shrink: 0;"><svg width="18" height="8" viewBox="0 0 18 8" fill="none"><line x1="0" y1="4" x2="13" y2="4" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round"/><polyline points="9,1 14,4 9,7" fill="none" stroke="#00A3E0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+                <!-- Sub 8 (seamless) -->
+                <div style="background: #F9D55E; border-radius: 3px; padding: 9px 11px; font-size: 10px; color: #3D2C00; line-height: 1.55; box-shadow: 1px 2px 5px rgba(0,0,0,0.11); transform: rotate(-0.8deg); flex-shrink: 0; width: 118px;">this should be seamless for the customer</div>
+
+              </div>
+
+            </div><!-- end FigJam canvas -->
+          </div><!-- end overflow wrapper -->
+        </div>
+        <div style="margin-top: 12px; padding-left: 156px; font-size: 12px; color: var(--text-muted); line-height: 1.7;">Engineering workshops expanded each step to expose backend dependencies — SDK triggers, Moneyball tokenization, BPO processing, and billing account creation. This layer directly constrained design decisions.</div>
+      </div>
+
+      <!-- ── Phase 2 original closing divs (removed, now handled above) ──
+      REPLACED BLOCK ENDS HERE — Phase 3 follows
+      ── -->
+
+      <!-- ── DUMMY closing divs to match what was removed ── -->
+      <!-- NOTE: the old block had these extra closing divs inside it:
+           </div></div></div>
+           We now handle them differently above. This comment is a placeholder. -->
+      <!-- Old Phase 2 content was:
+          <div style="display: flex; align-items: stretch; ...">
+            [old cards]
+          </div>
+        </div>  <- flex:1 wrapper
+      </div>    <- flex row
+      <div style="margin-top...">[caption]</div>
+    </div>      <- phase 2 outer
+      The new version restructures this cleanly above.
+      The NEXT section (Phase 3) follows immediately.
+      -->
+
+              <div style="flex-shrink: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden;">
+                <div style="padding: 7px 10px; background: white; border-bottom: 1px dashed #e4e8eb; font-size: 10px; font-weight: 500; color: var(--navy); text-align: center; line-height: 1.4; white-space: nowrap;">Select Payment<br>Method</div>
+                <div style="padding: 7px 10px; background: #FFF8E6; font-size: 9px; color: #7A5500; line-height: 1.5; white-space: nowrap;">
+                  <div style="font-weight: 700; margin-bottom: 2px;">Payment Details Page</div>
+                  <div>SDK trigger</div>
+                  <div>Token init</div>
+                </div>
+              </div>
+
+              <div style="color: var(--slate-mid); font-size: 12px; display: flex; align-items: center; flex-shrink: 0;">→</div>
+
+              <div style="flex-shrink: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden;">
+                <div style="padding: 7px 10px; background: white; border-bottom: 1px dashed #e4e8eb; font-size: 10px; font-weight: 500; color: var(--navy); text-align: center; line-height: 1.4; white-space: nowrap;">Enter Payment<br>Information</div>
+                <div style="padding: 7px 10px; background: #FFF8E6; font-size: 9px; color: #7A5500; line-height: 1.5; white-space: nowrap;">
+                  <div style="font-weight: 700; margin-bottom: 2px;">Token Creation</div>
+                  <div>Moneyball SDK</div>
+                  <div>Payment tokenized</div>
+                </div>
+              </div>
+
+              <div style="color: var(--slate-mid); font-size: 12px; display: flex; align-items: center; flex-shrink: 0;">→</div>
+
+              <div style="flex-shrink: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden;">
+                <div style="padding: 7px 10px; background: white; border-bottom: 1px dashed #e4e8eb; font-size: 10px; font-weight: 500; color: var(--navy); text-align: center; line-height: 1.4; white-space: nowrap;">Authorize<br>Payment</div>
+                <div style="padding: 7px 10px; background: #FFF8E6; font-size: 9px; color: #7A5500; line-height: 1.5; white-space: nowrap;">
+                  <div style="font-weight: 700; margin-bottom: 2px;">Transaction</div>
+                  <div>Send to Moneyball</div>
+                  <div>BPO response</div>
+                </div>
+              </div>
+
+              <div style="color: var(--slate-mid); font-size: 12px; display: flex; align-items: center; flex-shrink: 0;">→</div>
+
+              <div style="flex-shrink: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden;">
+                <div style="padding: 7px 10px; background: white; border-bottom: 1px dashed #e4e8eb; font-size: 10px; font-weight: 500; color: var(--navy); text-align: center; line-height: 1.4; white-space: nowrap;">e-Sign<br>Forms</div>
+                <div style="padding: 7px 10px; background: #FFF8E6; font-size: 9px; color: #7A5500; line-height: 1.5; white-space: nowrap;">
+                  <div style="font-weight: 700; margin-bottom: 2px;">T&amp;Cs / Legal</div>
+                  <div>e-Sign trigger</div>
+                  <div>Review step</div>
+                </div>
+              </div>
+
+              <div style="color: var(--slate-mid); font-size: 12px; display: flex; align-items: center; flex-shrink: 0;">→</div>
+
+              <div style="flex-shrink: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden;">
+                <div style="padding: 7px 10px; background: white; border-bottom: 1px dashed #e4e8eb; font-size: 10px; font-weight: 500; color: var(--navy); text-align: center; line-height: 1.4; white-space: nowrap;">Review /<br>Checkout</div>
+                <div style="padding: 7px 10px; background: #FFF8E6; font-size: 9px; color: #7A5500; line-height: 1.5; white-space: nowrap;">
+                  <div style="font-weight: 700; margin-bottom: 2px;">"Buy Now" CTA</div>
+                  <div>Issue Policy</div>
+                  <div>Billing Account</div>
+                </div>
+              </div>
+
+              <div style="color: var(--slate-mid); font-size: 12px; display: flex; align-items: center; flex-shrink: 0;">→</div>
+
+              <div style="flex-shrink: 0; border: 1.5px solid var(--accent); border-radius: 6px; overflow: hidden;">
+                <div style="padding: 7px 10px; background: var(--accent-light); border-bottom: 1px dashed rgba(0,163,224,0.3); font-size: 10px; font-weight: 600; color: var(--navy); text-align: center; line-height: 1.4; white-space: nowrap;">Confirmation</div>
+                <div style="padding: 7px 10px; background: #FFF8E6; font-size: 9px; color: #7A5500; line-height: 1.5; white-space: nowrap;">
+                  <div style="font-weight: 700; margin-bottom: 2px;">Onboarding</div>
+                  <div>Policy active</div>
+                  <div>Receipt sent</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 12px; padding-left: 156px; font-size: 12px; color: var(--text-muted); line-height: 1.7;">Each user-facing step mapped to its backend dependencies — SDK triggers, Moneyball tokenization, BPO processing, and billing account creation. This layer directly constrained design decisions.</div>
+      </div>
+
+      <!-- ── Phase 3: Dev Validation ── -->
+      <div style="padding: 24px 32px; border-bottom: 1px solid var(--border); background: var(--white);">
+        <div style="display: flex; gap: 28px; align-items: flex-start;">
+          <div style="flex-shrink: 0; width: 128px;">
+            <div style="font-size: 36px; font-weight: 800; color: rgba(0,42,112,0.06); line-height: 1; margin-bottom: 4px;">03</div>
+            <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--navy); line-height: 1.5;">Dev<br>Validation</div>
+          </div>
+          <div style="flex: 1; display: flex; gap: 16px;">
+
+            <!-- Apple Pay card -->
+            <div style="flex: 1; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;">
+              <div style="background: var(--off-white); padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted);">SDK Test Harness</span>
+                <span style="background: #e6f9f0; color: #1a7a4a; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 10px; letter-spacing: 0.03em;">✓ Passed</span>
+              </div>
+              <div style="padding: 16px 20px;">
+                <div style="font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 14px;">Apple Pay v1.0.9</div>
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: #000; color: white; border-radius: 6px; padding: 9px 18px; font-size: 12px; font-weight: 600; margin-bottom: 14px; letter-spacing: 0.01em;">
+                  <span style="font-size: 14px; line-height: 1;">🍎</span>
+                  <span>Buy with Apple Pay</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); line-height: 1.8;">
+                  <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 3px;"><span style="color: #1a7a4a; font-weight: 700; font-size: 12px;">✓</span> Token stored &amp; passed</div>
+                  <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 3px;"><span style="color: #1a7a4a; font-weight: 700; font-size: 12px;">✓</span> Payment authorized</div>
+                  <div style="display: flex; align-items: center; gap: 7px;"><span style="color: #1a7a4a; font-weight: 700; font-size: 12px;">✓</span> Braintree gateway confirmed</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Google Pay card -->
+            <div style="flex: 1; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;">
+              <div style="background: var(--off-white); padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted);">SDK Test Harness</span>
+                <span style="background: #e6f9f0; color: #1a7a4a; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 10px; letter-spacing: 0.03em;">✓ Passed</span>
+              </div>
+              <div style="padding: 16px 20px;">
+                <div style="font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 14px;">Google Pay v1.0.4</div>
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: white; border: 1.5px solid #dadce0; border-radius: 6px; padding: 8px 16px; font-size: 12px; color: #3c4043; font-weight: 500; margin-bottom: 14px;">
+                  <span style="font-weight: 800; color: #4285F4; font-size: 13px; line-height: 1;">G</span>
+                  <span>Pay</span>
+                  <span style="background: #f1f3f4; border-radius: 3px; padding: 2px 7px; font-size: 10px; font-weight: 700; color: #3c4043; letter-spacing: 0.02em;">VISA •••• 0076</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); line-height: 1.8;">
+                  <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 3px;"><span style="color: #1a7a4a; font-weight: 700; font-size: 12px;">✓</span> Token stored &amp; passed</div>
+                  <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 3px;"><span style="color: #1a7a4a; font-weight: 700; font-size: 12px;">✓</span> Payment authorized</div>
+                  <div style="display: flex; align-items: center; gap: 7px;"><span style="color: #1a7a4a; font-weight: 700; font-size: 12px;">✓</span> Braintree gateway confirmed</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div style="margin-top: 12px; padding-left: 156px; font-size: 12px; color: var(--text-muted); line-height: 1.7;">Both SDKs tested end-to-end in a dev environment before any design was finalized — confirming tokenization, payment authorization, and Braintree gateway response handling worked as expected.</div>
+      </div>
+
+      <!-- ── Phase 4: Screen Implementation ── -->
+      <div style="padding: 24px 32px; background: var(--off-white);">
+        <div style="display: flex; gap: 28px; align-items: flex-start;">
+          <div style="flex-shrink: 0; width: 128px;">
+            <div style="font-size: 36px; font-weight: 800; color: rgba(0,42,112,0.06); line-height: 1; margin-bottom: 4px;">04</div>
+            <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--navy); line-height: 1.5;">Screen<br>Implementation</div>
+          </div>
+          <div style="flex: 1; display: flex; align-items: stretch; gap: 7px;">
+
+            <div style="flex: 1; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; background: white; min-width: 0;">
+              <div style="height: 3px; background: var(--navy);"></div>
+              <div style="padding: 9px 11px; border-bottom: 1px solid var(--border);">
+                <div style="font-size: 10px; font-weight: 700; color: var(--navy); margin-bottom: 1px; white-space: nowrap;">Payment Details</div>
+                <div style="font-size: 9px; color: var(--text-muted);">Select method (list)</div>
+              </div>
+              <div style="padding: 10px 11px; background: var(--off-white);">
+                <div style="height: 4px; background: var(--slate-light); border-radius: 2px; margin-bottom: 4px; width: 75%;"></div>
+                <div style="height: 4px; background: var(--slate-light); border-radius: 2px; margin-bottom: 8px; width: 50%;"></div>
+                <div style="height: 16px; background: rgba(0,163,224,0.2); border-radius: 3px;"></div>
+              </div>
+            </div>
+
+            <div style="color: var(--slate-mid); font-size: 13px; display: flex; align-items: center; flex-shrink: 0;">→</div>
+
+            <div style="flex: 1; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; background: white; min-width: 0;">
+              <div style="height: 3px; background: var(--navy);"></div>
+              <div style="padding: 9px 11px; border-bottom: 1px solid var(--border);">
+                <div style="font-size: 10px; font-weight: 700; color: var(--navy); margin-bottom: 1px; white-space: nowrap;">Wallet Sheet</div>
+                <div style="font-size: 9px; color: var(--text-muted);">Modal (native OS)</div>
+              </div>
+              <div style="padding: 10px 11px; background: var(--off-white);">
+                <div style="height: 18px; background: #000; border-radius: 3px; margin-bottom: 4px; opacity: 0.85;"></div>
+                <div style="height: 14px; background: #fff; border: 1px solid #dadce0; border-radius: 3px;"></div>
+              </div>
+            </div>
+
+            <div style="color: var(--slate-mid); font-size: 13px; display: flex; align-items: center; flex-shrink: 0;">→</div>
+
+            <div style="flex: 1; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; background: white; min-width: 0;">
+              <div style="height: 3px; background: var(--navy);"></div>
+              <div style="padding: 9px 11px; border-bottom: 1px solid var(--border);">
+                <div style="font-size: 10px; font-weight: 700; color: var(--navy); margin-bottom: 1px; white-space: nowrap;">Authorization</div>
+                <div style="font-size: 9px; color: var(--text-muted);">Payment confirmed</div>
+              </div>
+              <div style="padding: 10px 11px; background: var(--off-white);">
+                <div style="height: 4px; background: var(--slate-light); border-radius: 2px; margin-bottom: 4px; width: 80%;"></div>
+                <div style="height: 4px; background: var(--slate-light); border-radius: 2px; margin-bottom: 8px; width: 55%;"></div>
+                <div style="height: 16px; background: rgba(0,42,112,0.12); border-radius: 3px;"></div>
+              </div>
+            </div>
+
+            <div style="color: var(--slate-mid); font-size: 13px; display: flex; align-items: center; flex-shrink: 0;">→</div>
+
+            <div style="flex: 1; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; background: white; min-width: 0;">
+              <div style="height: 3px; background: var(--navy);"></div>
+              <div style="padding: 9px 11px; border-bottom: 1px solid var(--border);">
+                <div style="font-size: 10px; font-weight: 700; color: var(--navy); margin-bottom: 1px; white-space: nowrap;">Legal Forms</div>
+                <div style="font-size: 9px; color: var(--text-muted);">e-Sign (may be multiple)</div>
+              </div>
+              <div style="padding: 10px 11px; background: var(--off-white);">
+                <div style="height: 4px; background: var(--slate-light); border-radius: 2px; margin-bottom: 4px; width: 85%;"></div>
+                <div style="height: 4px; background: var(--slate-light); border-radius: 2px; margin-bottom: 4px; width: 65%;"></div>
+                <div style="height: 4px; background: var(--slate-light); border-radius: 2px; margin-bottom: 8px; width: 75%;"></div>
+                <div style="height: 13px; background: rgba(0,163,224,0.25); border-radius: 3px;"></div>
+              </div>
+            </div>
+
+            <div style="color: var(--slate-mid); font-size: 13px; display: flex; align-items: center; flex-shrink: 0;">→</div>
+
+            <div style="flex: 1; border: 1.5px solid var(--accent); border-radius: 7px; overflow: hidden; background: white; min-width: 0;">
+              <div style="height: 3px; background: var(--accent);"></div>
+              <div style="padding: 9px 11px; border-bottom: 1px solid rgba(0,163,224,0.2);">
+                <div style="font-size: 10px; font-weight: 700; color: var(--accent); margin-bottom: 1px; white-space: nowrap;">Review / Checkout</div>
+                <div style="font-size: 9px; color: var(--text-muted);">Confirm + complete</div>
+              </div>
+              <div style="padding: 10px 11px; background: var(--accent-light);">
+                <div style="height: 4px; background: rgba(0,163,224,0.25); border-radius: 2px; margin-bottom: 4px; width: 80%;"></div>
+                <div style="height: 4px; background: rgba(0,163,224,0.25); border-radius: 2px; margin-bottom: 8px; width: 55%;"></div>
+                <div style="height: 16px; background: var(--accent); border-radius: 3px; opacity: 0.5;"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div style="margin-top: 12px; padding-left: 156px; font-size: 12px; color: var(--text-muted); line-height: 1.7;">Technical constraints from phases 1–3 directly shaped the screen sequence — tokenization timing locked payment method selection to step one, and e-signature placement was resolved before authorization based on legal requirements.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── 6. KEY DESIGN DECISIONS ─── -->
+<section id="decisions" class="section">
+  <div class="section-label">Key Design Decisions</div>
+  <div class="section-title" style="margin-bottom: 32px;">Four decisions that shaped the integration.</div>
+  <div class="findings-list">
+    <div class="finding-item reveal">
+      <div class="finding-num">01</div>
+      <div class="finding-title">Minimal disruption over ideal-state redesign</div>
+      <div class="finding-body-inner">
+        The temptation was to fix everything at once — e-signature friction, payment sequencing, the entire checkout. Instead, we scoped tightly: add digital wallet support without touching what works. This required understanding backend constraints before sketching a single screen.<br><br>
+        <strong>Workshop finding:</strong> tokenization required a specific API call sequence that locked the placement of payment method selection — this single constraint shaped the entire integration.
+      </div>
+      <div class="dc-tag">Constraint-first Design</div>
+    </div>
+
+    <div class="finding-item reveal reveal-delay-1">
+      <div class="finding-num">02</div>
+      <div class="finding-title">Text-based wallet branding, no inline paymarks</div>
+      <div class="finding-body-inner">
+        Apple and Google require branded affordances. Initial designs embedded paymarks (logo icons) inline in the payment selector. Testing showed this created a 12% accuracy drop — users confused the logos with action items rather than payment identifiers.<br><br>
+        <strong>Solution:</strong> Use branded button language ("Buy with Apple Pay") without inline icon marks. Cleaner, compliant, and validated to outperform non-branded CTAs by 20%.
+      </div>
+      <div class="dc-tag">Branding vs. Clarity</div>
+    </div>
+
+    <div class="finding-item reveal reveal-delay-2">
+      <div class="finding-num">03</div>
+      <div class="finding-title">Error handling designed before happy path</div>
+      <div class="finding-body-inner">
+        Payment integrations between Allstate's gateway and third-party wallet systems create a new category of failure states. Fraud prevention, token expiry, and declined authorizations needed clear, recoverable error messages that respected both systems' requirements.<br><br>
+        <strong>Process:</strong> Mapped every failure mode with engineers in workshops before designing the success state — ensuring recovery flows were native to the checkout, not bolted on.
+      </div>
+      <div class="dc-tag">Error-first Approach</div>
+    </div>
+
+    <div class="finding-item reveal reveal-delay-3">
+      <div class="finding-num">04</div>
+      <div class="finding-title">Web-view first for mobile to hit the timeline</div>
+      <div class="finding-body-inner">
+        Native mobile development timelines made a full native implementation infeasible for MVP. A web-view integration approach let us ship to iOS and Android users without parallel native development sprints.<br><br>
+        <strong>Design implication:</strong> All error states and payment selectors were designed for constrained mobile viewports, with tap targets and information hierarchy optimized for thumb navigation.
+      </div>
+      <div class="dc-tag">Platform Strategy</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 7. DESIGN WORK — SCREEN BLOCKS ─── -->
+<div class="section-full">
+  <div class="section-inner">
+    <div class="section-label">Design Work</div>
+    <div class="section-title" style="margin-bottom: 48px;">From concepts to a constrained, tested solution.</div>
+    <div class="screens-container">
+
+      <div class="screen-block reveal">
+        <div class="screen-image">
+          <img src="/projects/allstate/images/Initial designs 2.jpg" alt="Initial design concepts for Apple/Google Pay integration" />
+        </div>
+        <div class="screen-content">
+          <h3>Initial Design Concepts</h3>
+          <p>Explored multiple approaches for payment selector integration, balancing Apple/Google Pay guidelines with Allstate's existing design system.</p>
+          <ul class="screen-highlights">
+            <li>Mapped 3 distinct layout approaches for payment method selection</li>
+            <li>Stress-tested how digital wallet buttons coexist with legacy card entry</li>
+            <li>Evaluated paymark placement options against Apple/Google compliance requirements</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="screen-block reverse reveal">
+        <div class="screen-image">
+          <img src="/projects/allstate/images/iterations 2.jpg" alt="Design iterations and refinement" />
+        </div>
+        <div class="screen-content">
+          <h3>Iterative Refinement</h3>
+          <p>Focused on optimizing user feedback mechanisms through visual and microcopy refinements. Collaborated with the design system team and engineering partners to ensure each iteration was technically feasible.</p>
+          <ul class="screen-highlights">
+            <li>Removed paymarks after discovering 12% accuracy drop in testing</li>
+            <li>Refined button copy to balance Apple/Google branding with Allstate's voice</li>
+            <li>3 full iteration rounds with engineering review between each</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="screen-block reveal">
+        <div class="screen-image">
+          <img src="/projects/allstate/images/case scenarios.jpg" alt="Additional user flows and case scenarios" />
+        </div>
+        <div class="screen-content">
+          <h3>Flow Mapping: All User Scenarios</h3>
+          <p>Mapped user flows for new customer journeys, service flows, and payment updates — ensuring consistent experience across web, mobile web-views, and native app contexts.</p>
+          <ul class="screen-highlights">
+            <li>New customer (FTU) with e-signature gate before payment authorization</li>
+            <li>Existing customer updating payment method in service flow</li>
+            <li>Failed payment and retry scenarios with wallet fallback</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="screen-block reverse reveal">
+        <div class="screen-image">
+          <img src="/projects/allstate/images/errors.jpg" alt="Error state designs" />
+        </div>
+        <div class="screen-content">
+          <h3>Error States &amp; Edge Cases</h3>
+          <p>Designed comprehensive error handling for the intersection of Allstate's payment gateway and third-party wallet systems — a new failure mode category that didn't exist in the previous checkout.</p>
+          <ul class="screen-highlights">
+            <li>Fraud-prevention messaging co-designed with engineering</li>
+            <li>Token expiry and declined authorization states with clear recovery paths</li>
+            <li>Wallet unavailable fallback to legacy payment method</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="screen-block reveal">
+        <div class="screen-image">
+          <img src="/projects/allstate/images/iphone_error.jpg" alt="Mobile error implementation on iPhone" />
+        </div>
+        <div class="screen-content">
+          <h3>Mobile Implementation</h3>
+          <p>All error states were optimized for native mobile web-view constraints — constrained viewport, thumb navigation, and no keyboard accessibility assumptions.</p>
+          <ul class="screen-highlights">
+            <li>Tap targets sized for mobile interaction patterns</li>
+            <li>Error messages legible at mobile text sizes without truncation</li>
+            <li>Quick recovery actions visible above fold on small viewports</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FINAL PAYMENT FLOW — full width capstone -->
+<div style="max-width: 1100px; margin: 0 auto; padding: 80px 40px 0;">
+  <div class="section-label">Final Payment Architecture</div>
+  <div class="section-title" style="margin-bottom: 32px;">The integrated flow, without disrupting the existing checkout.</div>
+  <div class="reveal" style="border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 24px rgba(0,42,112,0.07);">
+    <img src="/projects/allstate/images/updated payment flow.jpg" alt="Final payment flow architecture" style="width: 100%; height: auto; display: block;" />
+    <div style="padding: 16px 24px; background: var(--off-white); border-top: 1px solid var(--border);">
+      <span style="font-size: 12px; color: var(--text-muted);">Final payment flow — Apple/Google Pay integrated without disrupting existing checkout sequencing or legal requirements</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── 8. USABILITY TESTING ─── -->
+<section id="testing" class="section">
+  <div class="section-label">Usability Testing &amp; Validation</div>
+  <div class="section-title">Heatmap analysis surfaced the paymarks decision.</div>
+
+  <div class="heatmap-grid" style="margin-bottom: 32px;">
+    <div class="heatmap-block reveal">
+      <img src="/projects/allstate/images/checkout_nopaymark_heatmap.jpg" alt="Checkout page heatmap" />
+      <div class="heatmap-block-caption">
+        <strong>Checkout Page — Attention Distribution</strong>
+        <span>Without paymarks, user attention concentrated on the payment selector CTA — reducing misclicks on adjacent legal text</span>
+      </div>
+    </div>
+    <div class="heatmap-block reveal reveal-delay-1">
+      <img src="/projects/allstate/images/payment_nopaymark_heatmap.jpg" alt="Payment selector heatmap" />
+      <div class="heatmap-block-caption">
+        <strong>Payment Selector — Interaction Hotspots</strong>
+        <span>Users fixated on branded button text rather than inline icons, confirming the no-paymark design direction</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal" style="border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 32px; box-shadow: 0 4px 24px rgba(0,42,112,0.07);">
+    <img src="/projects/allstate/images/results_paymark.jpg" alt="Test results — impact of design changes" style="width: 100%; height: auto; display: block;" />
+    <div style="padding: 16px 24px; background: var(--off-white); border-top: 1px solid var(--border);">
+      <span style="font-size: 12px; color: var(--text-muted);">Test results — branded buttons vs. no-paymark design across task success and user confidence metrics</span>
+    </div>
+  </div>
+
+  <!-- KEY INSIGHT — lives here, where it was discovered -->
+  <div class="insight-callout reveal" style="margin-bottom: 32px;">
+    <div class="insight-label">Key Insight</div>
+    <div class="insight-body">"Branded payment buttons (e.g., 'Buy with Apple Pay') outperformed non-branded CTAs by 20% — but paymarks confused users when embedded inline in the selector, dropping accuracy by 12%."</div>
+  </div>
+
+  <div class="reveal" style="background: var(--off-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 32px;">
+    <div style="font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Testing Takeaway</div>
+    <div style="font-size: 15px; color: var(--text-body); line-height: 1.8;">
+      Branded payment buttons significantly outperformed non-branded CTAs by <strong style="color: var(--navy);">20% in task success</strong>. Removing inline paymarks improved accuracy by <strong style="color: var(--navy);">12%</strong> — confirming that users prefer text-based branded affordances over embedded icons, particularly in insurance checkout flows where trust signals matter more than visual shorthand.
+    </div>
+  </div>
+</section>
+
+<!-- ─── 9. OUTCOMES & IMPACT ─── -->
+<div class="section-full" id="outcomes">
+  <div class="section-inner">
+    <div class="section-label" style="color: var(--accent);">Outcomes &amp; Impact</div>
+    <div class="section-title" style="margin-bottom: 48px;">Shipped in 3 months. Built the case for what comes next.</div>
+
+    <!-- STATS — earned by the story now -->
+    <div class="stats-row" style="margin-bottom: 48px;">
+      <div class="stat-card reveal">
+        <div class="stat-num">92%</div>
+        <div class="stat-label">Transaction success rate</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-num">6/7</div>
+        <div class="stat-label">User confidence rating</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-num">50%</div>
+        <div class="stat-label">Fewer steps for wallet users</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <div class="stat-num">25%</div>
+        <div class="stat-label">Expected time reduction</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <div class="stat-num">&lt;3mo</div>
+        <div class="stat-label">MVP to production</div>
+      </div>
+    </div>
+
+    <!-- PRIMARY WIN -->
+    <div class="reveal" style="background: var(--white); border-radius: var(--radius); padding: 40px; border: 2px solid var(--navy); margin-bottom: 32px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;">
+        <div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 16px;">What we proved</div>
+          <div style="font-size: 22px; font-weight: 500; color: var(--navy); line-height: 1.3; margin-bottom: 20px;">
+            Rapid research cycles validated the design before launch — preventing a sprint of post-release rework.
+          </div>
+          <div style="font-size: 15px; line-height: 1.8; color: var(--text-body);">
+            The paymarks finding alone — discovered in testing, not after launch — saved the team an estimated sprint of redesign. The ROI of short research cycles was concrete and measurable.
+          </div>
+        </div>
+        <div style="border-left: 2px solid var(--border); padding-left: 32px;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 16px;">Strategic Impact</div>
+          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+            <li style="font-size: 13px; color: var(--text-body); padding-left: 20px; position: relative; line-height: 1.6;">
+              <span style="position: absolute; left: 0; color: var(--accent);">✓</span>
+              Exposed design system limitations for scaling 3rd-party integrations (PayPal, Visa)
+            </li>
+            <li style="font-size: 13px; color: var(--text-body); padding-left: 20px; position: relative; line-height: 1.6;">
+              <span style="position: absolute; left: 0; color: var(--accent);">✓</span>
+              Sparked leadership discussion about overhauling the payment gateway for future flexibility
+            </li>
+            <li style="font-size: 13px; color: var(--text-body); padding-left: 20px; position: relative; line-height: 1.6;">
+              <span style="position: absolute; left: 0; color: var(--accent);">✓</span>
+              Mentored a junior designer in cross-functional UX strategy
+            </li>
+            <li style="font-size: 13px; color: var(--text-body); padding-left: 20px; position: relative; line-height: 1.6;">
+              <span style="position: absolute; left: 0; color: var(--accent);">✓</span>
+              Demonstrated ROI of rapid research cycles — findings validated before launch, not after
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTCOME CARDS -->
+    <div class="outcomes-grid" style="margin-bottom: 32px;">
+      <div class="outcome-card reveal">
+        <div class="outcome-card-title">New payment method, live</div>
+        <div class="outcome-card-body">Launched Apple/Google Pay to Allstate's web and mobile web-view checkout with 92% task success rate and 90% usability success rate in post-launch monitoring.</div>
+      </div>
+      <div class="outcome-card reveal reveal-delay-1">
+        <div class="outcome-card-title">User confidence maintained</div>
+        <div class="outcome-card-body">Achieved 6/7 user confidence rating for digital wallet transactions — on par with existing credit card checkout — despite adding a new payment system and authentication layer.</div>
+      </div>
+      <div class="outcome-card reveal reveal-delay-2">
+        <div class="outcome-card-title">Design system conversations unlocked</div>
+        <div class="outcome-card-body">The project exposed design system limitations for scaling 3rd-party integrations. Findings were presented to leadership and sparked active conversations about payment gateway modernization.</div>
+      </div>
+      <div class="outcome-card reveal reveal-delay-3">
+        <div class="outcome-card-title">Research ROI demonstrated</div>
+        <div class="outcome-card-body">Rapid research cycles (competitive audit → workshops → usability testing) prevented post-launch rework. The paymarks finding alone saved an estimated sprint of redesign.</div>
+      </div>
+    </div>
+
+    <!-- FUTURE ROADMAP -->
+    <div class="reveal" style="border: 1px solid var(--border); border-left: 3px solid var(--navy); border-radius: var(--radius); padding: 28px 32px; background: var(--white);">
+      <div style="font-size: 13px; font-weight: 700; color: var(--slate); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;">Future Roadmap</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div>
+          <div style="font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 8px;">Design System Update</div>
+          <div style="font-size: 14px; color: var(--text-body); line-height: 1.65;">Advocate for a design system update to support 3rd-party schema — branded elements, error states, and token-based UI patterns for future integrations like PayPal and Venmo.</div>
+        </div>
+        <div>
+          <div style="font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 8px;">Payment Flow Overhaul</div>
+          <div style="font-size: 14px; color: var(--text-body); line-height: 1.65;">Explore phased overhaul of payment flows to reduce e-signature friction for first-time users — the constraint that limited this project's scope but consistently surfaced as the top pain point.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="footer-inner">
+    <div>
+      <a href="/">Joseph Grgic</a> &nbsp;·&nbsp; Lead UX Designer
+    </div>
+    <div style="display: flex; gap: 24px;">
+      <a href="/work">All Work</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Read progress bar
+  const bar = document.getElementById('read-progress');
+  window.addEventListener('scroll', () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (window.scrollY / total * 100) + '%';
+  });
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Active nav link
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -40% 0px' });
+  sections.forEach(s => navObserver.observe(s));
+</script>
+</body>
+</html>

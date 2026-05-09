@@ -1,0 +1,17 @@
+[
+  {
+    "id": "product-design",
+    "title": "Product Design & Strategy",
+    "description": "Applying human factors methodology to the full design cycle for complex digital systems"
+  },
+  {
+    "id": "ux-research",
+    "title": "UX Research & Behavioral Insights",
+    "description": "Evidence-based research leveraging behavioral economics and cognitive theory to inform design decisions"
+  },
+  {
+    "id": "information-architecture",
+    "title": "Information Architecture & Complex Tooling",
+    "description": "Designing systems that reduce cognitive load and improve learnability in complex environments"
+  }
+]

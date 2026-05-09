@@ -1,0 +1,48 @@
+{
+  "name": "Joseph Everett Grgic",
+  "title": "Senior UX Researcher & Designer",
+  "location": "Marseille, France",
+  "experience": "14 years",
+  "education": "M.S. in Human Factors",
+  "bio": "Senior UX Professional and Human Factors specialist with extensive experience at major tech companies. Positioned at the intersection of cognitive psychology and product strategy, engineering the mental models that make products work.",
+  "expertise": [
+    "Evidence-Based Design",
+    "Behavioral Economics",
+    "Cognitive Theory",
+    "Cognitive Load Reduction",
+    "Information Architecture",
+    "UX Research",
+    "User Testing",
+    "Complex Tooling Design"
+  ],
+  "specializations": [
+    "Reducing cognitive load in complex environments",
+    "Improving learnability in FinTech platforms",
+    "Industrial dashboard design",
+    "Trust and confidence in AI systems"
+  ],
+  "threePillars": [
+    "Applying human factors science to interface design",
+    "Prioritizing ethical strategy that balances business objectives with transparent, respectful user experiences",
+    "Drawing on international tech experience while building presence in the European market"
+  ],
+  "currentFocus": "Research on trust and confidence between humans and AI systems. Applies CASA (Computers Are Social Actors) paradigm to explore how design cues influence user perception of AI.",
+  "languages": [
+    {
+      "language": "English",
+      "level": "Native"
+    },
+    {
+      "language": "French",
+      "level": "B1"
+    }
+  ],
+  "companies": [
+    "Google",
+    "Meta",
+    "McDonald's",
+    "Allstate",
+    "Verizon",
+    "Cigna"
+  ]
+}

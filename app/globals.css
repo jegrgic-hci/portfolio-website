@@ -1,0 +1,220 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design Tokens ──────────────────────────────────────────────────────── */
+:root {
+  /* Color */
+  --k-bg:             #F7F7F7;
+  --k-surface:        #FFFFFF;
+  --k-text-primary:   #1A1A1A;
+  --k-text-secondary: #6B6B6B;
+  --k-text-muted:     #A0A0A0;
+  --k-teal:           #7A9393;
+  --k-teal-dark:      #4A6363;
+  --k-border-heavy:   #1A1A1A;
+  --k-border-mid:     #C8C8C8;
+  --k-border-light:   #E8E8E8;
+  --k-red:            #BD3E31;
+  --k-green:          #2D6A4F;
+
+  /* Spacing — 8px base scale */
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  24px;
+  --s-6:  32px;
+  --s-7:  48px;
+  --s-8:  64px;
+  --s-9:  96px;
+  --s-10: 128px;
+
+  /* Layout */
+  --content-max: 1080px;
+  --content-pad: 40px;
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--k-teal);
+  outline-offset: 3px;
+}
+
+body {
+  line-height: 1.7;
+  color: var(--k-text-primary);
+  background-color: var(--k-surface);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Form inputs ────────────────────────────────────────────────────────── */
+input,
+textarea,
+select {
+  outline: none;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--k-border-heavy) !important;
+  outline: none;
+}
+
+/* ── Nav links ──────────────────────────────────────────────────────────── */
+.nav-link {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--k-text-secondary);
+  text-decoration: none;
+  padding: var(--s-2) var(--s-3);
+  transition: color 150ms ease;
+}
+.nav-link:hover {
+  color: var(--k-text-primary);
+}
+
+.footer-link {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--k-text-secondary);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+.footer-link:hover { color: var(--k-text-primary); }
+
+/* ── Section label ──────────────────────────────────────────────────────── */
+.section-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--s-6);
+  padding-bottom: var(--s-4);
+  border-bottom: 1px solid var(--k-border-heavy);
+}
+
+.section-label-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--k-text-primary);
+  white-space: nowrap;
+}
+
+/* ── Cards ──────────────────────────────────────────────────────────────── */
+.je-card {
+  background: var(--k-surface);
+  border: 1px solid var(--k-border-light);
+  transition: border-color 150ms ease;
+}
+.je-card:hover { border-color: var(--k-border-heavy); }
+
+.je-research-card {
+  background: var(--k-surface);
+  border: 1px solid var(--k-border-light);
+  transition: border-color 150ms ease;
+}
+.je-research-card:hover { border-color: var(--k-border-heavy); }
+
+/* ── Card links ─────────────────────────────────────────────────────────── */
+.je-card-link,
+.je-research-link {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--k-text-primary);
+  border: 1px solid var(--k-border-heavy);
+  padding: var(--s-2) var(--s-4);
+  display: inline-block;
+  text-decoration: none;
+  transition: background 150ms ease, color 150ms ease;
+}
+.je-card-link:hover,
+.je-research-link:hover {
+  background: var(--k-text-primary);
+  color: var(--k-surface);
+}
+
+/* ── Hero interactions ──────────────────────────────────────────────────── */
+.hero-btn:hover {
+  background: var(--k-text-primary) !important;
+  border-color: var(--k-text-primary) !important;
+  color: var(--k-surface) !important;
+}
+
+.hero-btn-cta:hover {
+  background: var(--k-teal-dark) !important;
+  border-color: var(--k-teal-dark) !important;
+}
+
+.hero-chip:hover {
+  background: var(--k-text-primary) !important;
+  border-color: var(--k-text-primary) !important;
+  color: var(--k-surface) !important;
+}
+
+/* ── Writing rows ───────────────────────────────────────────────────────── */
+.je-writing-row:hover {
+  background: var(--k-bg);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  :root { --content-pad: 24px; }
+  .je-grid-2        { grid-template-columns: 1fr !important; }
+  .je-research-grid { grid-template-columns: 1fr !important; }
+  .je-writings-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--k-bg); }
+::-webkit-scrollbar-thumb { background: var(--k-border-mid); }
+::-webkit-scrollbar-thumb:hover { background: var(--k-teal); }

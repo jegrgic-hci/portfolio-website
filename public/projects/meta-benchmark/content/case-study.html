@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta CM Benchmark Study | Joseph Grgic</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       var(--k-text-primary);
+      --slate:      var(--k-text-secondary);
+      --slate-mid:  var(--k-text-muted);
+      --slate-light:var(--k-border-mid);
+      --slate-bg:   rgba(200,200,200,0.12);
+      --white:      var(--k-surface);
+      --off-white:  var(--k-bg);
+      --text-body:  var(--k-text-secondary);
+      --text-muted: var(--k-text-muted);
+      --border:     var(--k-border-light);
+      --accent:     #B66060;
+      --radius:     0px;
+      --nav-h:      56px;
+
+      /* Case study spacing — aligned with Kronos 8px scale */
+      --s-1:  4px;
+      --s-2:  8px;
+      --s-3:  12px;
+      --s-4:  16px;
+      --s-5:  24px;
+      --s-6:  32px;
+      --s-7:  48px;
+      --s-8:  64px;
+      --s-9:  96px;
+
+      /* Case study custom spacing (off-scale, scoped to this case study) */
+      --case-px-20: 20px;  /* Mobile/edge padding */
+      --case-px-28: 28px;  /* Card internal padding */
+      --case-px-40: 40px;  /* Horizontal padding */
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'IBM Plex Sans', 'Inter', -apple-system, sans-serif;
+      background: var(--white);
+      color: var(--navy);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    /* ─── STICKY NAV ─── */
+    #site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      gap: 24px;
+    }
+
+    .nav-brand {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-brand span { color: var(--slate); font-weight: 400; }
+
+    .nav-links {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex: 1;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+
+    .nav-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--slate);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .nav-link:hover { background: var(--slate-bg); color: var(--navy); }
+    .nav-link.active { background: var(--navy); color: var(--white); }
+
+    #read-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--slate);
+      z-index: 300;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      padding: 96px 40px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .hero-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate);
+      background: var(--slate-bg);
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+    .hero-date {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .hero-title {
+      font-size: clamp(28px, 4vw, 56px);
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--navy);
+      max-width: 900px;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .hero-subtitle {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 32px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+    .hero-meta-group { display: flex; flex-direction: column; gap: 4px; }
+    .hero-meta-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+    }
+    .hero-meta-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--navy);
+    }
+
+    .hero-disclaimer {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+      max-width: 560px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─── SECTIONS ─── */
+    .section {
+      padding: 80px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section + .section { padding-top: 60px; }
+
+    .section-full {
+      padding: 80px 40px;
+      background: var(--slate-bg);
+    }
+    .section-full .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--k-text-muted);
+      margin-bottom: 32px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--k-border-heavy);
+    }
+
+    .section-title {
+      font-size: clamp(28px, 3.5vw, 48px);
+      font-weight: 500;
+      line-height: 1.2;
+      color: var(--navy);
+      margin-bottom: 32px;
+      margin-top: 0;
+      letter-spacing: -0.01em;
+      clear: both;
+    }
+
+    .analysis-subsection {
+      clear: both;
+      margin-bottom: 64px;
+    }
+
+    .analysis-subsection p {
+      margin-bottom: 24px;
+    }
+
+    /* ─── CARDS ─── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: all 0.2s;
+    }
+    .card:hover {
+      border-color: var(--slate);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+    .card-body {
+      font-size: 14px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+
+    /* ─── STAT COUNTERS ─── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      margin: 48px 0;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 56px;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .stat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-body);
+    }
+    .stat-context {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* ─── SECTION BREAKER ─── */
+    .section-breaker {
+      width: 100%;
+      padding: 120px 40px;
+      background: var(--slate);
+      color: var(--white);
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin: 80px 0;
+    }
+
+    .breaker-title {
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 500;
+      line-height: 1.2;
+      max-width: 800px;
+      letter-spacing: -0.01em;
+    }
+
+    /* ─── INFO ROWS ─── */
+    .info-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 40px;
+    }
+
+    .info-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+      align-self: flex-start;
+    }
+
+    .info-content {
+      font-size: 16px;
+      color: var(--text-body);
+      line-height: 1.7;
+    }
+
+    /* ─── CHARTS ─── */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      margin: 48px 0;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-container canvas {
+      max-height: 400px;
+      flex-grow: 1;
+    }
+
+    .chart-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 24px;
+    }
+
+    /* ─── ACCORDION ─── */
+    .accordion {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .accordion-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .accordion-item:last-child {
+      border-bottom: none;
+    }
+
+    .accordion-header {
+      padding: 24px;
+      background: var(--off-white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s;
+    }
+    .accordion-header:hover {
+      background: var(--slate-bg);
+    }
+
+    .accordion-number {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .accordion-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+      flex: 1;
+    }
+
+    .accordion-toggle {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+
+    .accordion-content {
+      padding: 0 24px;
+      background: var(--white);
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .accordion-item.active .accordion-content {
+      max-height: 2000px;
+      padding: 24px;
+    }
+
+    .accordion-item.active .accordion-toggle {
+      transform: rotate(180deg);
+    }
+
+    .accordion-item:not(.active) .accordion-content {
+      padding: 0 24px;
+    }
+
+    .accordion-body {
+      color: var(--text-body);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .accordion-body h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      margin: 16px 0 8px;
+    }
+
+    .accordion-body p {
+      margin-bottom: 12px;
+    }
+
+    /* ─── REVEAL ANIMATION ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── FOOTER ─── */
+    #footer {
+      padding: 64px 40px;
+      background: var(--off-white);
+      border-top: 1px solid var(--border);
+      margin-top: 80px;
+    }
+
+    .footer-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer-link {
+      font-size: 13px;
+      color: var(--navy);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .footer-link:hover {
+      color: var(--slate);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      #site-nav {
+        padding: 0 20px;
+        gap: 12px;
+      }
+
+      .nav-link {
+        padding: 4px 10px;
+        font-size: 11px;
+      }
+
+      #hero, .section {
+        padding: 60px 20px;
+      }
+
+      .hero-title {
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .info-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .stats-grid {
+        gap: 24px;
+        margin: 32px 0;
+      }
+
+      .stat-num {
+        font-size: 40px;
+      }
+
+      .accordion-header {
+        padding: 16px;
+      }
+
+      .section-breaker {
+        padding: 80px 20px;
+        margin: 60px 0;
+      }
+
+      .breaker-title {
+        font-size: 32px;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .chart-container {
+        padding: 16px;
+        margin: 32px 0;
+      }
+
+      .analysis-subsection {
+        margin-bottom: 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div id="read-progress"></div>
+
+<!-- NAV -->
+<nav id="site-nav">
+  <a href="/" class="nav-brand">Joseph Grgic <span>/ Meta CM Research</span></a>
+  <div class="nav-links">
+    <a href="#summary" class="nav-link">Summary</a>
+    <a href="#metrics" class="nav-link">Metrics</a>
+    <a href="#background" class="nav-link">Background</a>
+    <a href="#methodology" class="nav-link">Methodology</a>
+    <a href="#analysis" class="nav-link">Analysis</a>
+    <a href="#insights" class="nav-link">Insights</a>
+    <a href="#conclusions" class="nav-link">Conclusions</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-eyebrow">
+    <span class="hero-tag">UX Research</span>
+    <span class="hero-date">2023</span>
+  </div>
+  <h1 class="hero-title">Seller Experience Usability Analysis</h1>
+  <p class="hero-subtitle">Meta Commerce Manager Benchmark Study</p>
+
+  <div class="hero-meta">
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Company</div>
+      <div class="hero-meta-value">Meta</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Role</div>
+      <div class="hero-meta-value">Principal UX Researcher</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Participants</div>
+      <div class="hero-meta-value">33 Sellers</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Study Type</div>
+      <div class="hero-meta-value">Unmoderated Usability Test</div>
+    </div>
+  </div>
+
+  <div class="hero-disclaimer">
+    To comply with my confidentiality agreement I have omitted and appropriated confidential information. These findings are a reinterpretation of the original research.
+  </div>
+</section>
+
+<!-- PROBLEM DEFINITION SECTION -->
+<section class="section-full">
+  <div class="section-inner">
+    <h2 class="section-label">Research Question</h2>
+    <div style="max-width: 800px;">
+      <p style="font-size: 18px; font-weight: 500; color: var(--navy); line-height: 1.8; margin-bottom: 24px;">
+        <strong>Primary Question:</strong> What usability barriers prevent sellers from efficiently managing their shops in Commerce Manager, and how do these barriers vary across core task types?
+      </p>
+      <p style="font-size: 15px; color: var(--text-body); line-height: 1.8; margin-bottom: 20px;">
+        <strong>Hypotheses:</strong>
+      </p>
+      <ul style="font-size: 15px; color: var(--text-body); line-height: 1.8; margin-left: 20px; margin-bottom: 20px;">
+        <li>H1: Information architecture issues (not task complexity) are the primary barrier</li>
+        <li>H2: Sellers will perceive overall system difficulty higher than individual task difficulty</li>
+        <li>H3: Navigation friction will be consistent across task types, suggesting systemic IA problem</li>
+      </ul>
+      <p style="font-size: 15px; color: var(--text-body); line-height: 1.8;">
+        <strong>Business Context:</strong> Commerce Manager is experiencing seller dissatisfaction (NPS declining, support volume increasing). Understanding usability pain points will inform 2023 redesign roadmap and prioritize improvements that increase seller retention and transaction volume.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- SUMMARY SECTION -->
+<section id="summary" class="section-full">
+  <div class="section-inner">
+    <h2 class="section-label">Summary</h2>
+    <p style="font-size: 18px; color: var(--navy); line-height: 1.8; max-width: 800px;">
+      The primary usability challenges within Commerce Manager (CM) stem from poor findability and discoverability, critically impacting sellers' ability to manage their shops efficiently. Key insights reveal that <strong>52% of users perceive CM as difficult to navigate</strong>, with sellers averaging 3x more page views than necessary per task and a 12% abandonment rate. High-complexity tasks like tagging products in posts (30% abandonment) and creating ads (24% abandonment) underscore systemic navigation and clarity issues, while simpler tasks (e.g., adding products) succeeded with minimal friction. Qualitative feedback emphasizes confusion around inconsistent labeling, buried features, and unclear information architecture.
+    </p>
+  </div>
+</section>
+
+<!-- METRICS SECTION -->
+<section id="metrics" class="section">
+  <h2 class="section-label">Key Metrics</h2>
+
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-num">52<span style="font-size: 0.7em;">%</span></div>
+      <div class="stat-label">Users find CM difficult to navigate</div>
+      <div class="stat-context">Self-reported difficulty rating</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">12<span style="font-size: 0.7em;">%</span></div>
+      <div class="stat-label">Average task abandonment rate</div>
+      <div class="stat-context">Sellers unable to complete tasks</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">3<span style="font-size: 0.7em;">x</span></div>
+      <div class="stat-label">More page views than ideal path</div>
+      <div class="stat-context">Navigation friction indicator</div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">Task Abandonment Rates</div>
+    <canvas id="abandonmentChart"></canvas>
+  </div>
+</section>
+
+<!-- KEY OUTCOMES -->
+<section class="section-full" style="margin-top: 60px;">
+  <div class="section-inner">
+    <h2 class="section-label">Key Outcomes & Recommendations</h2>
+
+    <div style="max-width: 900px;">
+      <h3 style="font-size: 20px; font-weight: 600; color: var(--navy); margin-bottom: 24px;">Information Architecture Overhaul</h3>
+      <p style="font-size: 15px; color: var(--text-body); line-height: 1.8; margin-bottom: 20px;">Reorganize content hierarchy and standardize terminology to reduce cognitive load. Create a clear and consistent organization structure where the relationship between Commerce Manager information, features, and functionality is intuitive.</p>
+
+      <h3 style="font-size: 20px; font-weight: 600; color: var(--navy); margin-bottom: 24px; margin-top: 32px;">UI Clarity & Information Scent</h3>
+      <p style="font-size: 15px; color: var(--text-body); line-height: 1.8; margin-bottom: 20px;">Prioritize salient feature placement and intuitive navigation paths. Improve labeling and content design to provide strong information scent on where to find content and functionality.</p>
+
+      <h3 style="font-size: 20px; font-weight: 600; color: var(--navy); margin-bottom: 24px; margin-top: 32px;">Critical Task Optimization</h3>
+      <p style="font-size: 15px; color: var(--text-body); line-height: 1.8; margin-bottom: 20px;">Focus on high-abandonment tasks (tagging products, discount creation) with guided wizards and contextual tooltips to reduce complexity and provide progressive disclosure of advanced options.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BACKGROUND SECTION -->
+<section id="background" class="section">
+  <h2 class="section-label">Background</h2>
+  <h3 class="section-title">Context & Objectives</h3>
+
+  <div class="info-rows">
+    <div class="info-row">
+      <div class="info-label">Research Evolution</div>
+      <div class="info-content">
+        <strong>H2 2022 - UMU-Lite Study:</strong> Quick baseline study (N=18) found that sellers struggled with task completion but didn't deeply analyze why. Identified "navigation difficulty" as a theme but lacked specificity.<br><br>
+        <strong>Q1 2023 - This Study (Deeper Dive):</strong> Expanded to 33 participants with more rigorous methodology (quantitative + systematic qualitative coding). Goal: Understand root causes of navigation issues and prioritize fixes for 2023 IA redesign.<br><br>
+        <strong>Progression:</strong> UMU-Lite → This Study → (Planned) Iterative Testing of Redesigns → Post-Launch Validation Study
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Context</div>
+      <div class="info-content">
+        Sellers report decreasing satisfaction with Commerce Manager over the past year. Support volume for "how do I..." questions has increased 34% YoY. This study provides the evidence base needed to justify and prioritize the Q2-Q3 2023 IA overhaul.
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Stakeholders</div>
+      <div class="info-content">
+        <strong>Quality WS8:</strong> Shops center for product quality working to measure and reduce quality gaps in user experience. <br><br>
+        <strong>Seller Interface Team:</strong> Product team focused on improvement and organization of seller tools and the seller journey.
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Key Objectives</div>
+      <div class="info-content">
+        <strong>1. Benchmarking:</strong> Collect usability measurements to understand if design and engineering work improves user experience over time.<br><br>
+        <strong>2. Issue Identification:</strong> Locate specific bugs and UX defects that engineering or design can resolve.<br><br>
+        <strong>3. Prioritization:</strong> Size problems identified in core tasks to understand which have the greatest impact on user experience.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY SECTION -->
+<section id="methodology" class="section-full">
+  <div class="section-inner">
+    <h2 class="section-label">Methodology</h2>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Participants</div>
+        <div class="card-title">33 Sellers</div>
+        <div class="card-body">
+          21 onsite sellers in initial session<br>
+          12 offsite sellers in follow-up<br><br>
+          Mix of small, medium, and large sellers<br>
+          1P and Shopify sellers
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Study Tool</div>
+        <div class="card-title">UserZoom</div>
+        <div class="card-body">
+          Unmoderated usability test<br><br>
+          Data collected:<br>
+          • Time on task<br>
+          • Page views<br>
+          • Click patterns<br>
+          • Screen recordings
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Study Design</div>
+        <div class="card-title">Task-Based</div>
+        <div class="card-body">
+          10 core tasks in Commerce Manager<br><br>
+          Post-task surveys:<br>
+          • Difficulty rating (1-5)<br>
+          • Confidence rating (1-5)<br>
+          • Open-ended feedback
+        </div>
+      </div>
+    </div>
+
+    <div class="info-rows" style="margin-top: 48px;">
+      <div class="info-row">
+        <div class="info-label">Quantitative Analysis</div>
+        <div class="info-content">
+          Time on task and click data cleaned using ±2.57σ outlier detection (targeting middle 99% of distribution). Due to high variability between participants (up to 25min difference, 162 clicks variance), these metrics were excluded from primary analysis. <strong>Page views</strong> selected as proxy metric, compared against documented ideal task paths. Abandonment and Likert-scale ratings (difficulty, confidence) included regardless of task success status.
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-label">Qualitative Analysis</div>
+        <div class="info-content">
+          <strong>Coding Process:</strong> Two researchers independently reviewed and coded 18 task recordings (45% sample) using open coding approach. Initial codebook identified 12 themes. Researchers then discussed disagreements and refined to 7 primary themes with operational definitions.<br><br>
+          <strong>Reliability:</strong> Initial inter-rater agreement: 81% on first pass, 100% post-discussion. Full dataset (33 participants) then coded using final codebook by lead researcher.<br><br>
+          <strong>Themes Generated:</strong><br>
+          • <strong>Findability</strong> (n=67 mentions, 28 participants): Sellers unable to locate features or entry points<br>
+          • <strong>Navigation Confusion</strong> (n=43 mentions, 24 participants): Unclear how to move between related features<br>
+          • <strong>Unclear Terminology</strong> (n=31 mentions, 19 participants): Ambiguous labels (offer vs. discount)<br>
+          • <strong>Feature Complexity</strong> (n=24 mentions, 18 participants): Too many options, overwhelming UI<br>
+          • <strong>Lack of Guidance</strong> (n=19 mentions, 14 participants): Missing instructions, no onboarding<br>
+          • <strong>Inconsistent Mental Model Match</strong> (n=16 mentions, 12 participants): Design doesn't match seller expectations<br>
+          • <strong>Technical Barriers</strong> (n=8 mentions, 6 participants): Pixel setup, account configuration issues
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STUDY LIMITATIONS SECTION -->
+<section class="section-full" style="margin-top: 60px;">
+  <div class="section-inner">
+    <h2 class="section-label">Study Limitations & Implications</h2>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">⚠ Experimental Design</div>
+        <div class="card-title">Inconsistent Task Starting Points</div>
+        <div class="card-body">
+          <strong>Issue:</strong> After first task, sellers were not reset to a standard starting point (e.g., CM homepage). This created confound when analyzing page views and time metrics.<br><br>
+          <strong>Impact:</strong> Time and click variance likely inflated; page views more reliable.<br><br>
+          <strong>Future:</strong> Control entry point for each task.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">⚠ Sample Composition</div>
+        <div class="card-title">Onsite/Offsite Bias</div>
+        <div class="card-body">
+          <strong>Issue:</strong> 63% onsite (n=21), 37% offsite (n=12). Onsite sellers may be more tech-savvy or more motivated (selected for in-office study).<br><br>
+          <strong>Impact:</strong> Results may underestimate usability friction for less technical seller segment.<br><br>
+          <strong>Future:</strong> Recruit balanced sample; compare cohorts separately.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">⚠ Tool Limitations</div>
+        <div class="card-title">UserZoom Platform Constraints</div>
+        <div class="card-body">
+          <strong>Issue:</strong> High variability in time/click metrics; platform restrictions on task setup (e.g., unsupervised, no clarifying questions).<br><br>
+          <strong>Impact:</strong> Cannot fully understand context of navigation (Are sellers lost? Or being thorough?).<br><br>
+          <strong>Future:</strong> Pair with moderated follow-ups or session replay analysis.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">⚠ Generalizability</div>
+        <div class="card-title">Single Platform, Single Market</div>
+        <div class="card-body">
+          <strong>Issue:</strong> Study conducted only in US, only Shopify + 1P sellers. Meta operates globally; seller needs vary by market.<br><br>
+          <strong>Impact:</strong> Findings may not generalize to APAC, EMEA sellers with different languages/contexts.<br><br>
+          <strong>Future:</strong> Plan regional follow-up studies.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">⚠ Qualitative Depth</div>
+        <div class="card-title">Limited Contextual Data</div>
+        <div class="card-body">
+          <strong>Issue:</strong> Unmoderated study = no follow-up questions. Can't ask "why" when seller struggles.<br><br>
+          <strong>Impact:</strong> Identified problems but not always root causes. ("CM is confusing" ≠ understanding why).<br><br>
+          <strong>Future:</strong> Follow abandonment with moderated interviews.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">⚠ Business Context</div>
+        <div class="card-title">Selling Motivation Unknown</div>
+        <div class="card-body">
+          <strong>Issue:</strong> No data on seller goals, revenue dependence, or motivation. Professional seller ≠ hobby seller.<br><br>
+          <strong>Impact:</strong> Unknown if findability issues equally matter to all seller types.<br><br>
+          <strong>Future:</strong> Segment by seller motivation/experience level in next study.
+        </div>
+      </div>
+    </div>
+
+    <div class="info-rows" style="margin-top: 32px;">
+      <div class="info-row">
+        <div class="info-label">Key Implication</div>
+        <div class="info-content">
+          While this study provides strong evidence for systemic IA issues, findings should be <strong>prioritized but not viewed as definitive</strong>. Recommended next step: Conduct moderated follow-up study (N=12-15) with unsuccessful participants to understand root causes before design. Validate findings with cohort analysis (new vs. experienced sellers) in next round.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANALYSIS SECTION -->
+<section id="analysis" class="section">
+  <h2 class="section-label">Analysis & Synthesis</h2>
+
+  <div style="background: var(--slate-bg); padding: 24px; border-radius: var(--radius); margin-bottom: 48px;">
+    <h3 style="font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 16px;">Key Finding: Information Architecture is the Root Cause</h3>
+    <p style="font-size: 15px; color: var(--text-body); line-height: 1.8; margin-bottom: 12px;">
+      <strong>Evidence synthesis:</strong> We hypothesized that IA issues (not task complexity) drive usability problems. The data strongly supports this:
+    </p>
+    <ul style="font-size: 15px; color: var(--text-body); line-height: 1.8; margin-left: 20px; margin-bottom: 12px;">
+      <li><strong>Findability issues appear across 7/8 tasks</strong> - Not task-specific. If problem were complexity, we'd expect issues on "Create Ad" only. Instead, sellers struggle to locate "Find Violations" (simple task) equally.</li>
+      <li><strong>Page views inflate 2-10x ideal path</strong> - Consistent navigation friction signature across tasks.</li>
+      <li><strong>Qualitative themes confirm:</strong> "Findability" mentioned 67x (28 sellers), "Navigation Confusion" 43x (24 sellers). Combined: 110 mentions from 31/33 sellers. Tells consistent story.</li>
+      <li><strong>Simpler tasks succeed:</strong> "Add Product" (0% abandonment, 4.6/5 ease) has clear entry point. This pattern reveals IA drives success, not inherent task difficulty.</li>
+    </ul>
+    <p style="font-size: 15px; color: var(--text-body); line-height: 1.8;">
+      <strong>Implication:</strong> Recommendation is systemic IA redesign, not task-by-task patches. Fixing labeling + entry points will lift all tasks simultaneously.
+    </p>
+  </div>
+
+  <div class="analysis-subsection">
+    <h3 class="section-title">Ease of Use</h3>
+    <p style="font-size: 15px; color: var(--text-body); line-height: 1.8; margin-bottom: 24px;">
+      52% of sellers find Commerce Manager difficult to use, well above acceptable threshold. More significant: sellers perceive <strong>overall system difficulty (2.78/5) higher than average individual task difficulty (3.40/5)</strong>. This suggests the problem isn't individual tasks—it's the system's overall navigation and organization. When sellers can't find where to start a task, their confidence in the entire system erodes.
+    </p>
+    <div class="chart-container">
+      <div class="chart-title">Perceived Difficulty: "CM is easy to use"</div>
+      <canvas id="easeOfUseChart"></canvas>
+    </div>
+  </div>
+
+  <div class="analysis-subsection">
+    <h3 class="section-title">Abandonment Rate Analysis</h3>
+    <p style="font-size: 15px; color: var(--text-body); line-height: 1.8; margin-bottom: 24px;">
+      On average, four sellers failed to complete each task (12% abandonment rate). The inability to complete a task suggests critical usability issues preventing sellers from effectively using CM. High-abandonment tasks include tagging products in posts (30%), creating ads (24%), and finding violations (9%).
+    </p>
+    <div class="chart-container">
+      <div class="chart-title">Task Completion Issues</div>
+      <canvas id="specificAbandonmentChart"></canvas>
+    </div>
+  </div>
+
+  <div class="analysis-subsection">
+    <h3 class="section-title">Page Views & Navigation Friction</h3>
+    <p style="font-size: 15px; color: var(--text-body); line-height: 1.8; margin-bottom: 24px;">
+      Sellers viewed an average of 3x more pages than the ideal path, indicating significant navigation friction. Tasks like "Tag product in post" (+10.2 avg pages) and "Find violations" (+4.9 avg pages) showed the most friction. This suggests sellers cannot find the direct path and are exploring multiple pages to complete tasks.
+    </p>
+    <div class="chart-container">
+      <div class="chart-title">Page Views vs Ideal Path</div>
+      <canvas id="pageViewsChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- KEY INSIGHTS SECTION -->
+<section id="insights" class="section-full">
+  <div class="section-inner">
+    <h2 class="section-label">Key Insights & Recommendations</h2>
+
+    <div class="accordion">
+      <!-- Task 1: Login -->
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div class="accordion-number">1</div>
+          <div class="accordion-title">Commerce Manager Log-in</div>
+          <div class="accordion-toggle">▼</div>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <h4>Results</h4>
+            <p>All 33 participants successfully logged in. However, 12 sellers (36%) showed hesitation or confusion about their location within Business Suite. The core issue: when Business Suite opens, sellers land in Ads Manager by default, not CM. They must actively search for CM.</p>
+
+            <h4>Participant Voice</h4>
+            <p><em>"It's not simple to get to your commerce manager. When you open up the meta business suite it's confusing because you're automatically taken to the ads manager and 'commerce manager' doesn't stick out as an icon to click."</em> — Seller (Medium-sized shop)</p>
+            <p><em>"There's so many different sites to go to to manage my ecommerce information on Meta: ads manager, commerce manager, business page, etc. I never know if I'm in the right place."</em> — Seller (Shopify-integrated)</p>
+
+            <h4>Root Cause</h4>
+            <p>This is a wayfinding problem, not a task complexity problem. The default landing page (Ads Manager) doesn't serve sellers who want CM. Sellers must actively search rather than finding it prominently.</p>
+
+            <h4>Recommendations</h4>
+            <p><strong>Create clear entry point:</strong> Customize Business Suite default landing based on user role (sellers → CM, advertisers → Ads Manager). Add persistent global nav indicator showing current location with quick-switch capability to related tools.</p>
+
+            <h4>Metrics</h4>
+            <p>Task Completion: 100% | Difficulty: 3.03/5 | Confidence: 4.09/5 | Frustration indicators: 36%</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task 2: Find Violations -->
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div class="accordion-number">2</div>
+          <div class="accordion-title">Find/View Product Violations</div>
+          <div class="accordion-toggle">▼</div>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <h4>Problem Statement</h4>
+            <p>3 sellers (9% abandonment) gave up on this task entirely. Of those who completed it (31 sellers), most showed hesitation: they could locate the violations area but struggled to interpret what violations meant, understand severity levels, or understand what corrective actions to take. Low confidence scores (3.85/5) indicate sellers completed the task but felt uncertain about next steps.</p>
+
+            <h4>Root Causes (Qualitative Analysis)</h4>
+            <p><strong>Primary:</strong> Unclear terminology & severity labeling (linked to "Unclear Terminology" theme, 31 mentions, 19 participants). Sellers encountered labels like "High," "Medium," "Low" priority but didn't understand the business impact (could this get my shop suspended? Does it affect visibility?). One seller thought "warning" meant imminent shutdown.<br><br>
+            <strong>Secondary:</strong> Findability issues (connected to overall "Findability" theme, 67 mentions, 28 participants). Some sellers struggled to locate the violations area initially. Once found, the visual presentation didn't clearly distinguish between violation types (product-level vs. shop-level vs. policy).</p>
+
+            <h4>Participant Voice - Mental Models Revealed</h4>
+            <p><em>"I'm seeing all these warnings but I don't understand what they mean. Are these critical? Will my shop get shut down if I don't fix them? The language is very corporate and confusing."</em> — Seller (Experienced, uncertain about severity)</p>
+            <p><em>"Violations aren't explained very well. I found where they are, but I don't know what's actually wrong or how to fix it. It just says 'policy violation' but doesn't say which policy."</em> — Seller (Struggling with specificity)</p>
+            <p><em>"The severity levels don't mean much to me. I need to know: will this affect my shop's visibility? Do I need to fix it immediately or can it wait?"</em> — Seller (Business impact mental model)</p>
+
+            <h4>Key Insight</h4>
+            <p>This task reveals a semantic problem masquerading as a findability problem. Even when sellers find violations, they can't interpret them because the language assumes prior knowledge of Meta's policy framework. Sellers' mental models are business-outcome focused ("Will this hurt my shop?"), but CM uses policy-focused language ("Policy violation: Item missing required field"). The gap is semantic clarity, not discovery.</p>
+
+            <h4>Recommendations</h4>
+            <p><strong>1. Reframe severity for sellers:</strong> Instead of "High/Medium/Low," use business-impact language: "Blocks listing" vs. "May reduce visibility" vs. "Best practice improvement."<br><br>
+            <strong>2. Provide context:</strong> Each violation should explain: what the problem is, why Meta requires it, and business impact to the seller.<br><br>
+            <strong>3. Simplify remediation path:</strong> Provide inline "Fix this" options or link directly to the product edit form rather than requiring sellers to navigate elsewhere.</p>
+
+            <h4>Metrics</h4>
+            <p>Abandonment: 9% (3/33) | Completion: 91% (30/33) | Difficulty: 3.7/5 | Confidence: 3.85/5 | Terminology confusion: 19 sellers</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task 3: Tag Product -->
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div class="accordion-number">3</div>
+          <div class="accordion-title">Tag Product in Post</div>
+          <div class="accordion-toggle">▼</div>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <h4>Problem Statement</h4>
+            <p>30% abandonment (n=10 sellers). This is the highest abandonment in the study. Sellers who attempted this task either gave up or completed it with very low confidence.</p>
+
+            <h4>Root Causes (Qualitative Analysis)</h4>
+            <p><strong>Primary:</strong> Cannot locate post creation entry point (mentioned 8x). Sellers looked in Shop tab, Catalog tab, Posts tab—but no clear "Create Post" button.<br><br>
+            <strong>Secondary:</strong> Confusion about product sourcing. 5 sellers thought they needed to upload images first. 3 sellers assumed catalog must be synced before tagging. This reveals sellers don't understand the prerequisite model (create post → then tag from existing catalog/uploads).</p>
+
+            <h4>Participant Voice - Mental Models Revealed</h4>
+            <p><em>"Very hard to find how to create a post... the 'main menu' after you figure out that you need to first click 'edit your shop' is all extremely confusing..."</em> — Seller (struggled with entry point)</p>
+            <p><em>"I find that this is pretty easy once you navigate through creating a new post. I do find that if you are new it can become very confusing however I have done it a few times now and find that this method is very nice and I love that I can schedule my post."</em> — Seller (experienced, after learning curve)</p>
+
+            <h4>Key Insight</h4>
+            <p>This isn't a one-off bug; it's a discoverability + mental model mismatch. Experienced sellers eventually figure it out through trial-and-error. New sellers abandon. The solution is better information scent at entry point + onboarding guidance for first-time users.</p>
+
+            <h4>Recommendations</h4>
+            <p><strong>1. Improve entry point visibility:</strong> Add prominent "Create Post" button in Shop tab or main nav (not buried under "Edit Shop").<br><br>
+            <strong>2. Clarify prerequisite flow:</strong> Show guidance: "You can tag products from: 1) Your uploaded images, 2) Your product catalog, or 3) Both." before seller begins.<br><br>
+            <strong>3. Progressive disclosure:</strong> Show catalog + image options side-by-side, not sequential screens.</p>
+
+            <h4>Metrics</h4>
+            <p>Abandonment: 30% (10/33) | Completion: 70% (23/33) | Difficulty: 3.0/5 | Confidence: 3.2/5 | Entry point struggles: 24% (8/33)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task 4: Create Ad -->
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div class="accordion-number">4</div>
+          <div class="accordion-title">Create Business-as-Usual Ad</div>
+          <div class="accordion-toggle">▼</div>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <h4>Problem Statement</h4>
+            <p>8 sellers (24% abandonment, n=33) gave up on ad creation. The task defeated sellers with decision paralysis: they reached the campaign type selection screen and couldn't decide between "Traffic," "Conversions," "Collection," or "Manual." Even those who completed the task (25 sellers) reported high difficulty (3.1/5) and low confidence (3.3/5)—suggesting they guessed rather than understood.</p>
+
+            <h4>Root Causes (Qualitative Analysis)</h4>
+            <p><strong>Primary:</strong> Campaign type confusion (feature complexity + unclear terminology). Sellers don't have a mental model for "Conversions" vs. "Traffic." To a seller, both sound like ads that drive sales. The terminology assumes prior Ads Manager experience that most sellers lack.<br><br>
+            <strong>Secondary:</strong> Lack of guidance on configuration choices (linked to "Lack of Guidance" theme, 19 mentions, 14 participants). After choosing campaign type, sellers face product selection, audience setup, and pixel installation. No in-context guidance. Unclear consequences of choices ("If I choose Traffic instead of Conversions, will I get fewer sales?").<br><br>
+            <strong>Tertiary:</strong> Technical prerequisites not surfaced. Several sellers lacked the conversion pixel setup but didn't discover this until mid-flow, forcing them to abandon and reconfigure.</p>
+
+            <h4>Participant Voice - Mental Models Revealed</h4>
+            <p><em>"I don't know what 'Traffic' vs. 'Conversions' means. They both sound like they'll sell my stuff. Why are there so many options? Can't Meta just create ads for me based on my products?"</em> — Seller (Overwhelmed by choices)</p>
+            <p><em>"I got to campaign setup and realized I don't have the pixel set up. Why doesn't it tell me I need this before I start? Now I have to go set it up and come back."</em> — Seller (Frustrated by prerequisite discovery mid-flow)</p>
+            <p><em>"The campaign type descriptions don't explain what I actually get. Does Conversions mean more sales? Is Traffic cheaper? I just guessed and hoped it worked."</em> — Seller (Decision-making under uncertainty)</p>
+
+            <h4>Key Insight</h4>
+            <p>Ad creation isn't inherently complex—but CM presents it as though sellers have Ads Manager expertise. The feature is buried under jargon designed for Ads Manager power users. Sellers' mental model: "I have products. I want to advertise them. Tell me what to do." CM's model: "Choose your campaign objective, select targeting parameters, configure conversion tracking." The gap forces sellers to make expert decisions with novice knowledge.</p>
+
+            <h4>Recommendations</h4>
+            <p><strong>1. Simplify campaign selection:</strong> Replace "Conversions/Traffic/Collection/Manual" with a contextual first-step question: "What's your goal?" with seller-friendly options: "More sales," "Website traffic," "Browse my shop," "Reach existing customers."<br><br>
+            <strong>2. Surface prerequisites early:</strong> Before entering the flow, show a checklist: "You need: Products uploaded ✓ | Pixel installed ✗ | Audience list (optional)." Let sellers fix gaps without entering the form.<br><br>
+            <strong>3. Progressive disclosure with guardrails:</strong> Show advanced options (targeting, budget pacing) only after basics are set. Provide in-context explanations for each decision with real-outcome language: "Conversions optimizes for purchases. Traffic optimizes for clicks. For e-commerce, Conversions is usually better."</p>
+
+            <h4>Metrics</h4>
+            <p>Abandonment: 24% (8/33) | Completion: 76% (25/33) | Difficulty: 3.1/5 | Confidence: 3.3/5 | Campaign type confusion: 18 sellers | Pixel prerequisite discovery: 6 sellers</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task 5: Create Discount -->
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div class="accordion-number">5</div>
+          <div class="accordion-title">Create Discount (Onsite Only)</div>
+          <div class="accordion-toggle">▼</div>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <h4>Problem Statement</h4>
+            <p>5 sellers (15% abandonment, n=33) abandoned this task. Most who completed it (28 sellers) showed low confidence (3.0/5), indicating they weren't certain they found the right place or that their discount setup would actually work.</p>
+
+            <h4>Root Causes (Qualitative Analysis)</h4>
+            <p><strong>Primary:</strong> Findability issue (core "Findability" theme, 67 mentions, 28 participants). The "Create Offer/Promotion" button isn't discoverable from CM's main navigation. Sellers looked in Catalog, Products, and Shop tabs—expected places for discount functionality—but found nothing. Entry point is buried or non-obvious.<br><br>
+            <strong>Secondary:</strong> Terminology confusion (linked to "Unclear Terminology," 31 mentions, 19 participants). Sellers encounter both "Offer" and "Discount" terms but don't understand the difference. When they find it, they're uncertain if they clicked the right button. Is an "Offer" the same as a "Discount"? Is one for Facebook and one for onsite? This semantic gap erodes confidence.<br><br>
+            <strong>Tertiary:</strong> Technical prerequisites and account status requirements (5 sellers hit account limitations). Some sellers' accounts didn't have promotions enabled, causing the flow to error or hide the feature entirely.</p>
+
+            <h4>Participant Voice - Mental Models Revealed</h4>
+            <p><em>"I don't know where discounts are. Isn't that something basic? I'd expect it in a 'Sales' or 'Promotions' section. I looked everywhere."</em> — Seller (Expecting conventional IA)</p>
+            <p><em>"I found 'Offers' but is that the same as 'Discount'? I don't want to create the wrong thing. There's no explanation of what each does."</em> — Seller (Uncertain about terminology)</p>
+            <p><em>"The discount thing says I can't use it. My account isn't set up for it apparently. But no one told me that. Why is it even an option?"</em> — Seller (Frustrated by unenabled features)</p>
+
+            <h4>Key Insight</h4>
+            <p>This task fails on two fronts. First, discoverability: the feature isn't where sellers mentally expect it (near products, catalog, or sales section). Second, clarity: even when found, the "Offer" terminology doesn't map to sellers' mental model of "Discount." Combined with account status requirements that aren't pre-validated, sellers lose confidence and abandon. The solution is clearer IA positioning + unified terminology + pre-flight checks for prerequisites.</p>
+
+            <h4>Recommendations</h4>
+            <p><strong>1. Reposition in IA:</strong> Move or add a quick-access "Create Promotion/Discount" button near the Catalog or Products section where sellers expect it.<br><br>
+            <strong>2. Unify terminology:</strong> Settle on one term ("Promotion," "Offer," or "Discount") and use it consistently. If different types exist, label them clearly: "Product Discount," "Shop-wide Promotion," etc.<br><br>
+            <strong>3. Pre-validate prerequisites:</strong> Before showing the creation flow, check if promotions are enabled. If not, show a "Set up promotions" micro-flow, not an error message inside the creation form.</p>
+
+            <h4>Metrics</h4>
+            <p>Abandonment: 15% (5/33) | Completion: 85% (28/33) | Difficulty: 3.2/5 | Confidence: 3.0/5 | Entry point confusion: 12 sellers | Terminology confusion: 8 sellers | Account status blocks: 5 sellers</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task 6: Create Collection -->
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div class="accordion-number">6</div>
+          <div class="accordion-title">Create Collection from Products</div>
+          <div class="accordion-toggle">▼</div>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <h4>Problem Statement</h4>
+            <p>4 sellers (12% abandonment, n=33) gave up on collection creation. Most who completed it (29 sellers) expressed confusion and reported visual overwhelm. Despite completion, confidence remained low (3.2/5), suggesting sellers felt uncertain about whether they set collections up correctly.</p>
+
+            <h4>Root Causes (Qualitative Analysis)</h4>
+            <p><strong>Primary:</strong> Findability + navigation friction (linked to "Findability" 67 mentions, "Navigation Confusion" 43 mentions, combined 31/33 sellers affected). Collections creation isn't clearly signposted from CM's main view. Sellers must navigate through Catalog → Collections subsection, but this path isn't intuitive and not advertised on the main CM dashboard.<br><br>
+            <strong>Secondary:</strong> Multi-step complexity with visual overwhelm (connected to "Feature Complexity," 24 mentions, 18 participants). The collection creation flow involves: selecting a collection template, choosing filter criteria, previewing products, confirming settings. Each step shows many options simultaneously, causing decision paralysis. Sellers don't understand what "smart collection" vs. "manual collection" means or which they need.</p>
+
+            <h4>Participant Voice - Mental Models Revealed</h4>
+            <p><em>"Where are collections? I found it but only after looking in a few different places. The flow has so many screens and options. I'm not even sure I set it up right."</em> — Seller (Navigation difficulty + confidence gap)</p>
+            <p><em>"What's the difference between a smart collection and a manual collection? The explanations use jargon. I just picked one and hoped. The preview showed products but I couldn't tell if it was right."</em> — Seller (Overwhelmed by choices and jargon)</p>
+            <p><em>"This feels overly complicated for something I just want to group products together. Why are there so many settings? I don't understand most of them."</em> — Seller (Simplicity expectation mismatch)</p>
+
+            <h4>Key Insight</h4>
+            <p>Collections is a powerful feature for sellers, but CM presents it as a technical data modeling task rather than a business outcome (organizing products for customers). The UI shows advanced filter options, collection types, and publication settings—relevant for power users—but buries basic help for sellers just trying to "group related products." The solution is a progressive disclosure pattern: start simple, reveal advanced options only if seller needs them.</p>
+
+            <h4>Recommendations</h4>
+            <p><strong>1. Improve discoverability:</strong> Add a quick-access "Create Collection" button on the Products/Catalog main view, not buried in a submenu. Consider a "Organize your products" section on CM homepage highlighting collections as a feature.<br><br>
+            <strong>2. Simplify decision tree:</strong> First question should be "What do you want to organize?" not "Smart or Manual collection?" Let sellers choose (e.g., "Products on sale," "New arrivals," "Best sellers") and auto-select the right collection type behind the scenes.<br><br>
+            <strong>3. Reduce visual complexity:</strong> Show 3-4 core settings on first screen (collection name, products/criteria, visibility). Hide advanced filters in an "Advanced" expansion panel. Provide in-situ help explaining jargon.</p>
+
+            <h4>Metrics</h4>
+            <p>Abandonment: 12% (4/33) | Completion: 88% (29/33) | Difficulty: 3.2/5 | Confidence: 3.2/5 | Navigation friction: 14 sellers | Decision overwhelm: 11 sellers | Terminology confusion: 9 sellers</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task 7: Add Product -->
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div class="accordion-number">7</div>
+          <div class="accordion-title">Add Product to Catalog</div>
+          <div class="accordion-toggle">▼</div>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <h4>Success Pattern Analysis</h4>
+            <p>This is the only task with 0% abandonment and highest difficulty rating (4.6/5) combined with high confidence (4.6/5). This paradox—hard task, zero abandonment—reveals critical success factors. All 33 sellers completed successfully despite the task's inherent complexity. Why? Analyze the design.</p>
+
+            <h4>Success Factors (Qualitative Analysis)</h4>
+            <p><strong>1. Clear entry point:</strong> "Add Product" button is prominent in Catalog view, unmissable. No navigation friction. Sellers know exactly where to go.<br><br>
+            <strong>2. Frequent engagement context:</strong> Adding products is a repetitive seller task (weekly/daily for e-commerce). Mental models are strong. Sellers understand what "product" means and what details matter.<br><br>
+            <strong>3. Progressive disclosure of complexity:</strong> The form starts simple (name, image, price) with optional advanced fields (inventory, shipping, attributes) collapsible below. Sellers can complete basic listing in 2 minutes, but expert features are available.<br><br>
+            <strong>4. Clear prerequisites & scoping:</strong> Success requires one product at a time, not bulk import or complex data mapping. Scope is explicitly bounded.</p>
+
+            <h4>Participant Voice - Mental Models Match</h4>
+            <p><em>"Adding a product was straightforward. I have a product photo, I know the price, I describe it how I would to customers. Felt natural."</em> — Seller (Intuitive alignment)</p>
+            <p><em>"Even though there are a lot of fields, the required ones are clear, and I can fill in the rest later if I need to. That's helpful."</em> — Seller (Progressive disclosure working)</p>
+            <p><em>"The 'Add Product' button is right there. No hunting around."</em> — Seller (Discovery effortless)</p>
+
+            <h4>Key Insight & Transferable Pattern</h4>
+            <p>Success isn't determined by task complexity. High-abandonment tasks like "Tag Product in Post" (30% abandonment) or "Create Ad" (24% abandonment) are actually simpler conceptually than "Add Product." Yet they fail. The difference: "Add Product" has a clear, discoverable entry point; uses seller-friendly language (not "product data model" but "product"); and starts simple with optional complexity. The failure pattern in other tasks is the inverse: hidden entry points, jargon-heavy terminology, and "show everything" approaches that overwhelm. If CM applied "Add Product's" design principles (clear entry + seller language + progressive disclosure) to "Tag Product" and "Create Ad," abandonment rates would plummet.</p>
+
+            <h4>Recommendations for Other Tasks</h4>
+            <p><strong>1. Audit entry point visibility:</strong> Every task should have a discoverable button/link in logical location, not hidden under submenus. "Tag Product in Post" entry point should be as obvious as "Add Product."<br><br>
+            <strong>2. Replace jargon with seller language:</strong> "Campaign objective: Conversions" → "Goal: Get more sales." "Smart collection" → "Automatic group of products." Sellers understand business outcomes, not data model terminology.<br><br>
+            <strong>3. Implement progressive disclosure:</strong> Show required fields first (name, image, basic details). Hide advanced options (attributes, bulk actions, technical settings) in expandable "Advanced" sections. Let sellers complete core task first, explore complexity later.</p>
+
+            <h4>Metrics</h4>
+            <p>Abandonment: 0% (0/33) ✓ | Completion: 100% (33/33) ✓ | Difficulty: 4.6/5 (complex, but handleable) | Confidence: 4.6/5 (sellers trusted their choices) | Entry point discoverability: 100% | Terminology clarity: High</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task 8: Sync Status -->
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div class="accordion-number">8</div>
+          <div class="accordion-title">Verify Catalog Sync Status</div>
+          <div class="accordion-toggle">▼</div>
+        </div>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <h4>Problem Statement</h4>
+            <p>1 seller (3% abandonment, n=33) gave up entirely. Of the 32 who found sync status, most took non-optimal paths: searching in Catalog settings, looking in the Connections area, checking Shop settings—everywhere except where sync status actually lived. This pattern of multi-path exploration indicates the feature isn't located where sellers' mental models expect it. Low confidence (3.5/5) despite successful completion reflects this uncertainty.</p>
+
+            <h4>Root Causes (Qualitative Analysis)</h4>
+            <p><strong>Primary:</strong> Unclear information architecture placement (linked to "Findability" theme, 67 mentions, 28 participants and "Navigation Confusion," 43 mentions, 24 participants). Sync status lives in one specific location in CM, but sellers intuitively search elsewhere: some check Catalog tab (logical: syncing is about catalog), others check integrations/connections (logical: Shopify is external), others check Settings (logical: status is a setting). No clear "sync status" indicator on main dashboard. Multiple valid mental models but only one correct location.<br><br>
+            <strong>Secondary:</strong> Lack of status transparency and assurance (connected to "Unclear Terminology," 31 mentions). Once sellers find sync status, they see something like "Last sync: 2 hours ago" or a status indicator, but many don't understand what "synced" means in this context. Is the catalog actively syncing? Does it sync automatically? If it shows "Success," does that mean all products synced? Some sellers worried their products weren't actually visible on Shops even though status showed "OK."</p>
+
+            <h4>Participant Voice - Mental Models Revealed</h4>
+            <p><em>"I'm looking for where my catalog synced from Shopify. I checked Catalog, I checked Connections, I checked Settings. Why isn't there a clear sync status dashboard or notification telling me if my products are live?"</em> — Seller (Frustrated by multi-path searching)</p>
+            <p><em>"I found something that said 'synced,' but I wasn't confident my products were actually there. Does 'synced' mean they're on Shops? Or just that the sync ran? I needed more confirmation."</em> — Seller (Semantics creating uncertainty)</p>
+            <p><em>"Why isn't there a big warning if something didn't sync? I want to know immediately if my products aren't available, not have to check a status page."</em> — Seller (Expectation for proactive alerts)</p>
+
+            <h4>Key Insight</h4>
+            <p>Sync status is a critical trust signal for sellers relying on Shopify integration, but CM treats it as a minor status detail buried in settings rather than a prominent health indicator. Sellers' mental models: "If my catalog is synced, my products are live on Shops." But CM doesn't clearly communicate this causality. Adding visual prominence, clearer language, and proactive alerts when sync fails would transform this from a "search for status" task to an "I know my products are live" confidence signal.</p>
+
+            <h4>Recommendations</h4>
+            <p><strong>1. Create a sync status dashboard/widget:</strong> Add a persistent "Shopify Sync Status" card on CM home view showing: Last sync time, number of products synced, any errors or warnings. One click to full sync details. This centralizes status in the most expected location (main view).<br><br>
+            <strong>2. Use clear status language:</strong> Instead of "Synced" or technical status codes, show: "✓ All products live (Last sync: 2 hours ago)" or "⚠ 5 products failed to sync - details below." Match Shopify's status language for consistency.<br><br>
+            <strong>3. Implement proactive alerts:</strong> Sync failures should notify sellers (in-app and email) immediately, not require manual checking. Alert: "Your catalog sync failed. 3 products may not be visible on Shops. Details: missing required fields."</p>
+
+            <h4>Metrics</h4>
+            <p>Abandonment: 3% (1/33) | Completion: 97% (32/33) | Difficulty: 3.5/5 | Confidence: 3.5/5 | Path variations: 4 different search paths taken by sellers | Status semantics confusion: 11 sellers | Desire for alerts: 8 sellers</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSIONS SECTION -->
+<section id="conclusions" class="section">
+  <h2 class="section-label">Conclusions & Next Steps</h2>
+
+  <div style="max-width: 900px;">
+    <h3 class="section-title" style="margin-bottom: 40px;">Did We Meet Our Objectives?</h3>
+
+    <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+      <div class="card">
+        <div class="card-title">Benchmarking UX Over Time</div>
+        <div class="card-body">
+          Due to UserZoom limitations and study breadth, quantitative metrics were unreliable for benchmarking. However, there's clear value in establishing reliable, valid benchmarks to measure iterative improvements.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Identify Usability Issues</div>
+        <div class="card-body">
+          ✓ Successfully identified that findability and discoverability are the primary usability issues impacting seller experience in Commerce Manager.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Size Impact of Issues</div>
+        <div class="card-body">
+          ✓ Confirmed that poor findability/discoverability is a pervasive issue having significant negative impact on overall CM usability.
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title" style="margin-top: 64px; margin-bottom: 32px;">Recommendations: Prioritize, Tweak, Test</h3>
+
+    <div class="info-rows">
+      <div class="info-row">
+        <div class="info-label">Prioritize</div>
+        <div class="info-content">
+          Focus on 1-2 high-impact, high-abandonment tasks (e.g., tagging products in posts). These improvements are already in progress with the "Improving Commerce Manager Usability: 2023 vision" initiative.
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-label">Tweak</div>
+        <div class="info-content">
+          Use heuristic evaluation to examine information architecture for prioritized tasks. Make focused changes to product design and content design with emphasis on improving feature findability.
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-label">Test</div>
+        <div class="info-content">
+          Create focused unmoderated usability tests emphasizing findability metrics. Test designs with both new and experienced sellers. Consider card sorting research to improve information architecture. Use discovery testing to generalize findings.
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-label">Repeat</div>
+        <div class="info-content">
+          Establish a cadence of regular usability testing to measure impact of improvements. Track metrics over time to validate that changes result in better findability and reduced abandonment.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="footer-content">
+    <div class="footer-text">© Joseph Grgic — UX Research Portfolio</div>
+    <a href="/" class="footer-link">Back to portfolio</a>
+  </div>
+</footer>
+
+<script>
+  // ─── SCROLL SPY ───
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('[id]');
+
+  const scrollSpy = () => {
+    let current = '';
+    const navSectionIds = ['summary', 'metrics', 'background', 'methodology', 'analysis', 'insights', 'conclusions'];
+
+    for (const section of sections) {
+      const sectionTop = section.offsetTop;
+      if (window.scrollY >= sectionTop - 200) {
+        current = section.getAttribute('id');
+      }
+    }
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href').slice(1) === current) {
+        link.classList.add('active');
+      }
+    });
+  };
+
+  window.addEventListener('scroll', scrollSpy);
+
+  // ─── READ PROGRESS ───
+  const progressBar = document.getElementById('read-progress');
+
+  window.addEventListener('scroll', () => {
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+    progressBar.style.width = scrollPercent + '%';
+  });
+
+  // ─── REVEAL ANIMATION ───
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '-40px 0px -55px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ─── ACCORDION ───
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', function(e) {
+      e.preventDefault();
+      const item = this.closest('.accordion-item');
+      const isActive = item.classList.contains('active');
+
+      // Close all other items
+      document.querySelectorAll('.accordion-item').forEach(accordionItem => {
+        if (accordionItem !== item) {
+          accordionItem.classList.remove('active');
+        }
+      });
+
+      // Toggle current item
+      if (isActive) {
+        item.classList.remove('active');
+      } else {
+        item.classList.add('active');
+      }
+    });
+  });
+
+  // ─── CHARTS ───
+  const chartConfig = {
+    font: {
+      family: "'Inter', -apple-system, sans-serif",
+      size: 12,
+      color: '#67788A'
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 15,
+        grid: { color: 'rgba(206,215,224,0.3)' },
+        ticks: { color: '#67788A' }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: '#67788A' }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: { font: { family: "'Inter', -apple-system, sans-serif" }, color: '#67788A' }
+      }
+    }
+  };
+
+  // Abandonment Chart
+  const abandonmentCtx = document.getElementById('abandonmentChart')?.getContext('2d');
+  if (abandonmentCtx) {
+    new Chart(abandonmentCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Log in', 'Find Violation', 'Tag Product', 'Create Ad', 'Create Offer', 'Create Collection', 'Add Product', 'Verify Sync'],
+        datasets: [{
+          label: 'Abandonment Rate',
+          data: [0, 9, 30, 24, 15, 12, 0, 3],
+          backgroundColor: '#B66060',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        ...chartConfig,
+        indexAxis: 'y',
+        scales: {
+          x: { ...chartConfig.scales.x, beginAtZero: true, max: 35 }
+        }
+      }
+    });
+  }
+
+  // Ease of Use Chart
+  const easeCtx = document.getElementById('easeOfUseChart')?.getContext('2d');
+  if (easeCtx) {
+    new Chart(easeCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Strongly Agree', 'Agree', 'Neither', 'Disagree', 'Strongly Disagree'],
+        datasets: [{
+          label: 'Number of Responses',
+          data: [5, 6, 5, 11, 5],
+          backgroundColor: ['rgba(103,120,138,0.54)', 'rgba(103,120,138,0.54)', 'rgba(103,120,138,0.54)', '#B66060', '#B66060'],
+          borderRadius: 4
+        }]
+      },
+      options: chartConfig
+    });
+  }
+
+  // Specific Abandonment Chart
+  const specAbandonmentCtx = document.getElementById('specificAbandonmentChart')?.getContext('2d');
+  if (specAbandonmentCtx) {
+    new Chart(specAbandonmentCtx, {
+      type: 'horizontalBar',
+      type: 'bar',
+      data: {
+        labels: ['Tag Product', 'Create Ad', 'Find Violation', 'Create Collection', 'Create Offer', 'Verify Sync'],
+        datasets: [{
+          label: 'Failure Count',
+          data: [10, 8, 3, 4, 5, 1],
+          backgroundColor: '#B66060',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        ...chartConfig,
+        indexAxis: 'y',
+        scales: {
+          x: { ...chartConfig.scales.x, beginAtZero: true, max: 12 }
+        }
+      }
+    });
+  }
+
+  // Page Views Chart
+  const pageViewsCtx = document.getElementById('pageViewsChart')?.getContext('2d');
+  if (pageViewsCtx) {
+    new Chart(pageViewsCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Find Violation', 'Tag Product', 'Create Ad', 'Create Offer', 'Create Collection', 'Add Product', 'Verify Sync'],
+        datasets: [
+          {
+            label: 'Min Page Views',
+            data: [1, 1, 2, 1.5, 2.5, 2.5, 1.5],
+            backgroundColor: 'rgba(169,211,250,0.7)',
+            borderRadius: 4
+          },
+          {
+            label: 'Avg Page Views',
+            data: [4.9, 10.2, 8.4, 5.9, 2.7, 2, 8.3],
+            backgroundColor: 'rgba(103,120,138,0.54)',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        ...chartConfig,
+        scales: {
+          y: { ...chartConfig.scales.y, max: 12 }
+        }
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "allstate",
+    "company": "Allstate",
+    "title": "Apple / Google Pay Integration",
+    "category": "product-design",
+    "tag": "both",
+    "image": "/images/case-studies/allstate.jpg",
+    "description": "Led third-party wallet payment integration using behavioral economics principles. Ensured smooth adoption while protecting transaction trust signals.",
+    "metrics": "+25% payment rate · 90% transaction success",
+    "href": "/allstate-applegoogle-paydesign",
+    "linkLabel": "View case study →",
+    "featured": true
+  },
+  {
+    "id": "mcdonalds",
+    "company": "McDonald's",
+    "title": "Account-Based Ordering",
+    "category": "product-design",
+    "tag": "both",
+    "image": "/images/case-studies/mcdonalds.jpg",
+    "description": "Led cross-functional team to design an omni-channel ordering system integrating loyalty and payments across mobile and in-store.",
+    "metrics": "Global mobile app · loyalty integration",
+    "href": "/mcd-abo-client",
+    "linkLabel": "View case study →",
+    "featured": false
+  },
+  {
+    "id": "verizon",
+    "company": "Verizon",
+    "title": "Carrier Switch Flow Optimization",
+    "category": "product-design",
+    "tag": "both",
+    "image": "/images/case-studies/verizon.jpg",
+    "description": "Audited the existing carrier switch flow for efficiency gaps, then redesigned it in close collaboration with legal teams to balance conversion goals with regulatory viability — reducing unique pages by 66%.",
+    "metrics": "–66% pages · higher conversion",
+    "href": "/vzswitch",
+    "linkLabel": "View case study →",
+    "featured": false
+  },
+  {
+    "id": "meta-sfi",
+    "company": "Meta · Seller Funded Initiatives",
+    "title": "SFI Email Capture Adoption",
+    "category": "ux-research",
+    "tag": "moderated",
+    "image": "/images/case-studies/meta-sfi.jpg",
+    "description": "Identified seller hesitations via moderated testing.",
+    "impact": "+0.63% GMV, 16% churn reduction.",
+    "href": "/meta-email-capture",
+    "linkLabel": "View research deck →"
+  },
+  {
+    "id": "meta-benchmark",
+    "company": "Meta · Commerce Manager",
+    "title": "Commerce Manager Usability Benchmark",
+    "category": "ux-research",
+    "tag": "unmoderated",
+    "tagLabel": "Unmoderated · n=33",
+    "image": "/images/case-studies/meta-commerce.jpg",
+    "description": "Findability flagged as top issue for 52% of sellers.",
+    "impact": "Prioritized IA/UI redesign to lift task completion and seller spend.",
+    "href": "/uxbenchmark",
+    "linkLabel": "View research deck →"
+  },
+  {
+    "id": "google-hedwig",
+    "company": "Google · Ads Platform",
+    "title": "Hedwig Notification Framework",
+    "category": "ux-research",
+    "tag": "workshop",
+    "image": "/images/case-studies/google-hedwig.jpg",
+    "description": "Established urgency hierarchy balancing alert prominence with workflow continuity for advertiser trust.",
+    "impact": "Workflow continuity for advertiser trust.",
+    "href": "/goog-hedwig",
+    "linkLabel": "View overview →"
+  },
+  {
+    "id": "google-editor",
+    "company": "Google",
+    "title": "Editor Ads Tool Redesign",
+    "category": "ia-tooling",
+    "tag": "both",
+    "image": "/images/case-studies/google-editor.jpg",
+    "description": "Strategic redesign reducing cognitive working load, aligning with M2 design system, and improving efficiency via task-flow optimization and phased rollout.",
+    "metrics": null,
+    "href": "/editor-case",
+    "linkLabel": "View case study →"
+  },
+  {
+    "id": "cigna",
+    "company": "Cigna",
+    "title": "Self-Service Data Visualization",
+    "category": "ia-tooling",
+    "tag": "both",
+    "image": "/images/case-studies/cigna.jpg",
+    "description": "Led stakeholder discovery to surface critical metrics and reporting needs, then translated those mental models into an intuitive self-service dashboard accessible to users at every skill level.",
+    "metrics": null,
+    "href": "/cigna-data-viz",
+    "linkLabel": "View overview →"
+  }
+]

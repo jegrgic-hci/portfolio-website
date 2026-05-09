@@ -2,6 +2,9 @@
   "name": "portfolio-site",
   "version": "1.0.0",
   "description": "Joseph Grgic UX/Human Factors Portfolio",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

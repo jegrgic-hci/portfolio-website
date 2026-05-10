@@ -24,3 +24,6 @@ import-project/
 
 # Local archive folders
 public/old/
+
+# VS Code settings
+.vscode/

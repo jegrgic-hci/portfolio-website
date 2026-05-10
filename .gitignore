@@ -18,3 +18,6 @@ website/
 kronos_master_spec_v4.0.html
 how_claude_should_help_with_portfolio_projects.md
 how_to_add_new_projects_to_portfolio.md
+
+# Staging folder for in-progress project imports (local only)
+import-project/

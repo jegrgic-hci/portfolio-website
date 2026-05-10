@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Payment &amp; Loyalty UX | McDonald's — Joseph Grgic</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #1482BF;
+      --blue-light:  #E8F4FB;
+      --blue-mid:    rgba(20,130,191,0.15);
+      --text-dark:   #333333;
+      --text-mid:    #666666;
+      --text-muted:  #999999;
+      --border:      #D3D1C7;
+      --border-blue: #1482BF;
+      --white:       #FFFFFF;
+      --off-white:   #FAFAFA;
+      --nav-h:       56px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: var(--white);
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    #site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      gap: 24px;
+    }
+    .nav-brand {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+      white-space: nowrap;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-brand span { color: var(--text-mid); font-weight: 400; }
+    .nav-links {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-mid);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-link:hover { background: var(--blue-mid); color: var(--blue); }
+    .nav-link.active { background: var(--blue); color: var(--white); }
+
+    /* ─── PROGRESS ─── */
+    #read-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--blue);
+      z-index: 300;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ─── SHARED LAYOUT ─── */
+    .section-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 40px;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 300;
+      color: var(--blue);
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+    .section-body {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--text-mid);
+      max-width: 680px;
+      margin-top: 20px;
+    }
+
+    /* ─── COVER ─── */
+    #cover {
+      background: var(--blue);
+      padding: 100px 40px;
+    }
+    .cover-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .cover-title {
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 400;
+      line-height: 1.05;
+      color: var(--white);
+    }
+    .cover-sub {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.8);
+      padding-top: 8px;
+    }
+    @media (max-width: 720px) {
+      .cover-inner { grid-template-columns: 1fr; }
+      #site-nav { padding: 0 20px; }
+      .section-wrap { padding: 56px 20px; }
+      #cover { padding: 64px 20px; }
+    }
+
+    /* ─── PRINCIPLES ─── */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .principle-card {
+      border: 1px solid var(--border-blue);
+      padding: 28px;
+    }
+    .principle-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--blue);
+      margin-bottom: 12px;
+    }
+    .principle-heading {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .principle-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .principle-bullets li {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--text-mid);
+      padding-left: 14px;
+      position: relative;
+    }
+    .principle-bullets li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-weight: 400;
+    }
+
+    /* ─── SECTION DIVIDER ─── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 40px;
+    }
+
+    /* ─── BUSINESS MODEL FLOW ─── */
+    .flow-diagram {
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+    .flow-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      flex: 0 0 auto;
+    }
+    .flow-icon {
+      width: 72px;
+      height: 72px;
+      border: 1px solid var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: var(--white);
+    }
+    .flow-icon.phone {
+      width: 52px;
+      height: 96px;
+      border-radius: 8px;
+    }
+    .flow-icon.phone-faded {
+      width: 52px;
+      height: 96px;
+      border-radius: 8px;
+      border-color: rgba(20,130,191,0.35);
+    }
+    .flow-icon.monitor {
+      width: 80px;
+      height: 60px;
+    }
+    .flow-icon.monitor::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 8px;
+      border-bottom: 1px solid var(--blue);
+      border-left: 1px solid var(--blue);
+      border-right: 1px solid var(--blue);
+    }
+    .flow-icon.checkmark {
+      border-color: var(--blue);
+    }
+    .flow-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: var(--blue);
+    }
+    .flow-label {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-mid);
+      text-align: center;
+      max-width: 120px;
+      line-height: 1.4;
+    }
+    .flow-arrow {
+      flex: 1;
+      min-width: 32px;
+      height: 1px;
+      background: var(--text-dark);
+      position: relative;
+      margin: 0 8px;
+      margin-bottom: 36px;
+      align-self: flex-start;
+      margin-top: 36px;
+    }
+    .flow-arrow::after {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: -4px;
+      width: 0;
+      height: 0;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 8px solid var(--text-dark);
+    }
+    /* badge icon inside phone */
+    .badge-stub {
+      border: 1px solid var(--blue);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: 0.05em;
+    }
+    /* qr stub */
+    .qr-stub {
+      display: grid;
+      grid-template-columns: repeat(5,5px);
+      grid-template-rows: repeat(5,5px);
+      gap: 1px;
+    }
+    .qr-stub span {
+      background: var(--blue);
+      border-radius: 0;
+    }
+    .qr-stub span.e { background: transparent; }
+
+    .flow-note {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-mid);
+      max-width: 160px;
+      line-height: 1.4;
+      text-align: center;
+      margin-top: 8px;
+    }
+    /* cloud icon */
+    .cloud-icon {
+      width: 52px;
+      height: 36px;
+      border: 1px solid var(--blue);
+      border-radius: 18px 18px 4px 4px;
+      position: relative;
+    }
+    .cloud-icon::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 8px;
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--blue);
+      border-radius: 50%;
+      background: var(--white);
+    }
+    .cloud-icon::after {
+      content: '';
+      position: absolute;
+      top: -18px;
+      left: 22px;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--blue);
+      border-radius: 50%;
+      background: var(--white);
+    }
+    .flow-fence {
+      border: 1px dashed var(--blue);
+      border-radius: 60px;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 16px;
+    }
+    .flow-fence-label {
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ─── MODEL EVOLUTION ─── */
+    .evolution-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 40px;
+    }
+    @media (max-width: 640px) {
+      .evolution-grid { grid-template-columns: 1fr; }
+      .flow-row { justify-content: center; }
+      .cover-inner { grid-template-columns: 1fr; }
+      .principles-grid { grid-template-columns: 1fr; }
+    }
+    .evolution-col {
+      border: 1px solid var(--border);
+      padding: 32px;
+    }
+    .evolution-col-title {
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--text-dark);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-blue);
+    }
+    .evolution-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .evo-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(211,209,199,0.5);
+    }
+    .evo-step:last-child { border-bottom: none; }
+    .evo-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--blue);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .evo-icon svg { width: 18px; height: 18px; fill: var(--blue); }
+    .evo-text {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--text-mid);
+      padding-top: 8px;
+    }
+    .evo-connector {
+      width: 1px;
+      height: 20px;
+      background: var(--blue);
+      margin-left: 17px;
+      opacity: 0.4;
+    }
+
+    /* ─── BADGE ACCESS ─── */
+    .access-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .access-card {
+      border: 1px solid var(--border);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .access-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .access-icon-wrap svg { width: 24px; height: 24px; fill: var(--blue); }
+    .access-card-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+    .access-card-body {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--text-mid);
+    }
+
+    /* phone wireframe for access section */
+    .phone-wire {
+      width: 180px;
+      height: 340px;
+      border: 1.5px solid var(--blue);
+      border-radius: 18px;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--white);
+    }
+    .phone-wire-notch {
+      width: 60px;
+      height: 6px;
+      background: var(--blue);
+      border-radius: 3px;
+      margin: 10px auto 0;
+      opacity: 0.3;
+    }
+    .phone-wire-screen {
+      flex: 1;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .phone-bar {
+      height: 8px;
+      background: var(--blue);
+      border-radius: 2px;
+      opacity: 0.15;
+    }
+    .phone-bar.accent { background: var(--blue); opacity: 1; }
+    .phone-bar.w60 { width: 60%; }
+    .phone-bar.w80 { width: 80%; }
+    .phone-bar.w40 { width: 40%; }
+    .phone-nav {
+      display: flex;
+      gap: 4px;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--blue);
+      margin-bottom: 4px;
+    }
+    .phone-nav-line {
+      height: 2px;
+      background: var(--blue);
+      border-radius: 1px;
+      flex: 1;
+    }
+
+    /* badge widget in phone */
+    .phone-badge-btn {
+      margin-top: auto;
+      border: 1px solid var(--blue);
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+    }
+    .phone-badge-btn-text {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--blue);
+    }
+    .badge-pill {
+      display: inline-block;
+      background: var(--blue);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 6px;
+    }
+
+    /* ─── SHAKE DISCOVERY ─── */
+    #shake {
+      background: var(--off-white);
+    }
+    .shake-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+      margin-top: 40px;
+    }
+    @media (max-width: 720px) {
+      .shake-layout { grid-template-columns: 1fr; }
+      .evolution-grid { grid-template-columns: 1fr; }
+    }
+    .shake-phone {
+      width: 220px;
+      height: 420px;
+      border: 1.5px solid var(--blue);
+      border-radius: 24px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      background: var(--white);
+    }
+    .shake-phone-notch {
+      width: 70px;
+      height: 8px;
+      background: rgba(20,130,191,0.25);
+      border-radius: 4px;
+      margin: 14px auto 0;
+    }
+    .shake-coin-field {
+      position: absolute;
+      inset: 40px 0 70px;
+      overflow: hidden;
+    }
+    .shake-coin {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--blue);
+      background: var(--white);
+      box-shadow: 0 4px 12px rgba(20,130,191,0.15);
+      animation: coinFloat linear infinite;
+    }
+    @keyframes coinFloat {
+      0%   { transform: translateY(0px) rotate(0deg); }
+      25%  { transform: translateY(-8px) rotate(5deg); }
+      75%  { transform: translateY(4px) rotate(-3deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    .shake-prompt {
+      position: absolute;
+      bottom: 18px;
+      left: 0;right: 0;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-mid);
+      padding: 0 16px;
+    }
+    .shake-info {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .shake-info-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .shake-info-num {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--blue);
+      padding-top: 2px;
+    }
+    .shake-info-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--text-mid);
+    }
+
+    /* ─── BADGE STATES ─── */
+    .badge-states-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 48px;
+    }
+    @media (max-width: 760px) {
+      .badge-states-grid { grid-template-columns: 1fr; }
+    }
+    .badge-state-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .badge-state-label {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-mid);
+      text-align: center;
+    }
+    .badge-card {
+      border: 1px solid var(--blue);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 280px;
+      overflow: hidden;
+    }
+    .badge-card-header {
+      border-bottom: 1px solid var(--blue);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .badge-card-tab {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-tab-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid var(--blue);
+    }
+    .badge-tab-circle.filled { background: var(--blue); }
+    .badge-card-help {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid #CCCCCC;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: #CCCCCC;
+    }
+    .badge-card-body {
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge-prompt {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--text-dark);
+      text-align: center;
+    }
+    .badge-code {
+      font-size: 40px;
+      font-weight: 300;
+      color: var(--blue);
+      letter-spacing: 0.06em;
+      line-height: 1;
+    }
+    .badge-code-sm {
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--blue);
+      letter-spacing: 0.06em;
+    }
+    .badge-qr-link {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .badge-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--blue);
+      opacity: 0.25;
+    }
+    .badge-cta {
+      border: 1px solid #979797;
+      border-radius: 4px;
+      padding: 10px 16px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .badge-cta-text {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--blue);
+    }
+    .badge-cta-arrow {
+      width: 8px;
+      height: 14px;
+      border-right: 1.5px solid var(--blue);
+      border-top: 1.5px solid var(--blue);
+      transform: rotate(45deg);
+      margin-right: 4px;
+    }
+
+    /* QR code wireframe */
+    .qr-grid {
+      display: grid;
+      grid-template-columns: repeat(9, 10px);
+      grid-template-rows: repeat(9, 10px);
+      gap: 2px;
+    }
+    .qr-grid .b { background: var(--blue); }
+    .qr-grid .e { background: transparent; }
+
+    /* payment select list */
+    .pay-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pay-row {
+      border: 1px solid #979797;
+      border-radius: 4px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pay-radio {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid #979797;
+      flex-shrink: 0;
+    }
+    .pay-card-icon {
+      width: 32px;
+      height: 20px;
+      border: 1px solid var(--blue);
+      border-radius: 2px;
+      position: relative;
+    }
+    .pay-card-icon::after {
+      content: '';
+      position: absolute;
+      top: 5px; left: 0; right: 0;
+      height: 5px;
+      background: var(--blue);
+    }
+    .pay-label {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--blue);
+    }
+    .pay-gift-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 4px;
+    }
+    .pay-checkbox {
+      width: 16px;
+      height: 16px;
+      border: 1px solid #979797;
+      flex-shrink: 0;
+    }
+    .pay-gift-label {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--blue);
+    }
+
+    /* saved payment badge state */
+    .badge-pay-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--blue);
+      border-radius: 4px;
+      width: 100%;
+    }
+    .badge-pay-chip-card {
+      width: 32px;
+      height: 20px;
+      border: 1px solid var(--blue);
+      border-radius: 2px;
+      position: relative;
+    }
+    .badge-pay-chip-card::after {
+      content: '';
+      position: absolute;
+      top: 5px; left: 0; right: 0;
+      height: 5px;
+      background: var(--blue);
+    }
+    .badge-gift-applied {
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--blue);
+      text-align: center;
+    }
+
+    /* ─── FOOTER ─── */
+    #page-footer {
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .footer-note {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-muted);
+    }
+    .footer-back {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--blue);
+      text-decoration: none;
+    }
+    .footer-back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div id="read-progress"></div>
+
+<nav id="site-nav">
+  <a class="nav-brand" href="/projects/mcdonalds">McDonald's <span>/ UX Deck</span></a>
+  <div class="nav-links">
+    <a class="nav-link" href="#principles">Principles</a>
+    <a class="nav-link" href="#business-model">Business Model</a>
+    <a class="nav-link" href="#model-evolution">Model Evolution</a>
+    <a class="nav-link" href="#badge-access">Badge Access</a>
+    <a class="nav-link" href="#shake">Shake Discovery</a>
+    <a class="nav-link" href="#badge-states">Badge States</a>
+  </div>
+</nav>
+
+<!-- ─── COVER ─── -->
+<section id="cover">
+  <div class="cover-inner">
+    <h1 class="cover-title">Mobile Payment, Loyalty, &amp; Post Fulfillment CX</h1>
+    <p class="cover-sub">Tasked with creating a contactless mobile payment system within the existing application. This involved mapping overlap between mobile ordering and expected contactless payment functionality, then incorporating additional capabilities to improve customer experience and align with business objectives.</p>
+  </div>
+</section>
+
+<!-- ─── PRINCIPLES ─── -->
+<section id="principles">
+  <div class="section-wrap">
+    <div class="section-label">Design Principles</div>
+    <h2 class="section-title">Mobile Payment and Loyalty</h2>
+    <div class="principles-grid">
+
+      <div class="principle-card">
+        <div class="principle-num">01</div>
+        <div class="principle-heading">A Single Check-in Per Visit</div>
+        <ul class="principle-bullets">
+          <li>Use GMA only once to redeem a Deal, Pay, and Earn Points — fewer eCP calls</li>
+          <li>No GMA-side aggregation necessary; Pay badge easily added to Deals rather than requiring two separate flows</li>
+          <li>Clean design doesn't add another sidebar item; payment is a ubiquitous element</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <div class="principle-num">02</div>
+        <div class="principle-heading">Unambiguous for Crew, Secure for Customers</div>
+        <ul class="principle-bullets">
+          <li>Crew knows if check-in occurred but sees no unnecessary account details</li>
+          <li>Customer selects payment method in GMA, consistent with the Deal flow</li>
+          <li>Consistent with customer's Mobile Ordering experience and expectations</li>
+          <li>Payments are tokenized, PII is avoided, app can incorporate biometric lock</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <div class="principle-num">03</div>
+        <div class="principle-heading">Add Surprise and Delight</div>
+        <ul class="principle-bullets">
+          <li>Rewards don't need to be selected to be redeemed — an opportunity for delight</li>
+          <li>Payment and Loyalty check-in are relatively hands-free</li>
+          <li>A single check-in minimizes friction and wait time for customers</li>
+          <li>Increase feedback by making the Voice Survey more accessible</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <div class="principle-num">04</div>
+        <div class="principle-heading">Speed Up the Drive Thru</div>
+        <ul class="principle-bullets">
+          <li>Alpha-code check-in and single check-in minimize the payment step</li>
+          <li>Post-fulfillment Help speeds up DT by confirming order in pull-forward</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ─── BUSINESS MODEL ─── -->
+<section id="business-model">
+  <div class="section-wrap">
+    <div class="section-label">System Design</div>
+    <h2 class="section-title">Business Model</h2>
+    <p class="section-body">A single geofence crossing triggers the entire payment and loyalty flow — the customer's code is generated from their intent (payment type, gift card, deal) and presented to crew at the menu board or payment window.</p>
+
+    <div class="flow-diagram">
+
+      <!-- Row 1: customer → code → cloud → POS -->
+      <div class="flow-row" style="justify-content: center; align-items: flex-start; gap: 0;">
+
+        <div class="flow-node">
+          <div class="flow-icon phone-faded">
+            <span style="font-size:9px; color:rgba(20,130,191,0.5); font-weight:500;">GMA</span>
+          </div>
+          <div class="flow-label">Customer approaching</div>
+        </div>
+
+        <div class="flow-arrow"></div>
+
+        <div class="flow-node">
+          <div class="flow-icon phone">
+            <div class="badge-stub">AB12</div>
+          </div>
+          <div class="flow-label">Geofence crossed — badge generated</div>
+        </div>
+
+        <div class="flow-arrow"></div>
+
+        <div class="flow-node">
+          <div style="position:relative; width:72px; height:72px; display:flex; align-items:center; justify-content:center;">
+            <div class="cloud-icon"></div>
+          </div>
+          <div class="flow-label">Code sent to location via cloud</div>
+        </div>
+
+        <div class="flow-arrow"></div>
+
+        <div class="flow-node">
+          <div class="flow-icon monitor"></div>
+          <div class="flow-label">Customer appears on POS — soft check-in</div>
+        </div>
+
+      </div>
+
+      <!-- Row 2: fence zone — menu board + payment window -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+        <div style="font-size:11px; font-weight:300; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase;">Geofence zone</div>
+        <div class="flow-fence">
+          <div class="flow-node">
+            <div class="flow-icon" style="width:80px; height:80px;">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            </div>
+            <div class="flow-label">Menu Board</div>
+            <div class="flow-note">Alpha code or QR for check-in, pay, and deal redemption</div>
+          </div>
+          <div style="width:1px; height:60px; background:rgba(20,130,191,0.2); align-self:center;"></div>
+          <div class="flow-node">
+            <div class="flow-icon" style="width:80px; height:80px;">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            </div>
+            <div class="flow-label">Payment Window</div>
+            <div class="flow-note">Alpha code or QR code for payment hard check-in</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: → loyalty updated -->
+      <div class="flow-row" style="justify-content:center;">
+        <div class="flow-node">
+          <div class="flow-icon checkmark">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+          <div class="flow-label">Order complete — loyalty updated, receipt in history</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ─── MODEL EVOLUTION ─── -->
+<section id="model-evolution">
+  <div class="section-wrap">
+    <div class="section-label">System Design</div>
+    <h2 class="section-title">Business Model Evolution</h2>
+    <p class="section-body">Had to redefine the business model for what type of customer information is passed to a location based on when and where a customer is. This also required determining accessibility of information and specific triggers to comply with legal requirements.</p>
+
+    <div class="evolution-grid">
+
+      <div class="evolution-col">
+        <div class="evolution-col-title">Mobile Order — Declared Intent</div>
+        <div class="evolution-flow">
+
+          <div class="evo-step">
+            <div class="evo-icon">
+              <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+            </div>
+            <div class="evo-text">Customer places mobile order designating pick-up location and payment method.</div>
+          </div>
+          <div class="evo-connector"></div>
+
+          <div class="evo-step">
+            <div class="evo-icon">
+              <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+            </div>
+            <div class="evo-text">Order sent to cloud until customer arrives at location.</div>
+          </div>
+          <div class="evo-connector"></div>
+
+          <div class="evo-step">
+            <div class="evo-icon" style="border-color:var(--blue);">
+              <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            </div>
+            <div class="evo-text">Customer crosses geofence — order pushed from cloud to location.</div>
+          </div>
+          <div class="evo-connector"></div>
+
+          <div class="evo-step">
+            <div class="evo-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            </div>
+            <div class="evo-text">Customer appears on POS with full order details. Crew member finalizes order.</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="evolution-col">
+        <div class="evolution-col-title">On-Site Order — No Declared Intent</div>
+        <div class="evolution-flow">
+
+          <div class="evo-step">
+            <div class="evo-icon">
+              <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+            </div>
+            <div class="evo-text">Customer arrives on-site. No prior order declared in app.</div>
+          </div>
+          <div class="evo-connector"></div>
+
+          <div class="evo-step">
+            <div class="evo-icon" style="border-color:var(--blue);">
+              <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            </div>
+            <div class="evo-text">Customer crosses geofence and accesses payment badge. Unique code or QR generated from intent (payment, gift card, deal).</div>
+          </div>
+          <div class="evo-connector"></div>
+
+          <div class="evo-step">
+            <div class="evo-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            </div>
+            <div class="evo-text">Customer appears on POS with name only for soft check-in — enables recents, favorites, and loyalty earning.</div>
+          </div>
+          <div class="evo-connector"></div>
+
+          <div class="evo-step">
+            <div class="evo-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            </div>
+            <div class="evo-text">Customer provides code or QR to crew for hard check-in, enabling saved payment for order.</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ─── BADGE ACCESS ─── -->
+<section id="badge-access">
+  <div class="section-wrap">
+    <div class="section-label">Feature Design</div>
+    <h2 class="section-title">Badge Access</h2>
+    <p class="section-body">Introducing a new feature within the app created a need to provide both an easy persistent access method and explicit contextual entry points throughout to drive adoption.</p>
+
+    <div class="access-grid">
+
+      <div class="access-card">
+        <div class="access-icon-wrap">
+          <!-- burger menu icon -->
+          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        </div>
+        <div class="access-card-title">Burger Menu</div>
+        <div class="access-card-body">A persistent "Pay &amp; Earn" button within the navigation menu gives customers a reliable access point from anywhere in the app.</div>
+      </div>
+
+      <div class="access-card">
+        <div class="access-icon-wrap">
+          <!-- vibration/shake icon -->
+          <svg viewBox="0 0 24 24"><path d="M0 15h2V9H0v6zm3 2h2V7H3v10zm19-8v6h2V9h-2zm-3 8h2V7h-2v10zM16.5 3h-9C6.67 3 6 3.67 6 4.5v15c0 .83.67 1.5 1.5 1.5h9c.83 0 1.5-.67 1.5-1.5v-15c0-.83-.67-1.5-1.5-1.5zM16 19H8V5h8v14z"/></svg>
+        </div>
+        <div class="access-card-title">Shake to Access</div>
+        <div class="access-card-body">Users can shake their phone to access the badge from anywhere in the application — a gesture-based shortcut surfaced through the onsite discovery moment.</div>
+      </div>
+
+      <div class="access-card">
+        <div class="access-icon-wrap">
+          <!-- star/rewards icon -->
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </div>
+        <div class="access-card-title">My Rewards</div>
+        <div class="access-card-body">Within 'My Rewards', a CTA allows customers to earn loyalty points by presenting their badge — reinforcing the value of check-in at the point of motivation.</div>
+      </div>
+
+      <div class="access-card">
+        <div class="access-icon-wrap">
+          <!-- deals/tag icon -->
+          <svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+        </div>
+        <div class="access-card-title">Deals</div>
+        <div class="access-card-body">Within 'Deals', each available deal surfaces a CTA to redeem it with the badge — tying payment and loyalty check-in directly to deal redemption intent.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ─── SHAKE DISCOVERY ─── -->
+<section id="shake">
+  <div class="section-wrap">
+    <div class="section-label">Onboarding Moment</div>
+    <h2 class="section-title">Access — Shake Discovery</h2>
+    <p class="section-body">In order to have users discover they can shake the app to access the badge, a specific 'home' screen is triggered by the geofence crossing — encouraging users to discover the payment and loyalty badge via shaking.</p>
+
+    <div class="shake-layout">
+
+      <!-- wireframe phone with coins -->
+      <div style="display:flex; justify-content:center;">
+        <div class="shake-phone">
+          <div class="shake-phone-notch"></div>
+          <div class="shake-coin-field">
+            <!-- coins at various positions with staggered animation delays -->
+            <div class="shake-coin" style="left:30px; top:30px; animation-duration:2.8s; animation-delay:0s;"></div>
+            <div class="shake-coin" style="left:80px; top:10px; animation-duration:3.2s; animation-delay:-0.7s;"></div>
+            <div class="shake-coin" style="left:140px; top:50px; animation-duration:2.5s; animation-delay:-1.2s;"></div>
+            <div class="shake-coin" style="left:55px; top:90px; animation-duration:3.6s; animation-delay:-0.3s;"></div>
+            <div class="shake-coin" style="left:120px; top:110px; animation-duration:2.9s; animation-delay:-1.8s;"></div>
+            <div class="shake-coin" style="left:20px; top:150px; animation-duration:3.1s; animation-delay:-0.9s;"></div>
+            <div class="shake-coin" style="left:155px; top:160px; animation-duration:2.7s; animation-delay:-2.1s;"></div>
+            <div class="shake-coin" style="left:70px; top:200px; animation-duration:3.4s; animation-delay:-0.5s;"></div>
+            <div class="shake-coin" style="left:100px; top:60px; animation-duration:2.6s; animation-delay:-1.5s;"></div>
+            <div class="shake-coin" style="left:30px; top:240px; animation-duration:3.0s; animation-delay:-2.4s;"></div>
+          </div>
+          <div class="shake-prompt">Shake to Earn Points!</div>
+        </div>
+      </div>
+
+      <!-- explanation -->
+      <div class="shake-info">
+        <div class="shake-info-item">
+          <div class="shake-info-num">01</div>
+          <div class="shake-info-text">When the customer first opens the app on-site, coins fall from the top of the application and bounce around using the phone's physics engine.</div>
+        </div>
+        <div class="shake-info-item">
+          <div class="shake-info-num">02</div>
+          <div class="shake-info-text">The falling coins encourage customers to shake their phone to move them — naturally discovering the shake-to-access gesture.</div>
+        </div>
+        <div class="shake-info-item">
+          <div class="shake-info-num">03</div>
+          <div class="shake-info-text">This moment is triggered specifically by the geofence crossing, so it's contextually relevant — the customer is on-site and the badge is immediately useful.</div>
+        </div>
+        <div class="shake-info-item">
+          <div class="shake-info-num">04</div>
+          <div class="shake-info-text">"Surprise and delight" principle in practice — a playful, memorable interaction that teaches the gesture without instruction copy.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ─── BADGE STATES ─── -->
+<section id="badge-states">
+  <div class="section-wrap">
+    <div class="section-label">Feature Design</div>
+    <h2 class="section-title">Badge</h2>
+    <p class="section-body">The badge surfaces three distinct states depending on context: earn-only with an alpha code, QR code expanded for payment window, and full payment with a saved card.</p>
+
+    <div class="badge-states-grid">
+
+      <!-- State 1: Earn (alpha code only) -->
+      <div class="badge-state-wrap">
+        <div class="badge-card">
+          <div class="badge-card-header">
+            <div class="badge-card-tab">
+              <div class="badge-tab-circle"></div>
+              Earn
+            </div>
+            <div class="badge-card-help">?</div>
+          </div>
+          <div class="badge-card-body">
+            <div class="badge-prompt">Tell us your code</div>
+            <div class="badge-code">AB12</div>
+            <div class="badge-qr-link">View QR Code</div>
+            <div class="badge-divider"></div>
+            <div class="badge-cta">
+              <span class="badge-cta-text">Add Saved Payment</span>
+              <div class="badge-cta-arrow"></div>
+            </div>
+          </div>
+        </div>
+        <div class="badge-state-label">Alpha code — earn &amp; check-in only</div>
+      </div>
+
+      <!-- State 2: QR + payment selection -->
+      <div class="badge-state-wrap">
+        <div class="badge-card">
+          <div class="badge-card-header">
+            <div class="badge-card-tab">
+              <div class="badge-tab-circle"></div>
+              Select Payment Method
+            </div>
+          </div>
+          <div class="badge-card-body" style="gap:8px;">
+            <div class="pay-list">
+              <div class="pay-row">
+                <div class="pay-radio"></div>
+                <div class="pay-card-icon"></div>
+                <span class="pay-label">Visa 4479</span>
+              </div>
+              <div class="pay-row">
+                <div class="pay-radio"></div>
+                <div class="pay-card-icon"></div>
+                <span class="pay-label">Amex 3601</span>
+              </div>
+              <div class="pay-row">
+                <div class="pay-radio"></div>
+                <span class="pay-label" style="padding-left:42px;">No Saved Payment</span>
+              </div>
+            </div>
+            <div class="pay-gift-row">
+              <div class="pay-checkbox"></div>
+              <span class="pay-gift-label">Use $12.00 Gift Card Balance</span>
+            </div>
+          </div>
+        </div>
+        <div class="badge-state-label">Payment selection</div>
+      </div>
+
+      <!-- State 3: Pay + Earn with QR -->
+      <div class="badge-state-wrap">
+        <div class="badge-card">
+          <div class="badge-card-header">
+            <div class="badge-card-tab">
+              <div class="badge-tab-circle filled"></div>
+              Pay and Earn
+            </div>
+            <div class="badge-card-help">?</div>
+          </div>
+          <div class="badge-card-body">
+            <div class="badge-code-sm">AB12</div>
+            <!-- QR wireframe grid -->
+            <div class="qr-grid">
+              <!-- top-left anchor -->
+              <div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="b"></div>
+              <div class="b"></div><div class="e"></div><div class="e"></div><div class="b"></div><div class="e"></div><div class="e"></div><div class="b"></div><div class="e"></div><div class="b"></div>
+              <div class="b"></div><div class="e"></div><div class="b"></div><div class="b"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="b"></div><div class="b"></div>
+              <div class="b"></div><div class="b"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="e"></div>
+              <div class="e"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="e"></div><div class="e"></div><div class="b"></div><div class="e"></div><div class="b"></div>
+              <div class="b"></div><div class="e"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="b"></div><div class="e"></div>
+              <div class="b"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div>
+              <div class="b"></div><div class="e"></div><div class="b"></div><div class="b"></div><div class="b"></div><div class="e"></div><div class="e"></div><div class="e"></div><div class="b"></div>
+              <div class="b"></div><div class="b"></div><div class="b"></div><div class="e"></div><div class="b"></div><div class="b"></div><div class="b"></div><div class="e"></div><div class="b"></div>
+            </div>
+            <div class="badge-divider"></div>
+            <div class="badge-pay-chip">
+              <div class="badge-pay-chip-card"></div>
+              <span class="pay-label">Amex 3601</span>
+            </div>
+            <div class="badge-gift-applied">$12.00 Gift Card Applied</div>
+          </div>
+        </div>
+        <div class="badge-state-label">Badge with saved payment + QR</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer id="page-footer">
+  <span class="footer-note">McDonald's · Mobile Payment &amp; Loyalty · UX Deck</span>
+  <a class="footer-back" href="/projects/mcdonalds">← Back to case study</a>
+</footer>
+
+<script>
+  // progress bar
+  const bar = document.getElementById('read-progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // active nav link
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.nav-link');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const match = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => obs.observe(s));
+</script>
+
+</body>
+</html>

@@ -4,46 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meta CM Benchmark Study | Joseph Grgic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --navy:       var(--k-text-primary);
-      --slate:      var(--k-text-secondary);
-      --slate-mid:  var(--k-text-muted);
-      --slate-light:var(--k-border-mid);
-      --slate-bg:   rgba(200,200,200,0.12);
-      --white:      var(--k-surface);
-      --off-white:  var(--k-bg);
-      --text-body:  var(--k-text-secondary);
-      --text-muted: var(--k-text-muted);
-      --border:     var(--k-border-light);
+      --navy:       #1C2B33;
+      --slate:      #67788A;
+      --slate-mid:  #8fa0ae;
+      --slate-light:#CED7E0;
+      --slate-bg:   rgba(206,215,224,0.22);
+      --white:      #ffffff;
+      --off-white:  #f8f9fa;
+      --text-body:  #2c3e4a;
+      --text-muted: rgba(28,43,51,0.55);
+      --border:     #e4e8eb;
       --accent:     #B66060;
-      --radius:     0px;
+      --radius:     10px;
       --nav-h:      56px;
-
-      /* Case study spacing — aligned with Kronos 8px scale */
-      --s-1:  4px;
-      --s-2:  8px;
-      --s-3:  12px;
-      --s-4:  16px;
-      --s-5:  24px;
-      --s-6:  32px;
-      --s-7:  48px;
-      --s-8:  64px;
-      --s-9:  96px;
-
-      /* Case study custom spacing (off-scale, scoped to this case study) */
-      --case-px-20: 20px;  /* Mobile/edge padding */
-      --case-px-28: 28px;  /* Card internal padding */
-      --case-px-40: 40px;  /* Horizontal padding */
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'IBM Plex Sans', 'Inter', -apple-system, sans-serif;
+      font-family: 'Inter', -apple-system, sans-serif;
       background: var(--white);
       color: var(--navy);
       -webkit-font-smoothing: antialiased;
@@ -125,7 +112,6 @@
       flex-wrap: wrap;
     }
     .hero-tag {
-      font-family: 'IBM Plex Mono', monospace;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -165,7 +151,6 @@
     }
     .hero-meta-group { display: flex; flex-direction: column; gap: 4px; }
     .hero-meta-label {
-      font-family: 'IBM Plex Mono', monospace;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -207,15 +192,22 @@
     }
 
     .section-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--k-text-muted);
+      color: var(--slate);
       margin-bottom: 32px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--k-border-heavy);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      max-width: 60px;
     }
 
     .section-title {
@@ -259,7 +251,6 @@
     }
 
     .card-label {
-      font-family: 'IBM Plex Mono', monospace;
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
@@ -297,7 +288,6 @@
       margin-bottom: 12px;
     }
     .stat-label {
-      font-family: 'IBM Plex Mono', monospace;
       font-size: 16px;
       font-weight: 500;
       color: var(--text-body);
@@ -423,7 +413,6 @@
     }
 
     .accordion-title {
-      font-family: 'IBM Plex Mono', monospace;
       font-size: 16px;
       font-weight: 600;
       color: var(--navy);

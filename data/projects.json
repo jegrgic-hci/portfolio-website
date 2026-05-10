@@ -83,7 +83,7 @@
       }
     },
     "images": {
-      "hero": "/projects/allstate/images/hero.jpg",
+      "hero": "/images/allstate.jpg",
       "featured": [
         "/projects/allstate/images/frame-133.jpg",
         "/projects/allstate/images/frame-134.jpg",
@@ -117,10 +117,10 @@
       }
     },
     "images": {
-      "hero": "/projects/mcdonalds/images/hero.jpg",
+      "hero": "/images/mcdonalds.jpg",
       "featured": []
     },
-    "contentUrl": null,
+    "contentUrl": "/projects/mcdonalds/content/case-study.html",
     "externalLink": null,
     "tags": ["Product Design", "Omnichannel", "Loyalty"]
   },
@@ -145,7 +145,7 @@
       }
     },
     "images": {
-      "hero": "/projects/verizon/images/hero.jpg",
+      "hero": "/images/verizon.jpg",
       "featured": []
     },
     "contentUrl": "/projects/verizon/content/case-study.html",
@@ -173,10 +173,10 @@
       }
     },
     "images": {
-      "hero": "/projects/meta-sfi/images/hero.jpg",
+      "hero": "/images/meta-sfi.jpg",
       "featured": []
     },
-    "contentUrl": null,
+    "contentUrl": "/projects/meta-sfi/content/case-study.html",
     "externalLink": null,
     "tags": ["UX Research", "Moderated", "Seller Tools"]
   },
@@ -202,7 +202,7 @@
       }
     },
     "images": {
-      "hero": "/projects/meta-benchmark/images/hero.jpg",
+      "hero": "/images/meta-benchmark.jpg",
       "featured": []
     },
     "contentUrl": "/projects/meta-benchmark/content/case-study.html",
@@ -230,7 +230,7 @@
       }
     },
     "images": {
-      "hero": "/projects/google-hedwig/images/hero.jpg",
+      "hero": "/images/google-hedwig.jpg",
       "featured": []
     },
     "contentUrl": null,
@@ -258,7 +258,7 @@
       }
     },
     "images": {
-      "hero": "/projects/google-editor/images/hero.jpg",
+      "hero": "/images/google-editor.jpg",
       "featured": []
     },
     "contentUrl": null,
@@ -286,7 +286,7 @@
       }
     },
     "images": {
-      "hero": "/projects/cigna/images/hero.jpg",
+      "hero": "/images/cigna.jpg",
       "featured": []
     },
     "contentUrl": null,

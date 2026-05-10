@@ -5,38 +5,41 @@ This guide explains how to add new portfolio projects while maintaining the file
 ## Folder Structure
 
 ```
+import-project/               ← gitignored staging area (Builder.io exports go here first)
+
 app/
 ├── projects/
-│   ├── [slug]/
-│   │   └── page.tsx           # Project page template (dynamic route)
-│   └── page.tsx               # Projects listing/grid (future)
+│   └── [slug]/
+│       └── page.tsx          # Dynamic route — handles all projects automatically
 ├── components/
-│   ├── ProjectLayout.tsx       # Shared project layout wrapper
-│   ├── ProjectHero.tsx         # Hero section with client branding
-│   └── ...other shared components
-├── page.tsx                    # Home (hero + featured projects)
-├── work/page.tsx               # Work/case studies grid (curated)
-└── writings/page.tsx           # Articles/writings
+│   ├── ProjectLayout.tsx     # Shared project layout wrapper
+│   ├── ProjectHero.tsx       # Hero section with client branding
+│   └── ...
+├── page.tsx                  # Home (hero + featured projects)
+├── work/page.tsx             # Work/case studies grid (curated)
+└── writings/page.tsx         # Articles/writings
 
 data/
-└── projects.json               # All project metadata (centralized)
+└── projects.json             # All project metadata (centralized)
 
-public/projects/
-├── allstate/
-│   ├── images/
-│   │   ├── hero.jpg
-│   │   ├── flow-diagram.png
-│   │   ├── outcome-1.jpg
-│   │   └── ...other images
-│   └── content/
-│       └── case-study.html     # Optional: Builder.io export or detailed content
-├── verizon/
-│   ├── images/
-│   └── content/
-├── new-project/
-│   ├── images/
-│   └── content/
-└── ...more projects
+public/
+├── images/                   # Flat folder — home page thumbnails only
+│   ├── hero.jpg              #   Site hero / profile photo
+│   ├── allstate.jpg          #   Card thumbnails: one per project, named by slug
+│   ├── verizon.jpg
+│   └── {slug}.jpg
+├── documents/                # PDFs (resume, CV)
+└── projects/                 # Per-project content
+    ├── allstate/
+    │   ├── content/
+    │   │   └── case-study.html   # Full case study HTML
+    │   └── images/               # Case study screens (not card thumbnails)
+    ├── verizon/
+    │   ├── content/
+    │   └── images/
+    └── {new-project}/
+        ├── content/
+        └── images/
 ```
 
 ## Data Schema
@@ -66,7 +69,7 @@ All project metadata lives in `data/projects.json`. Each project entry:
   },
   
   "images": {
-    "hero": "/projects/allstate/images/hero.jpg",
+    "hero": "/images/allstate.jpg",
     "featured": [
       "/projects/allstate/images/flow-diagram.png",
       "/projects/allstate/images/outcome-1.jpg"
@@ -81,23 +84,34 @@ All project metadata lives in `data/projects.json`. Each project entry:
 
 ## Adding a New Project (Step-by-Step)
 
-### 1. Create Project Folder & Images
+### 0. Stage the Import
+
+Drop the Builder.io HTML export into `import-project/` (gitignored — stays local).
+
+Work with Claude to:
+- Clean and adapt the HTML to match design guidelines
+- Rename and optimize images
+- Confirm all `<img src="">` paths use absolute format: `/projects/{slug}/images/filename`
+- Extract client brand colors
+
+Once clean, move outputs:
+- HTML → `public/projects/{slug}/content/case-study.html`
+- Case study screens → `public/projects/{slug}/images/`
+- Card thumbnail → `public/images/{slug}.jpg`
+
+### 1. Create Project Folders
 
 ```bash
-mkdir -p public/projects/project-name/images
 mkdir -p public/projects/project-name/content
+mkdir -p public/projects/project-name/images
 ```
-
-Place images in `public/projects/project-name/images/`:
-- `hero.jpg` (1500px wide recommended)
-- Flow diagrams, wireframes, outcomes, etc.
 
 ### 2. Extract Brand Colors
 
-From Figma or the Builder.io HTML export, identify the client's brand colors:
-- Primary color (main accent)
-- Secondary/accent color
-- Light background variant (optional)
+From the Builder.io HTML or Figma, identify:
+- Primary color (headlines, main accents)
+- Accent color (buttons, highlights)
+- Light background variant (callouts, stats blocks — optional)
 
 Add these to the JSON entry (see schema above).
 
@@ -128,7 +142,7 @@ Copy an existing entry and modify:
   },
   
   "images": {
-    "hero": "/projects/new-project/images/hero.jpg",
+    "hero": "/images/new-project.jpg",
     "featured": [
       "/projects/new-project/images/image-1.jpg",
       "/projects/new-project/images/image-2.jpg"
@@ -200,38 +214,36 @@ Example in ProjectLayout:
 
 ## Image Guidelines
 
-**Hero Image** (project home link preview)
+**Card Thumbnail** (`public/images/{slug}.jpg`) — shown on home and work pages
 - Size: 1500px × 800px (2:1 ratio)
-- Format: JPG (compressed)
+- Format: JPG, 100–150KB
 - Should represent the project at a glance
 
-**Featured Images** (in case study)
-- Size: 1200px–1500px width
-- Format: JPG for photos, PNG for diagrams
-- Use consistently across projects
+**Case Study Screens** (`public/projects/{slug}/images/`) — shown inside the case study
+- Size: 1200–1500px wide
+- Format: JPG for photos, PNG for diagrams/wireframes
+- 150–200KB each
 
-**Organize by type:**
+**Organize case study images by type if there are many:**
 ```
-images/
-├── hero.jpg
+public/projects/{slug}/images/
 ├── flow-diagram.png
 ├── wireframes/
 │   ├── flow-1.png
-│   ├── flow-2.png
-├── outcomes/
-│   ├── result-1.jpg
-│   └── result-2.jpg
+│   └── flow-2.png
+└── outcomes/
+    ├── result-1.jpg
+    └── result-2.jpg
 ```
 
 ## Workflow Tips
 
-1. **Design in Figma** → Export assets and note brand colors
-2. **Generate with Builder.io** (optional) → Reference for content structure
-3. **Build React component** → Use ProjectLayout template
-4. **Add images** → Organized in project folder
-5. **Add JSON entry** → One entry per project
-6. **Test locally** → `npm run dev`, view at `/projects/new-project`
-7. **Deploy** → Push to main, auto-builds on Cloudflare Pages
+1. **Export from Builder.io** → Drop HTML into `import-project/` (gitignored staging)
+2. **Clean up with Claude** → Adapt HTML, rename images, extract brand colors
+3. **Move clean outputs** → HTML to `public/projects/{slug}/content/`, screens to `public/projects/{slug}/images/`, thumbnail to `public/images/{slug}.jpg`
+4. **Add JSON entry** → One entry per project in `data/projects.json`
+5. **Test locally** → `npm run dev`, view at `/projects/{slug}`
+6. **Deploy** → Push to main, auto-builds on Cloudflare Pages
 
 ## Featured vs. Non-Featured Projects
 
@@ -255,16 +267,17 @@ Changes auto-update on all pages that reference the project.
 
 ## Checklist for New Projects
 
-- [ ] Folder created: `public/projects/project-slug/`
-- [ ] Images uploaded to `public/projects/project-slug/images/`
-- [ ] Brand colors extracted from Figma
-- [ ] JSON entry added to `data/projects.json`
-- [ ] All required fields filled (id, title, company, description, etc.)
-- [ ] Client brand colors added to JSON
-- [ ] Images paths referenced correctly in JSON
-- [ ] Tested locally: `npm run dev` → `/projects/project-slug`
+- [ ] Builder.io HTML staged in `import-project/` and cleaned up
+- [ ] HTML moved to `public/projects/{slug}/content/case-study.html`
+- [ ] Case study screens moved to `public/projects/{slug}/images/`
+- [ ] Card thumbnail added to `public/images/{slug}.jpg`
+- [ ] All `<img src="">` paths in HTML are absolute (`/projects/{slug}/images/...`)
+- [ ] Brand colors extracted and ready
+- [ ] JSON entry added to `data/projects.json` with all required fields
+- [ ] `images.hero` in JSON points to `/images/{slug}.jpg`
+- [ ] Tested locally: `npm run dev` → `/projects/{slug}`
 - [ ] Content renders correctly on mobile (test in browser devtools)
-- [ ] If featured: added to home page and verified display
+- [ ] If featured: appears on home page and verified display
 
 ## File Size & Performance
 

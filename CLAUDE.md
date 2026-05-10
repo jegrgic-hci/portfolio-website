@@ -24,12 +24,12 @@ The structure supports dynamic project pages via `app/projects/[slug]/page.tsx`,
 
 ### Quick Reference: New Project Steps
 
-1. Create folder: `public/projects/{slug}/images/`
-2. Add images (hero.jpg, wireframes, outcomes, etc.)
-3. Extract brand colors from Figma
-4. Add one entry to `data/projects.json` with all required fields
-5. Test locally: `npm run dev` → visit `/projects/{slug}`
-6. Push to main → auto-deploys
+0. **Import & stage** — drop Builder.io HTML into `import-project/`, clean it up there first
+1. **Move outputs** — HTML → `public/projects/{slug}/content/`, images → `public/projects/{slug}/images/`, thumbnail → `public/images/{slug}.jpg`
+2. **Extract brand colors** from the HTML or Figma
+3. **Add JSON entry** to `data/projects.json`
+4. Test locally: `npm run dev` → visit `/projects/{slug}`
+5. Push to main → auto-deploys
 
 **For full details: See `PROJECTS.md`**
 
@@ -93,6 +93,9 @@ When adding projects, reuse these components rather than building custom layouts
 ## File Organization
 
 ```
+import-project/           # Gitignored staging area for in-progress imports
+  └── README.md           # Explains the workflow
+
 app/
 ├── projects/[slug]/page.tsx       # Dynamic project pages
 ├── components/
@@ -106,26 +109,34 @@ app/
 data/
 └── projects.json                  # Single source of truth for all projects
 
-public/projects/
-├── allstate/images/               # Organized by project
-├── verizon/images/
-├── new-project/images/            # Add new projects here
-└── ...
+public/
+├── images/                        # Flat: hero.jpg + {slug}.jpg card thumbnails
+├── documents/                     # PDFs (resume, CV)
+└── projects/
+    ├── allstate/
+    │   ├── content/case-study.html
+    │   └── images/                # Case study screens
+    ├── verizon/
+    └── ...
 ```
 
 **Do not create individual route folders** like `/app/new-project/page.tsx`. Use the dynamic route `/app/projects/[slug]/` instead.
 
-## Rebuilding from Builder.io
+## Importing from Builder.io
 
-**Workflow for converting Builder.io exports:**
+New projects start in `import-project/` (gitignored), not directly in `public/`. This keeps messy in-progress work out of the repo until it's clean.
 
-1. **Builder.io → HTML export** saved to `public/projects/{slug}/content/case-study.html`
-2. **Extract brand colors** from the design and add to JSON
-3. **Extract images** and save to `public/projects/{slug}/images/`
-4. **Build React component** or reference the HTML in an iframe
-5. **Reuse layout** across projects (don't build one-off custom pages)
+**Staging workflow:**
+1. Drop Builder.io HTML export into `import-project/`
+2. Work with Claude to clean up HTML, rename/optimize images, extract brand colors
+3. Confirm all image `src` paths use absolute format: `/projects/{slug}/images/filename`
+4. Move clean outputs:
+   - HTML → `public/projects/{slug}/content/case-study.html`
+   - Screens → `public/projects/{slug}/images/`
+   - Card thumbnail → `public/images/{slug}.jpg`
+5. Add JSON entry to `data/projects.json`
 
-The goal is consistency: same layout structure across projects, but with custom client branding + content per project.
+The goal is consistency: shared layout structure across all projects, with custom client branding + content per project.
 
 ## Responsiveness
 
@@ -164,5 +175,5 @@ Cloudflare Pages auto-deploys on push to main branch.
 
 ---
 
-**Last updated:** May 1, 2026
-**Next session:** Follow `PROJECTS.md` when adding new portfolio projects.
+**Last updated:** May 10, 2026
+**Next session:** Follow `PROJECTS.md` when adding new portfolio projects. Drop Builder.io exports into `import-project/` first.

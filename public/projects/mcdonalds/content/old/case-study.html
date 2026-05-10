@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account-Based Ordering | McDonald's — Joseph Grgic</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        var(--k-text-primary);
+      --navy-deep:   var(--k-text-primary);
+      --slate:       var(--k-text-secondary);
+      --slate-mid:   var(--k-text-muted);
+      --slate-light: var(--k-border-mid);
+      --slate-bg:    rgba(200,200,200,0.12);
+      --accent:      #DA291C;
+      --accent-light:#FFF3CD;
+      --accent-2:    #FFC72C;
+      --white:       var(--k-surface);
+      --off-white:   var(--k-bg);
+      --text-body:   var(--k-text-secondary);
+      --text-muted:  var(--k-text-muted);
+      --border:      var(--k-border-light);
+      --radius:      0px;
+      --nav-h:       56px;
+
+      --s-1:  4px;
+      --s-2:  8px;
+      --s-3:  12px;
+      --s-4:  16px;
+      --s-5:  24px;
+      --s-6:  32px;
+      --s-7:  48px;
+      --s-8:  64px;
+      --s-9:  96px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'IBM Plex Sans', 'Inter', -apple-system, sans-serif;
+      background: var(--white);
+      color: var(--navy);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── STICKY NAV ─── */
+    #site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      gap: 24px;
+    }
+    .nav-brand {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-brand span { color: var(--slate); font-weight: 400; }
+    .nav-links {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--slate);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-link:hover { background: var(--slate-bg); color: var(--navy); }
+    .nav-link.active { background: var(--navy); color: var(--white); }
+
+    /* ─── PROGRESS BAR ─── */
+    #read-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--accent);
+      z-index: 300;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      padding: 96px 40px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .hero-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate);
+      background: var(--slate-bg);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .hero-date { font-size: 13px; color: var(--text-muted); }
+    .hero-title {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--navy);
+      max-width: 820px;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+    .hero-meta-group { display: flex; flex-direction: column; gap: 4px; }
+    .hero-meta-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+    }
+    .hero-meta-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--navy);
+    }
+
+    /* ─── SECTIONS ─── */
+    .section {
+      padding: 80px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section + .section { padding-top: 0; }
+
+    .section-full {
+      padding: 80px 40px;
+      background: var(--off-white);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .section-full .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--k-text-muted);
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--k-border-heavy);
+    }
+    .section-title {
+      font-size: clamp(22px, 3vw, 36px);
+      font-weight: 500;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 40px;
+    }
+
+    /* ─── TL;DR GRID ─── */
+    .tldr-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      background: var(--border);
+      overflow: hidden;
+    }
+    @media (max-width: 800px) { .tldr-grid { grid-template-columns: 1fr; } }
+    .tldr-card {
+      background: var(--white);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .tldr-card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate);
+    }
+    .tldr-card-body {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+    .tldr-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      list-style: none;
+    }
+    .tldr-list li {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-body);
+      padding-left: 18px;
+      position: relative;
+    }
+    .tldr-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--slate-mid);
+      font-size: 13px;
+    }
+
+    /* ─── INFO ROWS ─── */
+    .info-rows { display: flex; flex-direction: column; gap: 0; }
+    .info-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 24px 40px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .info-row:first-child { border-top: 1px solid var(--border); }
+    @media (max-width: 700px) { .info-row { grid-template-columns: 1fr; gap: 8px; } }
+    .info-row-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate);
+      padding-top: 2px;
+    }
+    .info-row-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-body);
+    }
+    .info-row-body strong { font-weight: 600; color: var(--navy); }
+
+    /* ─── OUTCOMES / KEY DECISIONS ─── */
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 800px) { .outcomes-grid { grid-template-columns: 1fr; } }
+    .outcome-card {
+      border: 1px solid var(--border);
+      padding: 28px 24px;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .outcome-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .outcome-card-body {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+
+    /* ─── PRINCIPLES GRID ─── */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 800px) { .principles-grid { grid-template-columns: 1fr; } }
+    .principle-card {
+      border: 1px solid var(--border);
+      padding: 28px 24px;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .principle-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .principle-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .principle-body {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-body);
+    }
+    .principle-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .principle-list li {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-body);
+      padding-left: 16px;
+      position: relative;
+    }
+    .principle-list li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ─── SCREEN BLOCKS ─── */
+    .screen-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      margin-bottom: 72px;
+    }
+    .screen-block:last-child { margin-bottom: 0; }
+    @media (max-width: 900px) { .screen-block { grid-template-columns: 1fr; gap: 32px; } }
+    .screen-block.reverse { direction: rtl; }
+    .screen-block.reverse > * { direction: ltr; }
+
+    .screen-image {
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      background: var(--off-white);
+      border: 1px solid var(--border);
+    }
+    .screen-image img { width: 100%; height: auto; display: block; }
+
+    .screen-content h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+    .screen-content p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 16px;
+    }
+    .screen-content p:last-child { margin-bottom: 0; }
+
+    /* ─── PHONE GRID ─── */
+    .phone-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .phone-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .phone-grid { grid-template-columns: 1fr; } }
+
+    .phone-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .phone-grid-3 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .phone-grid-3 { grid-template-columns: 1fr; } }
+
+    .phone-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      align-items: start;
+      max-width: 600px;
+    }
+    @media (max-width: 500px) { .phone-grid-2 { grid-template-columns: 1fr; } }
+
+    .phone-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .phone-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .phone-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    /* ─── FULL WIDTH IMAGE ─── */
+    .full-image {
+      width: 100%;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+    .full-image img { width: 100%; height: auto; display: block; }
+    .img-caption {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    /* ─── INSIGHT CALLOUT ─── */
+    .insight-callout {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      padding: 28px 32px;
+      background: var(--accent-light);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+    .insight-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    .insight-body {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--navy);
+      font-weight: 500;
+    }
+
+    /* ─── FOOTER ─── */
+    #footer {
+      background: var(--off-white);
+      border-top: 1px solid var(--border);
+      padding: 48px 40px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    #footer .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    #footer a { color: var(--navy); font-weight: 500; text-decoration: none; }
+    #footer a:hover { text-decoration: underline; }
+
+    /* ─── REVEAL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      #site-nav { padding: 0 20px; }
+      .section { padding: 60px 20px; }
+      .section-full { padding: 60px 20px; }
+      #hero { padding: 60px 20px 50px; }
+      #footer .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="read-progress"></div>
+
+<nav id="site-nav">
+  <a href="/" class="nav-brand">Joseph Grgic <span>/ McDonald's GMA</span></a>
+  <div class="nav-links">
+    <a href="#overview" class="nav-link active">Overview</a>
+    <a href="#outcomes" class="nav-link">Outcomes</a>
+    <a href="#principles" class="nav-link">Principles</a>
+    <a href="#service-design" class="nav-link">Service Design</a>
+    <a href="#badge" class="nav-link">Badge System</a>
+    <a href="#post-fulfillment" class="nav-link">Post-Fulfillment</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-eyebrow">
+    <span class="hero-tag">Product Design · Mobile</span>
+    <span class="hero-date">McDonald's</span>
+  </div>
+  <h1 class="hero-title">Designing account-based ordering, loyalty, and payments for McDonald's Global Mobile App</h1>
+  <div class="hero-meta">
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Role</div>
+      <div class="hero-meta-value">Team Lead UXD · UXR</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Duration</div>
+      <div class="hero-meta-value">9 months</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Tools</div>
+      <div class="hero-meta-value">Sketch · Mr Tappy</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Methods</div>
+      <div class="hero-meta-value">Research · Stakeholder Interviews · Service Blueprinting · Usability Testing</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 1. OVERVIEW ─── -->
+<section id="overview" class="section">
+  <div class="section-label">Overview</div>
+  <div class="tldr-grid">
+    <div class="tldr-card reveal">
+      <div class="tldr-card-label">The Goal</div>
+      <div class="tldr-card-body">
+        Merge customer needs with business requirements by streamlining mobile payments, loyalty point collection, deal redemptions, and post-purchase support within McDonald's Global Mobile App (GMA).
+      </div>
+    </div>
+    <div class="tldr-card reveal reveal-delay-1">
+      <div class="tldr-card-label">The Challenge</div>
+      <div class="tldr-card-body">
+        Rethink the full customer journey — from account sign-up and restaurant entry to order corrections and feedback — while staying true to McDonald's brand identity and operating within existing app architecture constraints.
+      </div>
+    </div>
+    <div class="tldr-card reveal reveal-delay-2">
+      <div class="tldr-card-label">The Solution</div>
+      <div class="tldr-card-body">
+        An innovative "Badge" system — an unobtrusive modal interface integrating voice and QR code interactions, dynamic animations, and multi-channel access methods (global gestures, widgets, 3D Touch) unified in one reusable module.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 2. KEY OUTCOMES ─── -->
+<section id="outcomes" class="section">
+  <div class="section-label">Key Outcomes</div>
+  <div class="outcomes-grid">
+    <div class="outcome-card reveal">
+      <div class="outcome-card-title">Integrated Account-Based Ordering</div>
+      <div class="outcome-card-body">
+        Reframed the value of a McDonald's account to both customers and operations. Simplified access via geofencing-triggered Voice Codes for a frictionless sign-in experience.
+      </div>
+    </div>
+    <div class="outcome-card reveal reveal-delay-1">
+      <div class="outcome-card-title">Enhanced Customer-Oriented Display</div>
+      <div class="outcome-card-body">
+        Developed a display that showcases favorites and recent orders at the restaurant, reducing steps and improving order speed and accuracy. Emphasized branded design elements (Branded COD, Max Content guidelines, smart search) for a personalized experience.
+      </div>
+    </div>
+    <div class="outcome-card reveal reveal-delay-2">
+      <div class="outcome-card-title">Innovative Animation &amp; Interaction Design</div>
+      <div class="outcome-card-body">
+        Introduced the Moments Panel animation featuring falling coins that respond to device gestures, encouraging natural interactions like shaking the phone. Created subtle menu animations drawing attention to Payment &amp; Loyalty access without cluttering the interface.
+      </div>
+    </div>
+    <div class="outcome-card reveal reveal-delay-3">
+      <div class="outcome-card-title">Flexible "Badge" System for Payment &amp; Loyalty</div>
+      <div class="outcome-card-body">
+        A dual-sided badge combining Loyalty, Payment, Arch Card, and Deal redemption into one reusable module. Multiple states (voice code, QR code, saved payment methods) with on-demand instructions via an accessible "?" icon.
+      </div>
+    </div>
+    <div class="outcome-card reveal" style="grid-column: 1 / -1;">
+      <div class="outcome-card-title">Robust Post-Fulfillment Experience</div>
+      <div class="outcome-card-body">
+        Designed a dynamic eReceipt celebrating loyalty milestones and rewards alongside order details. Incorporated a Help &amp; Support system that streamlines order corrections and directs drive-thru users to in-app support. Established a feedback mechanism (star ratings and Voice Surveys) to capture customer experiences shortly after meal completion.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 3. DESIGN PRINCIPLES ─── -->
+<section id="principles" class="section">
+  <div class="section-label">Design Principles</div>
+  <div class="principles-grid">
+    <div class="principle-card reveal">
+      <div class="principle-num">01</div>
+      <div class="principle-title">A Single Check-in Per Visit</div>
+      <ul class="principle-list">
+        <li>Use GMA only once to redeem a Deal, Pay, and Earn Points (fewer eCP calls)</li>
+        <li>No GMA-side aggregation necessary — Pay badge easily added to Deals rather than going two places</li>
+        <li>Clean design doesn't add another sidebar menu item; payment is a 'ubiquitous' element</li>
+      </ul>
+    </div>
+    <div class="principle-card reveal reveal-delay-1">
+      <div class="principle-num">02</div>
+      <div class="principle-title">Unambiguous for Crew, Secure for Customers</div>
+      <ul class="principle-list">
+        <li>Crew knows if the check-in occurred but sees no unnecessary account details</li>
+        <li>Customer selects their payment method in GMA — consistent with Mobile Ordering experience</li>
+        <li>Payments are tokenized, PII is avoided, app can incorporate a biometric lock</li>
+      </ul>
+    </div>
+    <div class="principle-card reveal reveal-delay-2">
+      <div class="principle-num">03</div>
+      <div class="principle-title">Add Surprise and Delight</div>
+      <ul class="principle-list">
+        <li>Rewards don't need to be selected to be redeemed — providing an opportunity for delight</li>
+        <li>Payment and Loyalty check-in are relatively hands-free</li>
+        <li>A single check-in minimizes friction and wait time for customers</li>
+        <li>Increase feedback by making the Voice Survey more accessible</li>
+      </ul>
+    </div>
+    <div class="principle-card reveal reveal-delay-3">
+      <div class="principle-num">04</div>
+      <div class="principle-title">Speed Up the Drive-Thru</div>
+      <ul class="principle-list">
+        <li>Voice-code check-in and single check-in minimize Payment step</li>
+        <li>Post-fulfillment Help speeds up DT, confirming order in pull-forward</li>
+        <li>All PODs — customer can check in on a SOK for Deals, Rewards, and Pay all in one scan</li>
+        <li>Arch Card integration takes priority over other Saved Payment Methods to reduce interchange fees</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 4. SERVICE DESIGN ─── -->
+<div class="section-full" id="service-design">
+  <div class="section-inner">
+    <div class="section-label">Service Design</div>
+    <div class="section-title">Mapping the problem space before designing.</div>
+    <p style="font-size: 15px; line-height: 1.75; color: var(--text-body); max-width: 700px; margin-bottom: 48px;">
+      The goal was to understand what having an Account with McDonald's meant from a customer perspective, then turn that meaning into a design that is easy to execute for both the customer and the operators. This started with creating many service design blueprints to map all the processes and touchpoints.
+    </p>
+
+    <div class="full-image reveal" style="margin-bottom: 24px;">
+      <img src="/projects/mcdonalds/images/service-blueprint-vc.png" alt="Drive-Thru No Declared Intent — Voice Code service blueprint" />
+    </div>
+    <p class="img-caption" style="margin-bottom: 40px;">DT No Declared Intent — Voice Code service blueprint</p>
+
+    <div class="full-image reveal">
+      <img src="/projects/mcdonalds/images/service-blueprint-qr.png" alt="Drive-Thru No Declared Intent — QR Code service blueprint" />
+    </div>
+    <p class="img-caption">DT No Declared Intent — QR Code service blueprint</p>
+  </div>
+</div>
+
+<!-- ─── 5. GMA ACCESS ─── -->
+<section class="section">
+  <div class="section-label">Global Mobile App Access</div>
+
+  <div class="screen-block reveal">
+    <div class="screen-image">
+      <img src="/projects/mcdonalds/images/branded-phone.png" alt="Branded phone GMA" />
+    </div>
+    <div class="screen-content">
+      <h3>Ubiquitous access to Earn &amp; Pay</h3>
+      <p>
+        The goal was to provide users with a simple, ubiquitous method for quickly accessing the means to earn Loyalty Points and pay anywhere within GMA, in addition to more traditional points of access throughout the app.
+      </p>
+    </div>
+  </div>
+
+  <div class="insight-callout reveal">
+    <div class="insight-label">Design Challenge</div>
+    <div class="insight-body">A new Moments Panel experience welcomes users when they open GMA at a restaurant. Falling coins respond to the device's accelerometer — a delightful cue that the app is responsive to gestures, encouraging users to shake their phone to invoke the Badge.</div>
+  </div>
+
+  <div class="phone-grid-3 reveal">
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/moments-panel.png" alt="Moments panel — Gesture access" />
+      <div class="phone-label">Gesture Access — Shake to invoke Badge</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/menu-earn.png" alt="Menu earn animation" />
+      <div class="phone-label">Loyalty — Animated Earn button</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/menu-pay.png" alt="Menu pay animation" />
+      <div class="phone-label">Pay — Coin flips between Earn and Pay</div>
+    </div>
+  </div>
+
+  <p style="font-size: 14px; line-height: 1.7; color: var(--text-muted); margin-top: 24px; max-width: 700px;">
+    We were constrained by existing menu limits in how we could include account as well as earn and pay iconography. The earn and pay icons animate to ensure they are seen by users — the coin animates by flipping between "Earn" and "Pay."
+  </p>
+</section>
+
+<!-- ─── 6. BADGE SYSTEM ─── -->
+<div class="section-full" id="badge">
+  <div class="section-inner">
+    <div class="section-label">Payment &amp; Loyalty Badge</div>
+    <div class="section-title">One module. Every need.</div>
+
+    <div class="screen-block reveal" style="margin-bottom: 64px;">
+      <div class="screen-image">
+        <img src="/projects/mcdonalds/images/badge-concept.png" alt="Badge concept" />
+      </div>
+      <div class="screen-content">
+        <h3>Why the Badge modal concept?</h3>
+        <p>
+          The Badge modal was selected for its unobtrusive accessibility anywhere within the app, and its flexibility in accommodating all user needs — Loyalty, Payment, Arch Card, and Deals — within a single Voice or QR Code.
+        </p>
+        <p>
+          The research question around presenting Voice and QR Code options was one of our toughest design challenges. We see benefits to the customer and business in bringing the self-identification step forward during order taking rather than at payment.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-bottom: 32px;">Badge designs and flows</div>
+
+    <p style="font-size: 15px; line-height: 1.75; color: var(--text-body); max-width: 720px; margin-bottom: 48px;">
+      The Badge has two sides: the front for displaying your Voice and QR Code, the back for setting your Payment Method and applying Arch Card balance. Upon selection, the Badge flips back to indicate the new settings. Additional instructions are accessible from the "?" icon.
+    </p>
+
+    <!-- Initial state -->
+    <div style="margin-bottom: 48px;" class="reveal">
+      <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-mid); margin-bottom: 16px;">Initial State</p>
+      <div style="max-width: 200px;">
+        <div class="phone-card">
+          <img src="/projects/mcdonalds/images/badge-initial.png" alt="Badge initial state" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Earn states -->
+    <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-mid); margin-bottom: 16px;">Loyalty Earn States</p>
+    <div class="phone-grid reveal" style="margin-bottom: 48px;">
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-vc-earn.png" alt="Badge — Voice Code Earn" />
+        <div class="phone-label">Voice Code · Earn</div>
+      </div>
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-qr-earn.png" alt="Badge — QR Code Earn" />
+        <div class="phone-label">QR Code · Earn</div>
+      </div>
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-vc-earn-deal.png" alt="Badge — Voice Code Earn + Deal" />
+        <div class="phone-label">Voice Code · Earn + Deal</div>
+      </div>
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-qr-earn-deal.png" alt="Badge — QR Code Earn + Deal" />
+        <div class="phone-label">QR Code · Earn + Deal</div>
+      </div>
+    </div>
+
+    <!-- Pay states -->
+    <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-mid); margin-bottom: 16px;">Payment States</p>
+    <div class="phone-grid reveal" style="margin-bottom: 48px;">
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-vc-pay.png" alt="Badge — Voice Code Pay" />
+        <div class="phone-label">Voice Code · Pay</div>
+      </div>
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-qr-pay.png" alt="Badge — QR Code Pay" />
+        <div class="phone-label">QR Code · Pay</div>
+      </div>
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-vc-pay-deal.png" alt="Badge — Voice Code Pay + Deal" />
+        <div class="phone-label">Voice Code · Pay + Deal</div>
+      </div>
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-qr-pay-deal.png" alt="Badge — QR Code Pay + Deal" />
+        <div class="phone-label">QR Code · Pay + Deal</div>
+      </div>
+    </div>
+
+    <!-- Payment selection + edge cases -->
+    <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-mid); margin-bottom: 16px;">Payment Selection &amp; Edge Cases</p>
+    <div class="phone-grid reveal">
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-payselect.png" alt="Badge — Payment select" />
+        <div class="phone-label">Payment Select</div>
+      </div>
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-payselect-archcard.png" alt="Badge — Arch Card" />
+        <div class="phone-label">Arch Card</div>
+      </div>
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-vc-nogeofence.png" alt="Badge — Voice Code, no geofence" />
+        <div class="phone-label">Voice Code · No Geofence</div>
+      </div>
+      <div class="phone-card">
+        <img src="/projects/mcdonalds/images/badge-qr-nogeofence.png" alt="Badge — QR Code, no geofence" />
+        <div class="phone-label">QR Code · No Geofence</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 48px;" class="reveal">
+      <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-mid); margin-bottom: 16px;">Instructions</p>
+      <div style="max-width: 200px;">
+        <div class="phone-card">
+          <img src="/projects/mcdonalds/images/badge-instructions.png" alt="Badge instructions" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Account / Payment screens -->
+    <div style="margin-top: 64px;">
+      <div class="section-label" style="margin-bottom: 32px;">Payment &amp; Loyalty identity</div>
+      <div class="phone-grid-2 reveal">
+        <div class="phone-card">
+          <img src="/projects/mcdonalds/images/account-earn.png" alt="Account earn view" />
+          <div class="phone-label">Account · Earn</div>
+        </div>
+        <div class="phone-card">
+          <img src="/projects/mcdonalds/images/payment-deals.png" alt="Payment deals view" />
+          <div class="phone-label">Payment · Deals</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── 7. POST-FULFILLMENT ─── -->
+<section id="post-fulfillment" class="section">
+  <div class="section-label">Post-Fulfillment Experience</div>
+  <div class="section-title">Closing the loop after every transaction.</div>
+
+  <!-- eReceipt -->
+  <div class="screen-block reveal" style="margin-bottom: 72px;">
+    <div class="screen-content">
+      <h3>eReceipt</h3>
+      <p>Accessed from the Payment Notification, the eReceipt was designed to serve three main purposes:</p>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+        <li style="font-size: 14px; line-height: 1.6; color: var(--text-body); padding-left: 20px; position: relative;">
+          <span style="position: absolute; left: 0; color: var(--accent); font-weight: 700;">1.</span>
+          Provide loyalty feedback by celebrating milestones and redemption of Rewards
+        </li>
+        <li style="font-size: 14px; line-height: 1.6; color: var(--text-body); padding-left: 20px; position: relative;">
+          <span style="position: absolute; left: 0; color: var(--accent); font-weight: 700;">2.</span>
+          Provide summary of purchase cost with ability to view full itemized receipt
+        </li>
+        <li style="font-size: 14px; line-height: 1.6; color: var(--text-body); padding-left: 20px; position: relative;">
+          <span style="position: absolute; left: 0; color: var(--accent); font-weight: 700;">3.</span>
+          Provide access to Help &amp; Support based on proposed business models
+        </li>
+      </ul>
+    </div>
+    <div class="screen-image">
+      <img src="/projects/mcdonalds/images/ereceipt-branded.png" alt="Branded eReceipt" />
+    </div>
+  </div>
+
+  <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-mid); margin-bottom: 16px;">eReceipt States</p>
+  <div class="phone-grid reveal" style="margin-bottom: 72px;">
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/ereceipt-reward.png" alt="eReceipt — Reward milestone" />
+      <div class="phone-label">Reward milestone</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/ereceipt-start.png" alt="eReceipt — Summary" />
+      <div class="phone-label">Summary</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/ereceipt-full.png" alt="eReceipt — Full itemized" />
+      <div class="phone-label">Full itemized receipt</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/ereceipt-givefeedback.png" alt="eReceipt — Give feedback" />
+      <div class="phone-label">Give feedback</div>
+    </div>
+  </div>
+
+  <!-- Help & Support -->
+  <div class="screen-block reverse reveal" style="margin-bottom: 48px;">
+    <div class="screen-image">
+      <img src="/projects/mcdonalds/images/helpsupport-hero.png" alt="Help and Support" />
+    </div>
+    <div class="screen-content">
+      <h3>Help &amp; Support</h3>
+      <p>
+        Accessible from the eReceipt to efficiently correct ordering errors, address common customer needs, and speed up the Drive-Thru by directing those in need out of the way to a numbered parking spot where crew members can assist them.
+      </p>
+    </div>
+  </div>
+
+  <div class="full-image reveal" style="margin-bottom: 12px;">
+    <img src="/projects/mcdonalds/images/helpsupport-blueprint.png" alt="Post-Fulfillment Help and Support service blueprint" />
+  </div>
+  <p class="img-caption" style="margin-bottom: 40px;">Post-Fulfillment Help &amp; Support — service blueprint</p>
+
+  <div class="full-image reveal" style="margin-bottom: 12px;">
+    <img src="/projects/mcdonalds/images/helpsupport-processflow.png" alt="Help and Support process flow" />
+  </div>
+  <p class="img-caption" style="margin-bottom: 48px;">Process flow — Help &amp; Support routing</p>
+
+  <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-mid); margin-bottom: 16px;">Help &amp; Support States</p>
+  <div class="phone-grid reveal" style="margin-bottom: 72px;">
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/helpsupport-start.png" alt="Help & Support — Start" />
+      <div class="phone-label">Start</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/helpsupport-problem.png" alt="Help & Support — Select problem" />
+      <div class="phone-label">Select problem</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/helpsupport-problemselect.png" alt="Help & Support — Problem selected" />
+      <div class="phone-label">Problem selected</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/helpsupport-confirm.png" alt="Help & Support — Confirm" />
+      <div class="phone-label">Confirm</div>
+    </div>
+  </div>
+
+  <!-- Feedback -->
+  <div class="section-label" style="margin-bottom: 32px;">Feedback</div>
+
+  <div class="screen-block reveal" style="margin-bottom: 48px;">
+    <div class="screen-content">
+      <h3>Voice Survey &amp; Star Rating</h3>
+      <p>
+        A Feedback Notification is sent after customers have had a chance to enjoy their meals — capturing feedback on the entirety of their experience. After quickly submitting a star rating, customers are encouraged to provide more detail via a link to the McDonald's Voice Survey for additional Loyalty Points.
+      </p>
+    </div>
+    <div class="full-image">
+      <img src="/projects/mcdonalds/images/feedback-notification.png" alt="Feedback notification" />
+    </div>
+  </div>
+
+  <div class="full-image reveal" style="margin-bottom: 12px;">
+    <img src="/projects/mcdonalds/images/feedback-blueprint.png" alt="Post-Fulfillment Feedback service blueprint" />
+  </div>
+  <p class="img-caption" style="margin-bottom: 48px;">Post-Fulfillment Feedback — service blueprint</p>
+
+  <p style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-mid); margin-bottom: 16px;">Feedback States</p>
+  <div class="phone-grid reveal">
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/feedback-start.png" alt="Feedback — Start" />
+      <div class="phone-label">Start</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/feedback-entered.png" alt="Feedback — Rating entered" />
+      <div class="phone-label">Rating entered</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/feedback-ereceipt.png" alt="Feedback — From eReceipt" />
+      <div class="phone-label">From eReceipt</div>
+    </div>
+    <div class="phone-card">
+      <img src="/projects/mcdonalds/images/feedback-orderhistory.png" alt="Feedback — Order history" />
+      <div class="phone-label">Order history</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer id="footer">
+  <div class="footer-inner">
+    <span>McDonald's — Account-Based Ordering · Joseph Grgic</span>
+    <a href="/">← Back to portfolio</a>
+  </div>
+</footer>
+
+<script>
+  // Read progress bar
+  window.addEventListener('scroll', () => {
+    const el = document.documentElement;
+    const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+    document.getElementById('read-progress').style.width = pct + '%';
+  });
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Active nav link
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => navObserver.observe(s));
+</script>
+
+</body>
+</html>

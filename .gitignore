@@ -21,3 +21,6 @@ how_to_add_new_projects_to_portfolio.md
 
 # Staging folder for in-progress project imports (local only)
 import-project/
+
+# Local archive folders
+public/old/

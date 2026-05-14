@@ -1,35 +1,59 @@
 [
   {
-    "id": "beyond-off-switch",
+    "id": "efficiency-metric",
     "theme": "AI & Agentic Systems",
     "date": "Mar 2026",
-    "title": "Beyond the “Off Switch”: The Case for Coactive AI",
-    "description": "Why human agency must be the non-negotiable safety brake in a world of automated decisions.",
-    "href": "/experienced-opinions/2026/3/22/beyond-the-off-switch-the-case-for-coactive-ai-in-a-world-of-automated-decisions"
+    "title": "The Efficiency Metric: Why AI Should Be Measured by Human Decision-Making",
+    "description": "Why the DOGE-style automation experiment reveals the true cost of stripping human judgment from AI systems.",
+    "href": "/writings/efficiency-metric"
   },
   {
     "id": "unseen-hand",
     "theme": "AI & Agentic Systems",
-    "date": "Dec 2025",
+    "date": "Feb 2026",
     "title": "The Unseen Hand: From Autonomous Shadow to Collaborative Partner",
     "description": "Why the future of service design is coactive, not just proactive.",
-    "href": "/experienced-opinions/2026/2/8/the-unseen-hand-from-autonomous-shadow-to-collaborative-partner"
+    "href": "/writings/unseen-hand"
+  },
+  {
+    "id": "agentic-architecture",
+    "theme": "AI & Agentic Systems",
+    "date": "Feb 2026",
+    "title": "The Agentic Architecture: Service Design as the Foundation for Successful AI Integration",
+    "description": "Why Human Factors is the critical link in successful AI implementation across MedTech and Logistics.",
+    "href": "/writings/agentic-architecture"
+  },
+  {
+    "id": "coactive-author",
+    "theme": "AI & Agentic Systems",
+    "date": "Feb 2026",
+    "title": "The Coactive Author: My Framework for AI-Augmented Research",
+    "description": "How I use AI as a collaborative intelligence partner while keeping the core thinking entirely my own.",
+    "href": "/writings/coactive-author"
   },
   {
     "id": "compliance-bridge",
     "theme": "Human Factors & Cognition",
     "date": "Feb 2026",
-    "title": "The Compliance Bridge: Designing Beyond the Halo Effect",
+    "title": "The Compliance Bridge: Designing Beyond the Halo Effect of Agentic AI",
     "description": "Replacing automation bias with calibrated human intuition in AI interfaces.",
-    "href": "/experienced-opinions/2026/2/15/designing-for-the-compliance-trap-why-confidence-is-the-most-important-number-in-ai"
+    "href": "/writings/compliance-bridge"
   },
   {
-    "id": "simulation-tax",
+    "id": "velocity-of-doubt",
     "theme": "Human Factors & Cognition",
-    "date": "Jan 2026",
-    "title": "The Simulation Tax: Why Mimetic AI Is a Human Factors Failure",
-    "description": "Functional transparency over deceptive mimicry — the case for honest AI design.",
-    "href": "/experienced-opinions/Blog Post Title One-3zaa9-zlxng-ged35"
+    "date": "Feb 2026",
+    "title": "The Velocity of Doubt: A Perspective on the AI Multiplier",
+    "description": "How AI destroys trust calibration and what verifiable interface design can do about it.",
+    "href": "/writings/velocity-of-doubt"
+  },
+  {
+    "id": "ai-in-ux-research",
+    "theme": "Human Factors & Cognition",
+    "date": "Feb 2026",
+    "title": "AI in UX Research: Supercharging Insights While Navigating the Nuances",
+    "description": "Why AI is a co-pilot not a captain — and how to deploy it without losing the soul of research.",
+    "href": "/writings/ai-in-ux-research"
   },
   {
     "id": "empathy-gap",
@@ -37,14 +61,14 @@
     "date": "Feb 2026",
     "title": "The Empathy Gap in Our Wallets",
     "description": "Financial UX, emotional design, and fiduciary standards in the EU AI Act era.",
-    "href": "/experienced-opinions/2026/2/14/the-empathy-gap-in-our-wallets-navigating-money-emotional-design-and-ai"
+    "href": "/writings/empathy-gap"
   },
   {
     "id": "decline-user-agency",
     "theme": "Design & Dark Patterns",
     "date": "Feb 2026",
     "title": "The Decline of User Agency and the Rise of Dark AI",
-    "description": "How AI transforms static dark patterns into dynamic psychological traps.",
-    "href": "/experienced-opinions/2026/2/9/the-decline-of-user-agency-how-ai-will-exacerbate-dark-ux-patterns"
+    "description": "How AI transforms static dark patterns into dynamic, personalized psychological traps.",
+    "href": "/writings/decline-user-agency"
   }
 ]

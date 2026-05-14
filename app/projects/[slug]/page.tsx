@@ -144,12 +144,23 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
     try {
       const htmlContent = fs.readFileSync(htmlPath, "utf-8");
+
+      // Extract <style> blocks from <head> so CSS is preserved
+      const styleMatches = htmlContent.match(/<style[^>]*>[\s\S]*?<\/style>/gi) ?? [];
+      const headStyles = styleMatches.join("\n");
+
+      // Extract only the <body> content to avoid injecting a full HTML document into a div
+      const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+      const bodyContent = bodyMatch ? bodyMatch[1] : htmlContent;
+
       const kronosOverride = `<style>
         #footer { display: none !important; }
+        #site-nav { display: none !important; }
       </style>`;
+
       return (
         <div suppressHydrationWarning>
-          <div dangerouslySetInnerHTML={{ __html: htmlContent + kronosOverride }} />
+          <div suppressHydrationWarning dangerouslySetInnerHTML={{ __html: headStyles + bodyContent + kronosOverride }} />
         </div>
       );
     } catch (error) {

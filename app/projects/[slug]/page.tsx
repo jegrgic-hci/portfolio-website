@@ -134,6 +134,17 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     </section>
   );
 
+  /* ── iframeUrl path: full-page iframe for interactive React apps ──── */
+  if ((project as any).contentType === 'iframe' && project.contentUrl) {
+    return (
+      <iframe
+        src={project.contentUrl}
+        style={{ width: '100%', height: '100vh', border: 'none', display: 'block' }}
+        title={project.title}
+      />
+    );
+  }
+
   /* ── contentUrl path: injected HTML with Kronos overrides ────────── */
   if (project.contentUrl) {
     const htmlPath = path.join(

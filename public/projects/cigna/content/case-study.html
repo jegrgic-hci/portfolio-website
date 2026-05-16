@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Service Data Visualization | Joseph Grgic — UX &amp; IA</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        var(--k-text-primary);
+      --slate:       var(--k-text-secondary);
+      --slate-mid:   var(--k-text-muted);
+      --slate-light: var(--k-border-mid);
+      --slate-bg:    rgba(200,200,200,0.12);
+      --accent:      #0071C5;
+      --accent-light:#E3F2FD;
+      --white:       var(--k-surface);
+      --off-white:   var(--k-bg);
+      --text-body:   var(--k-text-secondary);
+      --text-muted:  var(--k-text-muted);
+      --border:      var(--k-border-light);
+      --radius:      0px;
+      --nav-h:       56px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'IBM Plex Sans', 'Inter', -apple-system, sans-serif;
+      background: var(--white);
+      color: var(--navy);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── STICKY NAV ─── */
+    #site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      gap: 24px;
+    }
+    .nav-brand {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-brand span { color: var(--slate); font-weight: 400; }
+    .nav-links {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-link {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--slate);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-link:hover { background: var(--slate-bg); color: var(--navy); }
+    .nav-link.active { background: var(--navy); color: var(--white); }
+
+    /* ─── PROGRESS BAR ─── */
+    #read-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--accent);
+      z-index: 300;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      padding: 96px 40px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .hero-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate);
+      background: var(--slate-bg);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .hero-date { font-size: 13px; color: var(--text-muted); }
+    .hero-title {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--navy);
+      max-width: 820px;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+    .hero-meta-group { display: flex; flex-direction: column; gap: 4px; }
+    .hero-meta-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+    }
+    .hero-meta-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--navy);
+    }
+    .hero-image-wrap {
+      width: 100%;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--off-white);
+      border: 1px solid var(--border);
+    }
+    .hero-image-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ─── SECTIONS ─── */
+    .section {
+      padding: 80px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section + .section { padding-top: 0; }
+
+    .section-full {
+      padding: 80px 40px;
+      background: var(--off-white);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .section-full .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--k-text-muted);
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--k-border-heavy);
+    }
+    .section-title {
+      font-size: clamp(22px, 3vw, 36px);
+      font-weight: 500;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 40px;
+    }
+
+    /* ─── TL;DR GRID ─── */
+    .tldr-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      background: var(--border);
+      overflow: hidden;
+    }
+    @media (max-width: 800px) { .tldr-grid { grid-template-columns: 1fr; } }
+    .tldr-card {
+      background: var(--white);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .tldr-card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate);
+    }
+    .tldr-card-body {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+    .tldr-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      list-style: none;
+    }
+    .tldr-list li {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-body);
+      padding-left: 18px;
+      position: relative;
+    }
+    .tldr-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--slate-mid);
+      font-size: 13px;
+    }
+
+    /* ─── INFO ROWS ─── */
+    .info-rows { display: flex; flex-direction: column; }
+    .info-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 24px 40px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .info-row:first-child { border-top: 1px solid var(--border); }
+    @media (max-width: 700px) { .info-row { grid-template-columns: 1fr; gap: 8px; } }
+    .info-row-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate);
+      padding-top: 2px;
+    }
+    .info-row-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-body);
+    }
+    .info-row-body strong { font-weight: 600; color: var(--navy); }
+
+    /* ─── GOAL CARDS ─── */
+    .goal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--border);
+      overflow: hidden;
+    }
+    @media (max-width: 900px) { .goal-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 550px) { .goal-grid { grid-template-columns: 1fr; } }
+    .goal-card {
+      background: var(--white);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .goal-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+    }
+    .goal-title { font-size: 16px; font-weight: 600; color: var(--navy); }
+    .goal-body { font-size: 14px; line-height: 1.65; color: var(--text-body); }
+    .goal-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .goal-list li {
+      font-size: 13px;
+      color: var(--text-body);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .goal-list li::before { content: '–'; position: absolute; left: 0; color: var(--accent); }
+
+    /* ─── IA TABLE ─── */
+    .ia-table { width: 100%; border-collapse: collapse; }
+    .ia-table thead tr { background: var(--navy); }
+    .ia-table thead th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      padding: 14px 24px;
+      text-align: left;
+    }
+    .ia-table tbody tr { border-bottom: 1px solid var(--border); }
+    .ia-table tbody tr:nth-child(even) { background: var(--off-white); }
+    .ia-table tbody tr:nth-child(odd) { background: var(--white); }
+    .ia-table tbody td { padding: 20px 24px; font-size: 14px; line-height: 1.65; color: var(--text-body); vertical-align: top; }
+    .td-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--slate-mid); white-space: nowrap; width: 48px; }
+    .td-term { font-weight: 700; color: var(--navy); width: 140px; }
+    .td-code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid rgba(0,113,197,0.2);
+      padding: 2px 8px;
+      display: inline-block;
+    }
+
+    /* ─── IMAGE BLOCK ─── */
+    .img-block {
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,61,122,0.07);
+    }
+    .img-block img { width: 100%; height: auto; display: block; }
+    .img-caption {
+      padding: 14px 24px;
+      background: var(--off-white);
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ─── TWO-COL IMAGE GRID ─── */
+    .img-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      column-gap: 2px;
+      row-gap: 0;
+      background: var(--border);
+    }
+    @media (max-width: 800px) { .img-pair { grid-template-columns: 1fr; } }
+    .img-pair-col {
+      background: var(--white);
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 2;
+    }
+    .img-pair-col img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .img-pair-col-caption {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--off-white);
+    }
+    .img-pair-col-caption strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .img-pair-col-caption span { font-size: 12px; color: var(--text-muted); }
+
+    /* ─── FINDING CARDS ─── */
+    .finding-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      background: var(--border);
+    }
+    @media (max-width: 800px) { .finding-grid { grid-template-columns: 1fr; } }
+    .finding-card {
+      background: var(--white);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .finding-card-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+    }
+    .finding-card-title { font-size: 15px; font-weight: 600; color: var(--navy); }
+    .finding-card-body { font-size: 14px; line-height: 1.65; color: var(--text-body); }
+    .finding-card-tag {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      background: var(--accent-light);
+      color: var(--accent);
+      align-self: flex-start;
+      margin-top: 4px;
+    }
+
+    /* ─── INSIGHT CALLOUT ─── */
+    .insight-callout {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      padding: 28px 32px;
+      background: var(--accent-light);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .insight-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    .insight-body {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--navy);
+      font-weight: 500;
+    }
+
+    /* ─── DIRECTION CARD ─── */
+    .direction-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      background: var(--border);
+      margin-top: 32px;
+    }
+    @media (max-width: 800px) { .direction-grid { grid-template-columns: 1fr; } }
+    .direction-card {
+      background: var(--white);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .direction-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+    }
+    .direction-title { font-size: 17px; font-weight: 600; color: var(--navy); }
+    .direction-body { font-size: 14px; line-height: 1.7; color: var(--text-body); }
+    .direction-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .direction-list li {
+      font-size: 13px;
+      color: var(--text-body);
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .direction-list li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+    .direction-list li.con::before { content: '–'; color: var(--slate-mid); font-weight: 700; }
+
+    /* ─── NEXT STEPS ─── */
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: var(--border);
+    }
+    .step-row {
+      display: grid;
+      grid-template-columns: 56px 1fr 180px;
+      background: var(--white);
+      align-items: start;
+    }
+    @media (max-width: 800px) { .step-row { grid-template-columns: 40px 1fr; } }
+    .step-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slate-mid);
+      padding: 28px 0 28px 28px;
+    }
+    .step-body { padding: 28px 24px 28px 0; border-right: 1px solid var(--border); }
+    @media (max-width: 800px) { .step-body { border-right: none; } }
+    .step-title { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 8px; line-height: 1.4; }
+    .step-desc { font-size: 14px; color: var(--text-body); line-height: 1.65; }
+    .step-meta { padding: 28px 24px; display: flex; flex-direction: column; gap: 10px; }
+    @media (max-width: 800px) { .step-meta { display: none; } }
+    .meta-row { display: flex; flex-direction: column; gap: 2px; }
+    .meta-k { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-mid); }
+    .meta-v { font-size: 13px; font-weight: 500; color: var(--navy); }
+    .meta-v.accent { color: var(--accent); }
+
+    /* ─── OUTCOMES GRID ─── */
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      background: var(--border);
+    }
+    @media (max-width: 800px) { .outcomes-grid { grid-template-columns: 1fr; } }
+    .outcome-card {
+      background: var(--white);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .outcome-card-title { font-size: 15px; font-weight: 600; color: var(--navy); }
+    .outcome-card-body { font-size: 14px; line-height: 1.65; color: var(--text-body); }
+
+    /* ─── FOOTER ─── */
+    #footer {
+      background: var(--off-white);
+      border-top: 1px solid var(--border);
+      padding: 48px 40px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    #footer .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    #footer a { color: var(--navy); font-weight: 500; text-decoration: none; }
+    #footer a:hover { text-decoration: underline; }
+
+    /* ─── REVEAL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── KRONOS DESIGN SYSTEM TOKENS ─── */
+    :root {
+      --k-bg:           #F7F7F7;
+      --k-surface:      #FFFFFF;
+      --k-fg-1:         #1A1A1A;
+      --k-fg-2:         #6B6B6B;
+      --k-fg-3:         #A0A0A0;
+      --k-teal:         #7A9393;
+      --k-teal-dark:    #4A6363;
+      --k-red:          #BD3E31;
+      --k-green:        #2D6A4F;
+      --k-border-heavy: #1A1A1A;
+      --k-border-mid:   #C8C8C8;
+      --k-border-light: #E8E8E8;
+      --font-ui:        'IBM Plex Mono', 'Courier New', monospace;
+      --font-body:      'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+      --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px;
+    }
+
+    /* ─── K-COMPARE COMPONENT ─── */
+    .k-compare { border: 1px solid var(--k-border-light); background: var(--k-surface); }
+    .k-compare-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--s-3) var(--s-5);
+      border-bottom: 1px solid var(--k-border-light);
+      background: var(--k-bg);
+    }
+    .k-compare-toolbar .left {
+      font-family: var(--font-ui); font-size: 0.6rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--k-fg-2);
+      display: flex; gap: var(--s-4); align-items: center;
+    }
+    .k-compare-toolbar .left strong { color: var(--k-fg-1); }
+    .k-compare-toolbar .tabs { display: flex; border: 1px solid var(--k-border-heavy); }
+    .k-compare-toolbar .tabs span {
+      padding: 6px 12px; font-family: var(--font-ui); font-size: 0.6rem;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      border-right: 1px solid var(--k-border-heavy);
+      background: var(--k-surface); color: var(--k-fg-1);
+    }
+    .k-compare-toolbar .tabs span:last-child { border-right: none; }
+    .k-compare-toolbar .tabs span.active { background: var(--k-fg-1); color: white; }
+    .k-compare-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 800px) { .k-compare-grid { grid-template-columns: 1fr; } }
+    .k-compare-col { padding: var(--s-6); border-right: 1px solid var(--k-border-light); }
+    .k-compare-col:last-child { border-right: none; background: rgba(122,147,147,0.04); }
+    .k-compare-head {
+      display: flex; align-items: baseline; gap: var(--s-3);
+      margin-bottom: var(--s-4); padding-bottom: var(--s-3);
+      border-bottom: 1px solid var(--k-border-light);
+    }
+    .k-compare-tag {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 3px 8px; border: 1px solid var(--k-border-heavy); color: var(--k-fg-1);
+    }
+    .k-compare-col:last-child .k-compare-tag {
+      border-color: var(--k-teal); color: var(--k-teal-dark);
+      background: rgba(122,147,147,0.08);
+    }
+    .k-compare-title { font-family: var(--font-ui); font-size: 0.85rem; font-weight: 500;
+      letter-spacing: 0.05em; color: var(--k-fg-1); }
+    .k-compare-stage {
+      min-height: 280px; padding: var(--s-5);
+      border: 1px solid var(--k-border-light); background: var(--k-bg);
+    }
+    .k-compare-col:last-child .k-compare-stage { background: var(--k-surface); }
+    .k-pro-con { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); margin-top: var(--s-3); }
+    .k-pro-con .col h5 {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      padding-bottom: 6px; margin-bottom: 8px;
+      border-bottom: 1px solid var(--k-border-light);
+    }
+    .k-pro-con .col.pros h5 { color: var(--k-green); }
+    .k-pro-con .col.cons h5 { color: var(--k-red); }
+    .k-pro-con ul { display: flex; flex-direction: column; gap: 6px; list-style: none; }
+    .k-pro-con li {
+      font-family: var(--font-body); font-size: 0.82rem; line-height: 1.5;
+      padding-left: 14px; position: relative; color: var(--k-fg-2);
+    }
+    .k-pro-con li::before {
+      content: ''; position: absolute; left: 0; top: 9px;
+      width: 6px; height: 1px;
+    }
+    .k-pro-con .col.pros li::before { background: var(--k-green); }
+    .k-pro-con .col.cons li::before { background: var(--k-red); }
+    .k-label {
+      font-family: var(--font-ui); font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--k-fg-2);
+      display: block;
+    }
+    .k-caption { font-family: var(--font-ui); font-size: 0.65rem;
+      color: var(--k-fg-3); letter-spacing: 0.05em; line-height: 1.6; }
+    .mock-stack { display: flex; flex-direction: column; gap: 10px; }
+    .mock-btn {
+      display: inline-flex; align-items: center; justify-content: space-between;
+      gap: 10px; min-width: 200px;
+      font-family: var(--font-ui); font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 8px 12px;
+      border: 1px solid var(--k-border-heavy);
+      background: var(--k-surface); color: var(--k-fg-1);
+      cursor: default;
+    }
+    .mock-btn .caret { font-size: 0.8em; }
+    .mock-btn.disabled { opacity: 0.35; }
+    .mock-dropdown {
+      width: 100%; max-width: 240px;
+      background: var(--k-surface);
+      border: 1px solid var(--k-border-heavy);
+      margin-top: 6px;
+    }
+    .mock-dropdown .head {
+      padding: 10px 12px; border-bottom: 1px solid var(--k-border-light);
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--k-fg-2);
+      display: flex; justify-content: space-between;
+    }
+    .mock-dropdown .opt {
+      padding: 8px 12px; display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-ui); font-size: 0.7rem;
+      color: var(--k-fg-1);
+      border-bottom: 1px solid var(--k-border-light);
+    }
+    .mock-dropdown .opt:last-child { border-bottom: none; }
+    .mock-dropdown .opt .cb {
+      width: 14px; height: 14px; border: 1.5px solid var(--k-border-heavy);
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .mock-dropdown .opt .cb.checked { background: var(--k-fg-1); }
+    .mock-dropdown .opt .cb.checked::after { content: ''; width: 6px; height: 6px; background: white; }
+    .mock-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-ui); font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--k-teal-dark);
+      background: rgba(122,147,147,0.1);
+      border: 1px solid var(--k-teal);
+      padding: 4px 8px;
+    }
+    .mock-chip .x { color: var(--k-teal-dark); margin-left: 4px; }
+    .k-field-list {
+      display: flex; flex-direction: column;
+      border: 1px solid var(--k-border-light); background: var(--k-surface);
+      max-height: 220px; overflow-y: auto;
+    }
+    .k-field-row {
+      display: grid; grid-template-columns: 18px 1fr auto; align-items: center;
+      gap: 10px; padding: 8px 12px;
+      border-bottom: 1px solid var(--k-border-light);
+    }
+    .k-field-row:last-child { border-bottom: none; }
+    .k-field-row.selected { background: rgba(122,147,147,0.12); }
+    .k-field-row .cb {
+      width: 14px; height: 14px; border: 1.5px solid var(--k-border-heavy);
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .k-field-row.selected .cb { background: var(--k-fg-1); }
+    .k-field-row.selected .cb::after { content: ''; width: 5px; height: 5px; background: white; }
+    .k-field-row .name { font-family: var(--font-ui); font-size: 0.72rem; color: var(--k-fg-1); }
+    .k-field-row .type {
+      font-family: var(--font-ui); font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 2px 6px; border: 1px solid var(--k-border-mid);
+      color: var(--k-fg-2); background: var(--k-bg);
+    }
+    .k-field-row .type.m {
+      color: var(--k-teal-dark); border-color: var(--k-teal);
+      background: rgba(122,147,147,0.06);
+    }
+
+    /* ─── SUB-SECTION LABEL ─── */
+    .sub-section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--k-fg-2);
+      margin-top: 56px;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--k-border-mid);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sub-section-label .num {
+      color: var(--k-fg-3);
+    }
+
+    /* ─── OPTION BLOCKS (stacked, stage left / pro-con right) ─── */
+    .option-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: var(--k-border-light);
+    }
+    .option-list-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--s-3) var(--s-5);
+      background: var(--k-bg);
+      border: 1px solid var(--k-border-light);
+      border-bottom: none;
+      font-family: var(--font-ui);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--k-fg-2);
+    }
+    .option-list-toolbar strong { color: var(--k-fg-1); }
+    .option-block { background: var(--k-surface); }
+    .option-block-header {
+      display: flex;
+      align-items: baseline;
+      gap: var(--s-3);
+      padding: var(--s-5) var(--s-5);
+      border-bottom: 1px solid var(--k-border-light);
+      background: var(--k-surface);
+    }
+    .option-block-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 800px) {
+      .option-block-body { grid-template-columns: 1fr; }
+    }
+    .option-block-stage {
+      padding: var(--s-6);
+      border-right: 1px solid var(--k-border-light);
+      background: var(--k-bg);
+    }
+    .option-block:last-child .option-block-stage {
+      background: var(--k-surface);
+    }
+    @media (max-width: 800px) {
+      .option-block-stage { border-right: none; border-bottom: 1px solid var(--k-border-light); }
+    }
+    .option-block-procon {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+    }
+
+    /* ─── PLACEHOLDER BLOCK ─── */
+    .placeholder-block {
+      border: 1px dashed var(--k-border-mid);
+      padding: 48px 40px;
+      text-align: center;
+      background: var(--k-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .placeholder-block .ph-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--k-fg-3);
+    }
+    .placeholder-block .ph-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--k-fg-2);
+    }
+
+    /* ─── CONVENTIONAL FLOW GRID ─── */
+    .conv-flow-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    @media (max-width: 800px) { .conv-flow-grid { grid-template-columns: 1fr; } }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      #site-nav { padding: 0 20px; }
+      .section { padding: 60px 20px; }
+      .section-full { padding: 60px 20px; }
+      #hero { padding: 60px 20px 50px; }
+      #footer .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="read-progress"></div>
+
+<nav id="site-nav">
+  <a href="/" class="nav-brand">Joseph Grgic <span>/ Cigna</span></a>
+  <div class="nav-links">
+    <a href="#overview" class="nav-link active">Overview</a>
+    <a href="#problem" class="nav-link">Problem</a>
+    <a href="#goals" class="nav-link">Goals</a>
+    <a href="#landscape" class="nav-link">Data Landscape</a>
+    <a href="#ia" class="nav-link">IA</a>
+    <a href="#conventional" class="nav-link">Conventional UI</a>
+    <a href="#node-edge" class="nav-link">Node-Edge</a>
+    <a href="#outcomes" class="nav-link">Outcomes</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-eyebrow">
+    <span class="hero-tag">Information Architecture · Data Visualization</span>
+    <span class="hero-date">2018–2019 · ~10 months</span>
+  </div>
+  <h1 class="hero-title">Making raw data usable for non-data savvy users</h1>
+  <div class="hero-meta">
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Company</div>
+      <div class="hero-meta-value">Cigna</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Role</div>
+      <div class="hero-meta-value">UX Lead</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Team</div>
+      <div class="hero-meta-value">Data Analysts · Stakeholders · Engineering</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Domain</div>
+      <div class="hero-meta-value">Healthcare · Enterprise Tooling</div>
+    </div>
+    <div class="hero-meta-group">
+      <div class="hero-meta-label">Deliverable</div>
+      <div class="hero-meta-value">POC · Two wireframe directions · IA framework</div>
+    </div>
+  </div>
+  <div class="hero-image-wrap">
+    <img src="/projects/cigna/images/Hero.png" alt="Cigna self-service data visualization tool — POC overview" />
+  </div>
+</section>
+
+<!-- ─── OVERVIEW ─── -->
+<section id="overview" class="section">
+  <div class="section-label">Overview</div>
+  <div class="tldr-grid">
+    <div class="tldr-card reveal">
+      <div class="tldr-card-label">The Setup</div>
+      <div class="tldr-card-body">
+        At Cigna, every data request required a data analyst — who'd find the data, clean it, build the output. The cycle took days, often came back wrong, and then repeated. Business users had no way to get insights independently.
+      </div>
+    </div>
+    <div class="tldr-card reveal reveal-delay-1">
+      <div class="tldr-card-label">The Opportunity</div>
+      <div class="tldr-card-body">
+        Build a self-service tool so business users could create their own reports and dashboards — no analyst dependency, no lag time, no lost-in-translation outputs. The challenge: the data is enterprise-scale, deeply technical, and structured for machines, not people.
+      </div>
+    </div>
+    <div class="tldr-card reveal reveal-delay-2">
+      <div class="tldr-card-label">The Work</div>
+      <div class="tldr-card-body">
+        Over ~10 months, I led the UX across data analysts, stakeholders, and engineering — from concept through proof-of-concept. Two design directions: a <strong>conventional cascading UI</strong> for structured selection, and a <strong>node-edge visualization</strong> built for exploration and discovery.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── THE PROBLEM ─── -->
+<section id="problem" class="section">
+  <div class="section-label">The Problem</div>
+  <div class="section-title">Data is not built for humans — and healthcare data especially so.</div>
+
+  <div class="info-rows">
+    <div class="info-row reveal">
+      <div class="info-row-label">Enterprise Data</div>
+      <div class="info-row-body">
+        Enterprise data is structured for storage and retrieval, not for exploration. At Cigna, that meant data living across multiple data lakes with complex relational structures, hundreds of dimensions and measures, and field names that meant nothing without deep technical context. There was no human-readable layer — no way in for someone who wasn't already fluent in the architecture.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-1">
+      <div class="info-row-label">Healthcare Data</div>
+      <div class="info-row-body">
+        Healthcare data compounds this further. It spans clinical, financial, demographic, pharmacy, and behavioral domains — all interconnected, all with their own structures and vocabularies. Even understanding what data <em>exists</em>, let alone how to find and use it, required expertise most business users simply don't have.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-2">
+      <div class="info-row-label">The Core Problem</div>
+      <div class="info-row-body">
+        <strong>A fundamental discovery problem.</strong> The users who most needed data-driven insights — to make decisions, identify trends, understand their members — were the most dependent on others to get it for them. Every request routed through an analyst who would find the right data, clean it, and build the output — a process that took days and often came back not quite right. The cycle would repeat. The goal was to remove that dependency by making the data navigable, discoverable, and usable directly.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── GOALS FRAMEWORK ─── -->
+<section id="goals" class="section">
+  <div class="section-label">Goals Framework</div>
+  <div class="section-title">Before any design work began, the problem needed to be structured.</div>
+
+  <p style="font-size: 15px; line-height: 1.75; color: var(--text-body); max-width: 72ch; margin-bottom: 40px;">
+    With a cross-functional team spanning stakeholders, data analysts, and developers, I framed the goals across three dimensions to align the team and anchor every design decision that followed. When design decisions came up — and they always do — we had clear criteria to evaluate against.
+  </p>
+
+  <div class="goal-grid reveal" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 40px;">
+    <div class="goal-card">
+      <div class="goal-num">Business Goals</div>
+      <div class="goal-title">Reduce operational overhead</div>
+      <div class="goal-body">Reduce the overhead of routing data requests through analysts, and enable data-driven decision making at the business user level — faster, more accurately, and without the back-and-forth.</div>
+    </div>
+    <div class="goal-card">
+      <div class="goal-num">Data Goals</div>
+      <div class="goal-title">Make data human-readable</div>
+      <div class="goal-body">The data lived across multiple fragmented data lakes. Before it could be useful, it needed to be unified into a single accessible source — and critically, made human-readable. Not just technically consolidated, but restructured so that field names, relationships, and hierarchies made sense to someone who didn't write the schema.</div>
+    </div>
+    <div class="goal-card">
+      <div class="goal-num">User Goals</div>
+      <div class="goal-title">Enable independent data use</div>
+      <div class="goal-body">Enable a non-data-savvy user to independently find, discover, and use stored data to do two things: generate reports for clients, and build dashboards that measure client performance — without needing an analyst in the loop.</div>
+    </div>
+  </div>
+
+  <div class="insight-callout reveal">
+    <div class="insight-label">Why this mattered</div>
+    <div class="insight-body">These three goal dimensions gave the team a shared framework. It also kept the scope honest across a 10-month project — when we hit ambiguity, we could evaluate decisions against all three dimensions simultaneously, not just the one whoever was in the room cared about most.</div>
+  </div>
+</section>
+
+<!-- ─── DATA LANDSCAPE ─── -->
+<section id="landscape" class="section">
+  <div class="section-label">Understanding the Data Landscape</div>
+  <div class="section-title">Before a single wireframe was sketched, I needed to understand what we were designing around.</div>
+
+  <p style="font-size: 15px; line-height: 1.75; color: var(--text-body); max-width: 72ch; margin-bottom: 40px;">
+    That meant getting into the data itself — not as a data analyst, but as someone who needed to make it navigable for people who weren't.
+  </p>
+
+  <div class="info-rows" style="margin-bottom: 40px;">
+    <div class="info-row reveal">
+      <div class="info-row-label">The Existing Reality</div>
+      <div class="info-row-body">
+        Cigna's data existed across a sprawling set of fragmented sources — clinical, claims, provider, pharmacy, financial, demographic, sales, and third-party data — all living in separate warehouses. These were deeply interconnected datasets with complex relationships that weren't visible or legible to anyone outside the data team.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-1">
+      <div class="info-row-label">The Consolidation Challenge</div>
+      <div class="info-row-body">
+        The broader initiative was moving toward a unified data lake, but consolidation alone wasn't the answer to the design problem. The data was structured for machines, not people — and renaming thousands of fields to be human-readable wasn't a viable path. Instead, <strong>we identified a single high-relevancy database to use as a test case</strong>. Working from that, we developed schemas and organized fields into logical groupings using human-readable language — improving findability and discoverability without touching the underlying data architecture.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-2">
+      <div class="info-row-label">What This Meant for Design</div>
+      <div class="info-row-body">
+        Using a narrow but highly relevant database as our POC gave us a realistic and manageable scope. We could develop the data schemas, structures, and relationships needed to let users successfully complete their tasks — then validate the model before scaling. <strong>This constraint was a feature, not a limitation.</strong> It let us focus the design effort on a real, testable system rather than designing against a hypothetical one.
+      </div>
+    </div>
+  </div>
+
+  <div class="img-pair reveal">
+    <div class="img-pair-col">
+      <img src="/projects/cigna/images/raw_data.png" alt="Raw data — traditionally flat database structure with no human-readable schema" />
+      <div class="img-pair-col-caption">
+        <strong>Raw data reality</strong>
+        <span>The starting point: a traditionally flat database with hundreds of unlabeled fields and no inherent structure for human navigation. We built schemas and logical groupings on top of this to make it searchable and browsable without touching the underlying architecture.</span>
+      </div>
+    </div>
+    <div class="img-pair-col">
+      <img src="/projects/cigna/images/understnding_data.png" alt="Understanding the data — conceptualizing the process of unifying multiple databases into a single accessible data lake" />
+      <div class="img-pair-col-caption">
+        <strong>Conceptualizing the process</strong>
+        <span>The broader vision: taking multiple disparate databases, imposing human-readable structure on each, and consolidating them into a single data lake — making the full breadth of Cigna's data accessible through one interface.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── INFORMATION ARCHITECTURE ─── -->
+<section id="ia" class="section">
+  <div class="section-label">Information Architecture</div>
+  <div class="section-title">This was the core design problem — and where the most foundational work happened.</div>
+
+  <div class="info-rows" style="margin-bottom: 48px;">
+    <div class="info-row reveal">
+      <div class="info-row-label">The Central Insight</div>
+      <div class="info-row-body">
+        How data is stored is not how users think about data. Database architecture is built for retrieval efficiency. Information architecture is built for human comprehension. These are fundamentally different structures, and bridging them was the key design challenge. You can't hand a user a data schema and call it a UI.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-1">
+      <div class="info-row-label">The Translation Layer</div>
+      <div class="info-row-body">
+        Rather than restructuring the underlying data, we built an IA on top of it. Using our test database as the foundation, we organized hundreds of raw fields into logical, human-readable categories and hierarchies — grouping related fields into families that matched how a business user would naturally think about their data. Demographic information, plan details, coverage, costs, geographic data — structured not by how the database stored them, but by how a user would go looking for them.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-2">
+      <div class="info-row-label">The Hub &amp; Spoke Model</div>
+      <div class="info-row-body">
+        The target IA followed a <strong>hub and spoke structure</strong> — a central node with clearly defined categories branching outward, each containing progressively more specific fields and values. This gave users a mental model they could navigate without needing to understand the underlying data relationships. They could start broad and drill down, rather than needing to know exactly what they were looking for before they started.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-3">
+      <div class="info-row-label">Supporting Discovery</div>
+      <div class="info-row-body">
+        A key decision was designing for <strong>exploration as much as retrieval</strong>. Users often don't know the exact name of a field — they know what they want to understand, not how the data labels it. The IA needed to support fuzzy, intuitive searching so users could find data using natural language and context, not technical field names.
+      </div>
+    </div>
+  </div>
+
+  <!-- IA definitions table -->
+  <div class="reveal" style="border: 1px solid var(--border); overflow: hidden; box-shadow: 0 4px 24px rgba(0,61,122,0.07); margin-bottom: 32px;">
+    <div style="background: var(--navy); padding: 18px 24px; display: flex; align-items: center; gap: 12px;">
+      <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent);"></div>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.7);">IA Definitions — The Five Primitives</span>
+    </div>
+    <table class="ia-table">
+      <thead>
+        <tr>
+          <th style="width:48px;">#</th>
+          <th style="width:140px;">Term</th>
+          <th>Definition</th>
+          <th style="width:160px;">Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-num">02.1</td>
+          <td class="td-term">Dashboard</td>
+          <td>At-a-glance views of key performance indicators relevant to a particular objective or business process.</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td class="td-num">02.2</td>
+          <td class="td-term">Database</td>
+          <td>A common source where specific dimensions and measurables can be found.</td>
+          <td><span class="td-code">cust_prof_sv</span></td>
+        </tr>
+        <tr>
+          <td class="td-num">02.3</td>
+          <td class="td-term">Dimension</td>
+          <td>The specific name of a data field within a database.</td>
+          <td><span class="td-code">Gender</span></td>
+        </tr>
+        <tr>
+          <td class="td-num">02.4</td>
+          <td class="td-term">Measurable</td>
+          <td>Dimensions that are numbers and can be used in mathematical calculations.</td>
+          <td><span class="td-code">µ age</span></td>
+        </tr>
+        <tr>
+          <td class="td-num">02.5</td>
+          <td class="td-term">Filter</td>
+          <td>The ability to select a specified range of a particular Dimension or Measurable.</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="img-caption">Defining these five terms gave the team a shared vocabulary for every design decision downstream — and exposed that the current POC mixed the concepts in a way the operator audience couldn't parse.</div>
+  </div>
+
+  <!-- IA diagrams -->
+  <div class="img-pair reveal">
+    <div class="img-pair-col">
+      <img src="/projects/cigna/images/Data_scope.png" alt="IA — Current data scope: cust_prof_sv with 135 dimensions and measures" />
+      <div class="img-pair-col-caption">
+        <strong>IA · Data scope</strong>
+        <span>cust_prof_sv contains 135 possible dimensions, some of which double as measures — the POC exposed all 135 without labeling or grouping them.</span>
+      </div>
+    </div>
+    <div class="img-pair-col">
+      <img src="/projects/cigna/images/Dimensions_measures_filter.png" alt="IA — Dimensions, measures, and filter relationships" />
+      <div class="img-pair-col-caption">
+        <strong>IA · Dimensions, measures &amp; filter</strong>
+        <span>Mapping the relationship between selecting a dimension, whether it's filterable, and when in the flow filtering should occur — a question the POC left unanswered.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DESIGN EXPLORATION: CONVENTIONAL UI ─── -->
+<section id="conventional" class="section">
+  <div class="section-label">Design Exploration · Conventional UI</div>
+  <div class="section-title">The first path: a structured, familiar UI with sequential data selection.</div>
+
+  <p style="font-size: 15px; line-height: 1.75; color: var(--text-body); max-width: 72ch; margin-bottom: 32px;">
+    With the IA established, the project split into two parallel design paths. The conventional approach used familiar UI patterns — sequential dropdowns, structured field lists — and a core question: how does a non-technical user navigate hundreds of dimensions and measures to select the data they actually want? Get this wrong and everything downstream breaks.
+  </p>
+
+  <div class="reveal img-block" style="margin-bottom: 40px;">
+    <img src="/projects/cigna/images/process_flow.png" alt="Full process flow — dashboard build pipeline from start to visualization" />
+    <div class="img-caption">The full build pipeline: view an existing dashboard, or create a new one. The new-dashboard branch (database → dimension → measurable → filter → visualization) establishes a single deterministic order the UI mirrors — every screen maps to one step in this sequence.</div>
+  </div>
+
+  <!-- Option exploration: Data Selection -->
+  <div class="sub-section-label"><span class="num">Option Exploration</span> Data Selection</div>
+
+  <p style="font-size: 15px; line-height: 1.75; color: var(--text-body); max-width: 72ch; margin-bottom: 16px;">
+    The core tension: how do you make data findable for someone who doesn't know the schema — while still preserving the structure and relationships that make a resulting visualization meaningful?
+  </p>
+  <p style="font-size: 15px; line-height: 1.75; color: var(--text-body); max-width: 72ch; margin-bottom: 32px;">
+    Two options were evaluated. Both respect the underlying data model (database → dimension → measure). They differ in how much of that structure they expose to the user — and when.
+  </p>
+
+  <div class="reveal" style="margin-bottom: 20px;">
+    <div class="option-list-toolbar">
+      <span>Conventional UI · Data Selection</span>
+      <strong>Option A vs. Option B</strong>
+    </div>
+    <div class="option-list">
+
+      <!-- Option A: cascading dropdowns -->
+      <div class="option-block">
+        <div class="option-block-header">
+          <span class="k-compare-tag">Option A</span>
+          <span class="k-compare-title">Cascading dropdowns</span>
+        </div>
+        <div class="option-block-body">
+          <div class="option-block-stage">
+            <div class="mock-stack">
+              <div class="k-label" style="margin-bottom:4px;">1. Database</div>
+              <button class="mock-btn"><span>cust_prof_sv</span><span class="caret">▾</span></button>
+              <div class="k-label" style="margin-bottom:4px; margin-top:8px;">2. Dimensions</div>
+              <button class="mock-btn"><span>Select Dimensions</span><span class="caret">▾</span></button>
+              <div class="mock-dropdown">
+                <div class="head"><span>Select Dimensions</span><span>8</span></div>
+                <div class="opt"><span class="cb checked"></span><span>Gender</span></div>
+                <div class="opt"><span class="cb"></span><span>Age band</span></div>
+                <div class="opt"><span class="cb"></span><span>Coverage</span></div>
+                <div class="opt"><span class="cb"></span><span>Region</span></div>
+              </div>
+              <div class="k-label" style="margin-bottom:4px; margin-top:8px; opacity:0.4;">3. Measures</div>
+              <button class="mock-btn disabled"><span>Select Measures</span><span class="caret">▾</span></button>
+              <div class="k-caption" style="margin-top:12px;">Structure is enforced through step order. Each gate hides what comes next.</div>
+            </div>
+          </div>
+          <div class="option-block-procon">
+            <div class="k-pro-con" style="margin-top:0;">
+              <div class="col pros">
+                <h5>Pros</h5>
+                <ul>
+                  <li>Data hierarchy is implicit in the step order</li>
+                  <li>Familiar pattern · low onboarding cost</li>
+                  <li>Compact in collapsed state</li>
+                </ul>
+              </div>
+              <div class="col cons">
+                <h5>Cons</h5>
+                <ul>
+                  <li>Options hidden until each gate opens</li>
+                  <li>No way to scan or browse before committing</li>
+                  <li>Users who don't know field names are stuck</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Option B: browse + chip -->
+      <div class="option-block">
+        <div class="option-block-header">
+          <span class="k-compare-tag" style="border-color: var(--k-teal); color: var(--k-teal-dark); background: rgba(122,147,147,0.08);">Option B</span>
+          <span class="k-compare-title">Browse · select · chip</span>
+        </div>
+        <div class="option-block-body">
+          <div class="option-block-stage">
+            <div class="mock-stack">
+              <div class="k-label">Selected bindings</div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; min-height:30px;">
+                <span class="mock-chip">Gender<span class="x">×</span></span>
+                <span class="mock-chip">Age band<span class="x">×</span></span>
+                <span class="mock-chip">Count of M/F<span class="x">×</span></span>
+              </div>
+              <div class="k-label" style="margin-top:6px;">cust_prof_sv · fields (7)</div>
+              <div class="k-field-list">
+                <div class="k-field-row selected"><span class="cb"></span><span class="name">Gender</span><span class="type">Dim</span></div>
+                <div class="k-field-row selected"><span class="cb"></span><span class="name">Age band</span><span class="type">Dim</span></div>
+                <div class="k-field-row selected"><span class="cb"></span><span class="name">Count of M/F</span><span class="type m">Measure</span></div>
+                <div class="k-field-row"><span class="cb"></span><span class="name">Coverage</span><span class="type">Dim</span></div>
+                <div class="k-field-row"><span class="cb"></span><span class="name">µ age</span><span class="type m">Measure</span></div>
+                <div class="k-field-row"><span class="cb"></span><span class="name">Region</span><span class="type">Dim</span></div>
+                <div class="k-field-row"><span class="cb"></span><span class="name">Plan</span><span class="type">Dim</span></div>
+              </div>
+              <div class="k-caption" style="margin-top:6px;">Structure surfaced via Dim / Measure type labels. All options scannable upfront.</div>
+            </div>
+          </div>
+          <div class="option-block-procon">
+            <div class="k-pro-con" style="margin-top:0;">
+              <div class="col pros">
+                <h5>Pros</h5>
+                <ul>
+                  <li>All options visible · scannable without prior knowledge</li>
+                  <li>Dim / Measure labels teach structure through use</li>
+                  <li>Selection state persistent and reversible</li>
+                </ul>
+              </div>
+              <div class="col cons">
+                <h5>Cons</h5>
+                <ul>
+                  <li>Requires more vertical space on first paint</li>
+                  <li>Field type taxonomy must be precise and consistent</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="insight-callout reveal" style="margin-bottom: 40px;">
+    <div class="insight-label">The Decision · Cascading (Option A)</div>
+    <div class="insight-body">The chip approach offered visibility — users could see and manage their selections clearly. But with the scale of data involved, the open-ended nature of selection risked users building combinations that produced meaningless or invalid visualizations.<br><br>The cascading approach introduced sequential gates — select a database, then a dimension, then a measure, in order. That restriction was the point. The hierarchy kept users oriented within the data structure, and each gate prevented invalid combinations before they happened. For a non-technical user who doesn't know what a bad data selection looks like, those guardrails were essential. <strong>The constraints it introduced weren't limitations — they were scaffolding.</strong></div>
+  </div>
+
+  <!-- Conventional UI Wireframes -->
+  <div class="sub-section-label"><span class="num">Wireframes</span> Conventional UI</div>
+
+  <div class="img-pair reveal" style="margin-bottom: 48px;">
+    <div class="img-pair-col">
+      <img src="/projects/cigna/images/Dataviz_builder.png" alt="Step-by-step data selection builder — database to dimension to measure to visualization" />
+      <div class="img-pair-col-caption">
+        <strong>Data Graph Builder</strong>
+        <span>Launched via a floating action button, the builder walks users through sequential selection — database → dimensions → measure → chart type — each step gated by the previous. This is the conventional cascade UI in practice: structure enforced through order, not instruction.</span>
+      </div>
+    </div>
+    <div class="img-pair-col">
+      <img src="/projects/cigna/images/Dashbaord.png" alt="Dashboard builder — multiple visualizations added via floating action button" />
+      <div class="img-pair-col-caption">
+        <strong>Dashboard</strong>
+        <span>Visualizations populate the dashboard as they're built. Depending on the data and chart type, individual metrics can be clicked to surface a text breakdown of the underlying data.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DESIGN EXPLORATION: NODE-EDGE UI ─── -->
+<section id="node-edge" class="section">
+  <div class="section-label">Design Exploration · Node-Edge UI</div>
+  <div class="section-title">The second path: make the data itself explorable — visually, spatially, without schema knowledge.</div>
+
+  <p style="font-size: 15px; line-height: 1.75; color: var(--text-body); max-width: 72ch; margin-bottom: 40px;">
+    Rather than guiding users through a linear selection sequence, the node-edge UI was designed to make the data's structure navigable — letting users explore relationships visually and discover data through interaction rather than sequential choices.
+  </p>
+
+  <div class="info-rows" style="margin-bottom: 48px;">
+    <div class="info-row reveal">
+      <div class="info-row-label">The Discovery</div>
+      <div class="info-row-body">
+        This direction was sparked by my discovery of <strong>Linkurious</strong> and their Ogma graph visualization library. Recognizing its potential to solve our core discovery problem, I introduced it to the team as the foundation for building our own custom node-edge interface.<br><br>This was a significant decision — healthcare and insurance are traditionally conservative industries with a strong preference for proven, familiar tooling. Making the case for a novel approach required demonstrating not just its design merit but its direct relevance to the business goal. Getting that stakeholder buy-in was itself a meaningful part of the leadership work on this project.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-1">
+      <div class="info-row-label">How It Worked</div>
+      <div class="info-row-body">
+        A user selects a database, which surfaces a set of nodes and edges built from the schemas developed during the IA phase. Each node represents a data category, each edge a relationship. Users click through to drill down — moving from broad categories into increasingly specific dimensions and measures, following the structure of the data in a way that felt intuitive rather than technical.<br><br>The key distinction from the conventional UI was intent. Where cascading dropdowns guided users to a known destination, the node-edge model supported users who <em>didn't yet know what they were looking for</em> — enabling genuine exploration of the data landscape.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-2">
+      <div class="info-row-label">Visual Encoding</div>
+      <div class="info-row-body">
+        A significant area of experimentation was using the visual properties of the graph itself to encode meaning. Unlike conventional charts, node-edge gave us the ability to represent data through size, position, weight, and other visual properties — directly within the exploration interface.<br><br>For example, the edge connecting a demographic node to a cost node could <strong>scale in size proportionally to what that demographic represented as a percentage of total costs</strong>. This meant users weren't just navigating to data — they were already beginning to read it. The visualization became part of the discovery experience, not just the output at the end of it.
+      </div>
+    </div>
+    <div class="info-row reveal reveal-delay-3">
+      <div class="info-row-label">Keeping It Usable</div>
+      <div class="info-row-body">
+        A node-edge visualization can become its own discovery problem if not carefully controlled. A graph with hundreds of visible nodes is visually overwhelming and functionally useless. The design work here was about scoping — surfacing the right amount of data at each level of interaction, using the IA hierarchy to control what was visible and when. A metadata panel surfaced additional context at each level. Fuzzy search allowed users to find dimensions using natural language rather than exact field names.
+      </div>
+    </div>
+    <div class="info-row reveal">
+      <div class="info-row-label">The Fallback</div>
+      <div class="info-row-body">
+        Recognizing that not all users would be comfortable navigating a graph interface, we built in a fallback that more closely aligned with the conventional UI — giving users a familiar entry point while still benefiting from the underlying node-edge data structure and relationships. Both paths could serve the same user at different moments.
+      </div>
+    </div>
+    <div class="info-row reveal">
+      <div class="info-row-label">What We Actually Built</div>
+      <div class="info-row-body">
+        This wasn't a wireframe exercise — we built a working POC of the node-edge interface. Scoped to the same narrow, high-relevancy database used throughout the IA work, it was functional enough to put in front of stakeholders and business users for real testing. That hands-on session is the source of the feedback in the Outcomes section — both the positive reception and the performance limitations that surfaced at scale.
+      </div>
+    </div>
+  </div>
+
+  <div class="img-pair reveal" style="margin-bottom: 40px;">
+    <div class="img-pair-col">
+      <img src="/projects/cigna/images/node_reduced_schema.png" alt="Node-edge reduced schema — high-level concept clusters before drill-down" />
+      <div class="img-pair-col-caption">
+        <strong>Reduced schema view</strong>
+        <span>The entry state: high-level concept clusters surfaced as nodes, with edges showing relationships between them. Users orient by recognizing a category, not by knowing a field name.</span>
+      </div>
+    </div>
+    <div class="img-pair-col">
+      <img src="/projects/cigna/images/node-graph-building.png" alt="Node-edge graph building — drilling into dimensions and measures to build a visualization" />
+      <div class="img-pair-col-caption">
+        <strong>Graph building</strong>
+        <span>As users drill into a node, child dimensions and measures expand. Selections made directly in the graph feed the visualization — discovery and building happen in the same interface.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-callout reveal">
+    <div class="insight-label">What This Exploration Unlocked</div>
+    <div class="insight-body">The node-edge path made something visible that the conventional UI couldn't — the relationships between data points. For a non-technical user trying to understand not just what the data shows but how different dimensions connect and influence each other, that was a meaningful shift in how data could be experienced. It also unlocked a design insight we wouldn't have found otherwise: the visualization could do double duty as both navigation and output.</div>
+  </div>
+</section>
+
+<!-- ─── OUTCOMES ─── -->
+<div class="section-full" id="outcomes">
+  <div class="section-inner">
+    <div class="section-label">Outcomes</div>
+    <div class="section-title" style="margin-bottom: 48px;">This was a proof-of-concept. The goal was never to ship a finished product — but to validate an approach, establish a direction, and create a foundation to build from.</div>
+
+    <div class="outcomes-grid reveal" style="margin-bottom: 48px;">
+      <div class="outcome-card">
+        <div class="outcome-card-title">What was validated</div>
+        <div class="outcome-card-body">Two viable design paths were established and documented — the conventional cascading UI and the node-edge exploration interface — each with clear rationale, defined interaction patterns, and a shared IA foundation. The work demonstrated that complex healthcare data could be made navigable for non-technical users without restructuring the underlying data architecture.</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-card-title">User reception</div>
+        <div class="outcome-card-body">Both approaches were well received by business users. The node-edge interface gave users the ability to explore and discover data freely, building confidence through visual navigation. The conventional UI offered control and precision but required users to be more deliberate in their intent. Both were infinitely better than the existing model, where business users had no direct access to the data at all and could only submit requests to analysts and wait.</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-card-title">The technical reality</div>
+        <div class="outcome-card-body">Scaling the node-edge approach against the full size of Cigna's data lakes introduced performance challenges that couldn't be easily mitigated. We explored multiple approaches to address this, but the cost-benefit analysis was clear — at enterprise scale, the conventional cascading UI was the more viable path forward. A grounded decision, made with full awareness of the trade-offs.</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-card-title">Shared IA vocabulary</div>
+        <div class="outcome-card-body">Locked down five primitives — dashboard, database, dimension, measurable, filter — giving the cross-functional team a common language and preventing terminology drift across engineering, design, and stakeholders. A small artifact with significant downstream impact on alignment and decision speed.</div>
+      </div>
+    </div>
+
+    <div class="insight-callout reveal">
+      <div class="insight-label">What this project demonstrated</div>
+      <div class="insight-body">The decision to move toward the conventional UI wasn't a retreat — it was the result of a rigorous process that explored a genuinely novel approach, validated it with users, stress-tested it against real technical constraints, and made a recommendation grounded in evidence. That process — from ambiguous problem to structured POC to informed direction — is the work.</div>
+    </div>
+  </div>
+</div>
+
+<footer id="footer">
+  <div class="footer-inner">
+    <div>
+      <a href="/">Joseph Grgic</a> &nbsp;·&nbsp; UX · Information Architecture
+    </div>
+    <div style="display: flex; gap: 24px;">
+      <a href="/work">All Work</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const bar = document.getElementById('read-progress');
+  window.addEventListener('scroll', () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (window.scrollY / total * 100) + '%';
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  const navLinks = document.querySelectorAll('.nav-link');
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0% -60% 0%', threshold: 0 });
+  document.querySelectorAll('section[id], div[id]').forEach(s => navObserver.observe(s));
+</script>
+
+</body>
+</html>

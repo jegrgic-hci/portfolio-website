@@ -261,7 +261,7 @@
       "hero": "/images/google-editor.jpg",
       "featured": []
     },
-    "contentUrl": null,
+    "contentUrl": "/projects/google-editor/content/case-study.html",
     "externalLink": null,
     "tags": ["Information Architecture", "Tooling", "Design System"]
   },

@@ -1,0 +1,27 @@
+/* Card scaffold — every preview card uses this base. 700px design width.
+   Cards have NO outer chrome — the host renders title/border around them. */
+@import url('../colors_and_type.css');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--k-bg);
+  font-family: var(--font-body);
+  color: var(--k-fg-1);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.card {
+  width: 700px;
+  padding: 24px 28px;
+  background: var(--k-surface);
+  border: 1px solid var(--k-border-light);
+  box-sizing: border-box;
+}
+.row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; gap: 8px; }
+.divider { height: 1px; background: var(--k-border-light); margin: 14px 0; }
+.tiny-cap {
+  font-family: var(--font-ui); font-size: 0.55rem; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--k-fg-3);
+}

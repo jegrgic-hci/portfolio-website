@@ -262,6 +262,8 @@
     /* ── Image layouts ──────────────────────────────────────────── */
     .img-full {
       width: 100%;
+      max-height: 560px;
+      object-fit: contain;
       display: block;
       border: 1px solid var(--border);
       background: var(--off-white);
@@ -282,6 +284,8 @@
     .img-grid-2 img,
     .img-grid-3 img {
       width: 100%;
+      max-height: 400px;
+      object-fit: contain;
       display: block;
       border: 1px solid var(--border);
       background: var(--off-white);
@@ -461,25 +465,10 @@
 
       <p class="body-text">Four core design principles guided all iterations: match location to urgency (P0 always prominent, P1/P2 in the Right-Hand Rail), reserve alerts for action not education, apply tiered visual hierarchy across priority levels, and limit inline actions to one-click decisions to reduce cognitive load.</p>
 
-      <!-- Visual hierarchy sketches -->
-      <div class="mt-8">
-        <p class="subsection-title">Visual Hierarchy — Early Sketches</p>
-        <div class="img-grid-2 mt-6">
-          <div class="img-wrap">
-            <img src="/projects/google-hedwig/images/visual_hierarch_sketch.png" alt="Visual hierarchy sketch" class="img-full" style="border:none;" />
-            <p class="img-caption">Visual hierarchy exploration — priority tiers</p>
-          </div>
-          <div class="img-wrap">
-            <img src="/projects/google-hedwig/images/rhr_sketch.png" alt="RHR framework sketch" class="img-full" style="border:none;" />
-            <p class="img-caption">Right-Hand Rail (RHR) framework sketch</p>
-          </div>
-        </div>
-      </div>
-
       <!-- RHR Framework -->
       <div class="mt-8">
         <p class="subsection-title">RHR Framework — Design Variants</p>
-        <p class="body-text mt-6">The Right-Hand Rail (RHR) framework was designed to surface P1/P2 notifications without disrupting the main workflow. Two variants were developed: a segmented view for clearer priority grouping and a continuous scroll view.</p>
+        <p class="body-text mt-6">The Right-Hand Rail (RHR) framework was designed to surface P1/P2 notifications, account recommendations, education content, and contextual content within a persistent panel — without disrupting key tasks in an already complex UI. By anchoring lower-priority content to the rail, advertisers can stay focused on their primary workflow while still having timely information readily accessible. Two variants were developed: a segmented view for clearer priority grouping and a continuous scroll view.</p>
         <div class="img-grid-2 mt-6">
           <div class="img-wrap">
             <img src="/projects/google-hedwig/images/rhr_visual_hierarch_v1.png" alt="RHR visual hierarchy v1" class="img-full" style="border:none;" />
@@ -495,12 +484,8 @@
       <!-- P0 Critical Alerts -->
       <div class="mt-8">
         <p class="subsection-title">P0 Critical Alerts</p>
-        <p class="body-text mt-6">P0 alerts are always prominent but must not block UI functionality. Three design directions were explored: a persistent top bar, an inline card within the RHR, and a critical card modal variant.</p>
-        <div class="img-grid-3 mt-6">
-          <div class="img-wrap">
-            <img src="/projects/google-hedwig/images/p0_critical_sketch.png" alt="P0 critical sketch" class="img-full" style="border:none;" />
-            <p class="img-caption">P0 — Sketch explorations</p>
-          </div>
+        <p class="body-text mt-6">P0 alerts are always prominent but must not block UI functionality. Two design directions were explored: a persistent top bar and an inline card within the RHR.</p>
+        <div class="img-grid-2 mt-6">
           <div class="img-wrap">
             <img src="/projects/google-hedwig/images/p0_critical_topbar.png" alt="P0 critical top bar" class="img-full" style="border:none;" />
             <p class="img-caption">P0 — Persistent top bar</p>
@@ -515,20 +500,10 @@
       <!-- P1 Designs -->
       <div class="mt-8">
         <p class="subsection-title">P1 — Persistent Banners &amp; RHR</p>
-        <p class="body-text mt-6">P1 alerts use orange/yellow persistent banners that avoid disrupting workflows. The RHR variants explored a minimal bar, an expanded summary, and a full detail panel.</p>
-        <div class="img-grid-3 mt-6">
-          <div class="img-wrap">
-            <img src="/projects/google-hedwig/images/p1_rhr_bar.png" alt="P1 RHR bar" class="img-full" style="border:none;" />
-            <p class="img-caption">P1 — Compact RHR bar</p>
-          </div>
-          <div class="img-wrap">
-            <img src="/projects/google-hedwig/images/p1_rhr_expanded.png" alt="P1 RHR expanded" class="img-full" style="border:none;" />
-            <p class="img-caption">P1 — Expanded RHR state</p>
-          </div>
-          <div class="img-wrap">
-            <img src="/projects/google-hedwig/images/p1_rhr_full.png" alt="P1 RHR full" class="img-full" style="border:none;" />
-            <p class="img-caption">P1 — Full RHR panel</p>
-          </div>
+        <p class="body-text mt-6">P1 alerts use persistent banners within the RHR that avoid disrupting workflows. Rather than relying on color alone, existing iconography and system colors denote the type and impact of each issue or recommendation. The RHR variant shown explores a full detail panel for surfacing actionable context without leaving the current workflow.</p>
+        <div class="img-wrap mt-6">
+          <img src="/projects/google-hedwig/images/p1_rhr_full.png" alt="P1 RHR full" class="img-full" style="border:none;" />
+          <p class="img-caption">P1 — Full RHR panel</p>
         </div>
       </div>
 
@@ -546,10 +521,6 @@
       <div class="mt-8">
         <p class="subsection-title">Content Architecture &amp; Page Mapping</p>
         <p class="body-text mt-6">A key challenge: the proposed framework showed global content that didn't change based on where the advertiser was in Google Ads. No design cues indicated the RHR content was tied to the current page — a critical gap for contextual relevance.</p>
-        <div class="img-wrap mt-6">
-          <img src="/projects/google-hedwig/images/Content_IA.png" alt="Content information architecture" class="img-full" style="border:none;" />
-          <p class="img-caption">Content IA — information architecture for notification content</p>
-        </div>
         <div class="img-wrap mt-6">
           <img src="/projects/google-hedwig/images/direct_mapping.png" alt="Direct page mapping" class="img-full" style="border:none;" />
           <p class="img-caption">Design mapping — notification-to-page context alignment</p>

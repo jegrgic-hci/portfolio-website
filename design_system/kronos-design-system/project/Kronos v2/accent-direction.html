@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kronos — lab teal vs cerulean engineer</title>
+<link rel="stylesheet" href="tokens-v2.css">
+<link rel="stylesheet" href="components-v2.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--k2-bg); font-family: var(--k2-font-body); color: var(--k2-fg-1); }
+
+.hero {
+  background: var(--k2-sidebar);
+  color: var(--k2-fg-on-dark-1);
+  padding: var(--k2-s-7) var(--k2-s-7) var(--k2-s-6);
+}
+.hero .stamp {
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-fg-on-dark-3);
+  margin-bottom: 8px;
+}
+.hero h1 {
+  font-family: var(--k2-font-body);
+  font-weight: 600;
+  font-size: clamp(26px, 3.6vw, 36px);
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  margin: 0;
+  max-width: 26ch;
+}
+.hero p {
+  font-family: var(--k2-font-body);
+  font-size: var(--k2-text-md);
+  line-height: 1.6;
+  color: var(--k2-fg-on-dark-2);
+  max-width: 64ch;
+  margin: var(--k2-s-4) 0 0;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--k2-border-light);
+}
+@media (max-width: 1100px) { .split { grid-template-columns: 1fr; } }
+
+.lane {
+  background: var(--k2-surface);
+  padding: var(--k2-s-6) var(--k2-s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--k2-s-5);
+}
+.lane-h {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.lane-h .super {
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-fg-4);
+}
+.lane-h .h {
+  font-family: var(--k2-font-display);
+  font-size: 40px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+.lane-h .voice {
+  font-family: var(--k2-font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--k2-fg-3);
+  margin: 4px 0 0;
+  max-width: 50ch;
+}
+.lane-h .voice b { color: var(--k2-fg-1); font-weight: 500; }
+
+.scale {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 2px;
+}
+.scale .step {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px;
+  font-family: var(--k2-font-ui);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.scale .step .num { opacity: 0.8; }
+.scale .step .hex { font-size: 7.5px; opacity: 0.6; }
+
+.attr-row { display: grid; grid-template-columns: 90px 1fr; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--k2-border-light); font-family: var(--k2-font-body); font-size: 12px; line-height: 1.5; color: var(--k2-fg-2); }
+.attr-row:last-child { border: none; }
+.attr-row .k { font-family: var(--k2-font-ui); font-size: 10px; font-weight: 700; letter-spacing: var(--k2-track-label); text-transform: uppercase; color: var(--k2-fg-4); }
+
+.demo-block {
+  background: var(--k2-bg);
+  border: 1px solid var(--k2-border-light);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.demo-block.dark { background: var(--k2-sidebar); border-color: #000; color: #fff; }
+
+/* KPI card */
+.dkpi {
+  background: var(--k2-surface);
+  border: 1px solid var(--k2-border-light);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dkpi .pre {
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-fg-3);
+}
+.dkpi .num {
+  font-family: var(--k2-font-display);
+  font-size: 56px;
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+}
+.dkpi .lbl { font-family: var(--k2-font-body); font-size: 12px; color: var(--k2-fg-3); }
+
+/* button + tag in lane */
+.lane-btn {
+  display: inline-flex;
+  font-family: var(--k2-font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: var(--k2-track-ui);
+  text-transform: uppercase;
+  padding: 9px 16px;
+  border: 1px solid;
+  align-self: flex-start;
+  cursor: default;
+  color: #fff;
+}
+.lane-tag {
+  display: inline-block;
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-ui);
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid;
+}
+
+.lane-promo {
+  padding: 18px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+}
+.lane-promo .pre-i {
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+}
+.lane-promo .ph {
+  font-family: var(--k2-font-display);
+  font-size: 26px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-top: 4px;
+}
+.lane-promo p {
+  font-family: var(--k2-font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 4px 0 0;
+  color: rgba(255,255,255,0.85);
+}
+
+/* ===== LAB TEAL ===== */
+.lab .h { color: #355050; }
+.lab .dkpi .num { color: #355050; }
+.lab .lane-btn { background: #355050; border-color: #355050; }
+.lab .lane-tag { color: #355050; background: #E6ECEC; border-color: #7A9393; }
+.lab .lane-promo { background: #355050; }
+.lab .lane-promo::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 6px; background: #4A6363; }
+
+/* ===== CERULEAN ===== */
+.cer .h { color: #0E5582; }
+.cer .dkpi .num { color: #0E5582; }
+.cer .lane-btn { background: #137CB6; border-color: #137CB6; }
+.cer .lane-tag { color: #0E5582; background: #E6F2F9; border-color: #6FAFD8; }
+.cer .lane-promo { background: #0E5582; }
+.cer .lane-promo::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 6px; background: #137CB6; }
+
+/* sample sentence comparing voice */
+.voice-sample {
+  background: var(--k2-bg);
+  border-left: 3px solid currentColor;
+  padding: 10px 14px;
+  font-family: var(--k2-font-body);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--k2-fg-2);
+  font-style: italic;
+}
+.voice-sample b { font-style: normal; color: var(--k2-fg-1); font-weight: 600; }
+.lab .voice-sample { color: #355050; }
+.cer .voice-sample { color: #0E5582; }
+
+/* contrast badge */
+.cbadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  color: var(--k2-green);
+  background: var(--k2-green-bg);
+}
+
+/* footer */
+.foot {
+  padding: var(--k2-s-7) var(--k2-s-7);
+  background: var(--k2-bg);
+  border-top: 1px solid var(--k2-border-light);
+}
+.foot h2 {
+  font-family: var(--k2-font-body);
+  font-weight: 600;
+  font-size: var(--k2-text-lg);
+  margin: 0 0 var(--k2-s-3);
+  color: var(--k2-fg-1);
+}
+.foot p {
+  font-family: var(--k2-font-body);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--k2-fg-2);
+  max-width: 70ch;
+  margin: 0 0 12px;
+}
+.foot strong { color: var(--k2-fg-1); }
+.foot .picker {
+  background: var(--k2-surface);
+  border: 1px solid var(--k2-fg-1);
+  padding: 16px 18px;
+  margin-top: var(--k2-s-4);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 700px) { .foot .picker { grid-template-columns: 1fr; } }
+.foot .picker .opt h3 {
+  font-family: var(--k2-font-display);
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+}
+.foot .picker .opt .lbl {
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-fg-4);
+  margin-bottom: 4px;
+}
+.foot .picker .opt p {
+  font-size: 13px;
+  margin: 0;
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="stamp">Brand decision · Voice + Color</div>
+  <h1>Pick a personality first, then we build depth around it.</h1>
+  <p>
+    Your wireframe blue and the current Kronos teal are <em>analogous</em> hues — they live in
+    the same family. Picking between them isn't a depth question; it's a voice question.
+    <strong>Lab teal</strong> is muted, clinical, reserved. <strong>Cerulean engineer</strong>
+    is saturated, confident, conversational. Both can carry a full 11-step scale (shown below).
+    The right move is to commit to one and let everything else — voice, copy, even the section
+    codes — follow.
+  </p>
+</header>
+
+<div class="split">
+
+  <!-- ============ LAB TEAL ============ -->
+  <article class="lane lab">
+    <div class="lane-h">
+      <span class="super">Path A · Current direction</span>
+      <span class="h">Lab teal</span>
+      <p class="voice">
+        <b>Voice:</b> clinical, brief, mechanical. The brand is a piece of equipment running
+        a protocol. Colors stay muted on purpose — saturation would feel marketing-y. Pairs
+        with all-caps mono chrome, version stamps, decimal section codes.
+      </p>
+    </div>
+
+    <div>
+      <div style="font-family: var(--k2-font-ui); font-size: 10px; font-weight: 700; letter-spacing: var(--k2-track-label); text-transform: uppercase; color: var(--k2-fg-3); margin-bottom: 6px;">Full 11-step scale</div>
+      <div class="scale">
+        <div class="step" style="background: #F0F4F4; color: #355050;"><span class="num">50</span><span class="hex">F0F4F4</span></div>
+        <div class="step" style="background: #DCE5E5; color: #355050;"><span class="num">100</span><span class="hex">DCE5E5</span></div>
+        <div class="step" style="background: #BAC9C9; color: #355050;"><span class="num">200</span><span class="hex">BAC9C9</span></div>
+        <div class="step" style="background: #91A6A6; color: #1A2A2A;"><span class="num">300</span><span class="hex">91A6A6</span></div>
+        <div class="step" style="background: #6E8585; color: #fff;"><span class="num">400</span><span class="hex">6E8585</span></div>
+        <div class="step" style="background: #4A6363; color: #fff;"><span class="num">500</span><span class="hex">4A6363</span></div>
+        <div class="step" style="background: #355050; color: #fff;"><span class="num">600</span><span class="hex">355050</span></div>
+        <div class="step" style="background: #283C3C; color: #fff;"><span class="num">700</span><span class="hex">283C3C</span></div>
+        <div class="step" style="background: #1F2D2D; color: #fff;"><span class="num">800</span><span class="hex">1F2D2D</span></div>
+        <div class="step" style="background: #161F1F; color: #fff;"><span class="num">900</span><span class="hex">161F1F</span></div>
+        <div class="step" style="background: #0B1212; color: #fff;"><span class="num">950</span><span class="hex">0B1212</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="attr-row"><span class="k">Hue / Sat</span><span>H ≈ 180° · S ≈ 12% · L ≈ 26%</span></div>
+      <div class="attr-row"><span class="k">Text safe</span><span>600 (#355050) · <span class="cbadge">7.4:1 AAA</span></span></div>
+      <div class="attr-row"><span class="k">Reads as</span><span>Engineered, clinical, restrained. Lab equipment, surveying gear, technical drawings.</span></div>
+      <div class="attr-row"><span class="k">Pairs with</span><span>Ochre complement (warm/cool tension) · semantic blue stays usable</span></div>
+    </div>
+
+    <div class="demo-block">
+      <div class="dkpi">
+        <div class="pre">Active RFIs</div>
+        <div class="num">23</div>
+        <div class="lbl">7 awaiting reply</div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <span class="lane-tag">Featured</span>
+        <button class="lane-btn">Open drawing</button>
+      </div>
+      <div class="lane-promo">
+        <div class="pre-i">Protocol_V5.0 · Live</div>
+        <div class="ph">Issued for construction</div>
+        <p>Reads like equipment, not software. Earned, not eager.</p>
+      </div>
+    </div>
+
+    <div class="voice-sample">
+      <b>Sample copy:</b> "Verification required for level-4 access. 7 RFIs awaiting reply. Operator response expected within 24h."
+    </div>
+  </article>
+
+  <!-- ============ CERULEAN ============ -->
+  <article class="lane cer">
+    <div class="lane-h">
+      <span class="super">Path B · Your wireframe blue</span>
+      <span class="h">Cerulean engineer</span>
+      <p class="voice">
+        <b>Voice:</b> confident, direct, helpful. The brand is engineering software — modern,
+        purposeful, on your side. Saturation reads "professional product," not "lab apparatus."
+        Pairs better with sentence-case headings and a softer mono-chrome ratio.
+      </p>
+    </div>
+
+    <div>
+      <div style="font-family: var(--k2-font-ui); font-size: 10px; font-weight: 700; letter-spacing: var(--k2-track-label); text-transform: uppercase; color: var(--k2-fg-3); margin-bottom: 6px;">Full 11-step scale (#137CB6 at step 500)</div>
+      <div class="scale">
+        <div class="step" style="background: #E6F2F9; color: #0E5582;"><span class="num">50</span><span class="hex">E6F2F9</span></div>
+        <div class="step" style="background: #C6E0F0; color: #0E5582;"><span class="num">100</span><span class="hex">C6E0F0</span></div>
+        <div class="step" style="background: #9BCAE6; color: #0A4366;"><span class="num">200</span><span class="hex">9BCAE6</span></div>
+        <div class="step" style="background: #6FAFD8; color: #0A4366;"><span class="num">300</span><span class="hex">6FAFD8</span></div>
+        <div class="step" style="background: #4794C7; color: #fff;"><span class="num">400</span><span class="hex">4794C7</span></div>
+        <div class="step" style="background: #137CB6; color: #fff;"><span class="num">500</span><span class="hex">137CB6</span></div>
+        <div class="step" style="background: #1068A0; color: #fff;"><span class="num">600</span><span class="hex">1068A0</span></div>
+        <div class="step" style="background: #0E5582; color: #fff;"><span class="num">700</span><span class="hex">0E5582</span></div>
+        <div class="step" style="background: #0A4366; color: #fff;"><span class="num">800</span><span class="hex">0A4366</span></div>
+        <div class="step" style="background: #07334D; color: #fff;"><span class="num">900</span><span class="hex">07334D</span></div>
+        <div class="step" style="background: #052336; color: #fff;"><span class="num">950</span><span class="hex">052336</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="attr-row"><span class="k">Hue / Sat</span><span>H ≈ 199° · S ≈ 82% · L ≈ 39%</span></div>
+      <div class="attr-row"><span class="k">Text safe</span><span>700 (#0E5582) · <span class="cbadge">8.6:1 AAA</span> · 500 is only 4.6:1</span></div>
+      <div class="attr-row"><span class="k">Reads as</span><span>Modern engineering software, blueprints, construction-tech, optimistic.</span></div>
+      <div class="attr-row"><span class="k">Pairs with</span><span>Warm complement (orange/clay) · BUT semantic info-blue must be retired/recolored</span></div>
+    </div>
+
+    <div class="demo-block">
+      <div class="dkpi">
+        <div class="pre">Active RFIs</div>
+        <div class="num">23</div>
+        <div class="lbl">7 awaiting reply</div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <span class="lane-tag">Featured</span>
+        <button class="lane-btn">Open drawing</button>
+      </div>
+      <div class="lane-promo">
+        <div class="pre-i">Release · v5.0 live</div>
+        <div class="ph">Now responsive</div>
+        <p>Reads like a confident product. Approachable, not clinical.</p>
+      </div>
+    </div>
+
+    <div class="voice-sample">
+      <b>Sample copy:</b> "23 RFIs need your attention. 7 are waiting on a response — open the drawing set to triage."
+    </div>
+  </article>
+
+</div>
+
+<!-- ============ Foot ============ -->
+<section class="foot">
+  <h2>Honest take</h2>
+  <p>
+    These are not "depth" alternatives to each other — they're <strong>different brands</strong>.
+    Both have equivalent depth potential once you build out the 11-step scale (shown above).
+    The decision is which personality you want to ship.
+  </p>
+  <p>
+    The cerulean is a stronger fit for the construction product specifically. Construction
+    project managers spend their day in tools that look like this — Procore, Autodesk
+    Construction Cloud, Bluebeam. Your wireframe instinct is right for that context. But it
+    will pull the brand voice away from "lab/protocol" toward "engineering software,"
+    which means rewriting the copywriting style and probably softening the all-caps chrome.
+  </p>
+  <p>
+    The lab teal is the stronger fit if Kronos is your <em>portfolio brand</em> first and
+    the construction product is one application of it. Identity stays distinctive; the
+    construction product can use a complement (ochre, clay) for its product-specific moments
+    without losing the parent brand.
+  </p>
+
+  <div class="picker">
+    <div class="opt">
+      <div class="lbl">If you say A</div>
+      <h3>Stay lab teal</h3>
+      <p>I'll ship v2.5 with the three "next sprint" levers + teal expanded to 11 steps + ochre complement. Brand voice is preserved.</p>
+    </div>
+    <div class="opt">
+      <div class="lbl">If you say B</div>
+      <h3>Swap to cerulean</h3>
+      <p>I'll ship v2.5 with the three levers + cerulean as the new primary at 11 steps + retire/recolor semantic info-blue + flag the voice/casing rules that need a parallel pass.</p>
+    </div>
+  </div>
+  <p style="margin-top: var(--k2-s-3); font-size: 13px;">
+    <strong>One more option (C):</strong> keep #137CB6 as your <em>wireframing default</em>
+    in your personal practice and the brand stays teal. Wireframe colors are tool defaults;
+    they don't have to become brand colors. Plenty of designers work this way deliberately.
+  </p>
+</section>
+
+</body>
+</html>

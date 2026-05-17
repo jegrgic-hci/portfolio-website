@@ -1,0 +1,175 @@
+/* ==========================================================================
+   Kronos v2.5 — SHARED tokens
+   Direction-agnostic: neutrals, type, spacing, motion, elevation, density.
+   Accent + complement + semantic-info live in tokens-teal.css / tokens-cerulean.css.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ------------------------------------------------------------------
+     NEUTRAL SCALE — 11 steps, cool 1° tint (~210° hue at 2% sat)
+     Replaces v2's 4-grey system. Aliases below keep --k2-* compat.
+     ------------------------------------------------------------------ */
+  --k25-n-50:  #FAFBFB;
+  --k25-n-100: #F2F3F4;
+  --k25-n-200: #E4E6E8;
+  --k25-n-300: #CDD0D3;
+  --k25-n-400: #A8ACB0;
+  --k25-n-500: #80858A;
+  --k25-n-600: #5C6166;
+  --k25-n-700: #44484C;
+  --k25-n-800: #2E3134;
+  --k25-n-900: #1C1E20;
+  --k25-n-950: #0F1012;
+
+  /* Surfaces */
+  --k25-bg:        var(--k25-n-50);
+  --k25-surface:   #FFFFFF;
+  --k25-surface-2: var(--k25-n-100);    /* sunken / nested surface */
+  --k25-sidebar:   var(--k25-n-900);
+
+  /* Foreground roles (alias into scale) */
+  --k25-fg-1:      var(--k25-n-900);    /* primary text — 16:1 */
+  --k25-fg-2:      var(--k25-n-700);    /* secondary    — 10:1 */
+  --k25-fg-3:      var(--k25-n-600);    /* muted        — 6.4:1 */
+  --k25-fg-4:      var(--k25-n-500);    /* hint         — 4.6:1 */
+  --k25-fg-inverse: #FFFFFF;
+
+  /* On dark */
+  --k25-fg-on-dark-1: #FFFFFF;
+  --k25-fg-on-dark-2: rgba(255,255,255,0.78);
+  --k25-fg-on-dark-3: rgba(255,255,255,0.56);
+
+  /* Borders (alias into neutral scale, NTC-safe) */
+  --k25-border-heavy: var(--k25-n-900);
+  --k25-border-mid:   var(--k25-n-300);
+  --k25-border-light: var(--k25-n-200);
+  --k25-border-hover: var(--k25-n-600);
+
+  /* Disabled */
+  --k25-disabled-fg:     var(--k25-n-400);
+  --k25-disabled-bg:     var(--k25-n-100);
+  --k25-disabled-border: var(--k25-n-300);
+
+  /* ------------------------------------------------------------------
+     SEMANTIC (per-direction can override --k25-blue)
+     ------------------------------------------------------------------ */
+  --k25-red:          #A8281C;
+  --k25-red-bg:       #FBEBE9;
+  --k25-red-border:   #E5A5A0;
+  --k25-green:        #1F5A40;
+  --k25-green-bg:     #E6F0EB;
+  --k25-green-border: #A7C9B7;
+  --k25-amber:        #8A5A00;
+  --k25-amber-bg:     #FBF1D9;
+  --k25-amber-border: #E0BE6E;
+  --k25-blue:         #1F4D8E;          /* OVERRIDDEN in cerulean direction */
+  --k25-blue-bg:      #E7EEF8;
+  --k25-blue-border:  #A6BCDC;
+
+  /* ------------------------------------------------------------------
+     TYPE
+     ------------------------------------------------------------------ */
+  --k25-font-display: 'Anton', 'Impact', 'Arial Black', 'Helvetica Neue', sans-serif;
+  --k25-font-ui:      'IBM Plex Mono', 'Courier New', monospace;
+  --k25-font-body:    'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Scale (12px floor) */
+  --k25-text-2xs:  0.75rem;
+  --k25-text-xs:   0.8125rem;
+  --k25-text-sm:   0.875rem;
+  --k25-text-base: 1rem;
+  --k25-text-md:   1.125rem;
+  --k25-text-lg:   1.375rem;
+  --k25-text-xl:   1.75rem;
+  --k25-text-2xl:  2.5rem;
+  --k25-text-3xl:  3.5rem;
+  --k25-text-4xl:  4.5rem;     /* Anton workhorse */
+  --k25-text-5xl:  6rem;
+
+  /* Tracking */
+  --k25-track-tight:   0.04em;
+  --k25-track-ui:      0.08em;
+  --k25-track-label:   0.10em;
+  --k25-track-display: 0.04em;
+
+  /* ------------------------------------------------------------------
+     SPACING — 8px grid (kept from v2)
+     ------------------------------------------------------------------ */
+  --k25-s-1:   4px;
+  --k25-s-2:   8px;
+  --k25-s-3:  12px;
+  --k25-s-4:  16px;
+  --k25-s-5:  24px;
+  --k25-s-6:  32px;
+  --k25-s-7:  48px;
+  --k25-s-8:  64px;
+  --k25-s-9:  96px;
+  --k25-s-10: 128px;
+
+  --k25-sidebar-width: 244px;
+  --k25-content-max:   1120px;
+
+  /* ------------------------------------------------------------------
+     MOTION — named tokens (NEW in v2.5)
+     ------------------------------------------------------------------ */
+  --k25-ease:             cubic-bezier(0.4, 0, 0.2, 1);
+  --k25-ease-out:         cubic-bezier(0, 0, 0.2, 1);
+  --k25-motion-quick:     80ms;
+  --k25-motion-base:     150ms;
+  --k25-motion-emphasis: 240ms;
+  --k25-motion-enter:    320ms;
+
+  /* ------------------------------------------------------------------
+     ELEVATION — TWO tokens. Floating UI ONLY (NEW)
+     Cards/buttons stay flat. Dropdowns/popovers/toasts/modals lift.
+     ------------------------------------------------------------------ */
+  --k25-elev-1:
+    0 1px 0 var(--k25-border-mid),
+    0 4px 12px -2px rgba(15, 16, 18, 0.10),
+    0 1px 3px rgba(15, 16, 18, 0.06);
+  --k25-elev-2:
+    0 1px 0 var(--k25-border-mid),
+    0 16px 32px -8px rgba(15, 16, 18, 0.18),
+    0 4px 8px rgba(15, 16, 18, 0.08);
+
+  /* ------------------------------------------------------------------
+     DENSITY — multiplier (NEW)
+     Default = cozy. Set [data-density="compact"] to tighten rows/lists.
+     ------------------------------------------------------------------ */
+  --k25-density-pad-y:  10px;
+  --k25-density-pad-x:  14px;
+  --k25-density-row-y:  12px;
+  --k25-density-gap:    var(--k25-s-3);
+  --k25-density-text:   var(--k25-text-sm);
+}
+
+[data-density="compact"] {
+  --k25-density-pad-y:  6px;
+  --k25-density-pad-x:  10px;
+  --k25-density-row-y:  6px;
+  --k25-density-gap:    8px;
+  --k25-density-text:   var(--k25-text-xs);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --k25-motion-quick:    0ms;
+    --k25-motion-base:     0ms;
+    --k25-motion-emphasis: 0ms;
+    --k25-motion-enter:    0ms;
+  }
+}
+
+/* ------------------------------------------------------------------
+   FOCUS RING — accent-aware, defined here as a black halo + accent ring
+   ------------------------------------------------------------------ */
+:root {
+  --k25-focus-ring:
+    0 0 0 2px var(--k25-surface),
+    0 0 0 4px var(--k25-accent, var(--k25-fg-1));
+  --k25-focus-ring-inverse:
+    0 0 0 2px var(--k25-sidebar),
+    0 0 0 4px var(--k25-accent-light, #fff);
+}

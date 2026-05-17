@@ -2,21 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Design Tokens ──────────────────────────────────────────────────────── */
+/* ── Design Tokens — Kronos v3 · Cerulean direction ────────────────────── */
 :root {
-  /* Color */
-  --k-bg:             #F7F7F7;
+  /* Color — neutral scale (11-step, cool 1° tint) */
+  --k-bg:             #FAFBFB;   /* n-50  */
   --k-surface:        #FFFFFF;
-  --k-text-primary:   #1A1A1A;
-  --k-text-secondary: #6B6B6B;
-  --k-text-muted:     #A0A0A0;
-  --k-teal:           #7A9393;
-  --k-teal-dark:      #4A6363;
-  --k-border-heavy:   #1A1A1A;
-  --k-border-mid:     #C8C8C8;
-  --k-border-light:   #E8E8E8;
-  --k-red:            #BD3E31;
-  --k-green:          #2D6A4F;
+  --k-text-primary:   #1C1E20;   /* n-900 */
+  --k-text-secondary: #5C6166;   /* n-600 */
+  --k-text-muted:     #80858A;   /* n-500 */
+  --k-border-heavy:   #1C1E20;   /* n-900 */
+  --k-border-mid:     #CDD0D3;   /* n-300 */
+  --k-border-light:   #E4E6E8;   /* n-200 */
+
+  /* Color — cerulean accent (replaces teal) */
+  --k-teal:           #137CB6;   /* cerulean-500 · decorative rail */
+  --k-teal-dark:      #0E5582;   /* cerulean-700 · text-safe, 8.6:1 */
+  --k-teal-bg:        #E6F2F9;   /* cerulean-50  · tinted surfaces */
+
+  /* Color — semantic */
+  --k-red:            #A8281C;
+  --k-green:          #1F5A40;
+
+  /* Motion — named tokens */
+  --k-ease:             cubic-bezier(0.4, 0, 0.2, 1);
+  --k-motion-quick:     80ms;
+  --k-motion-base:      150ms;
+  --k-motion-emphasis:  240ms;
+  --k-motion-enter:     320ms;
 
   /* Spacing — 8px base scale */
   --s-1:  4px;
@@ -58,7 +70,7 @@ html {
 
 :focus-visible {
   outline: 2px solid var(--k-teal);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
 body {
@@ -110,7 +122,7 @@ select:focus {
   color: var(--k-text-secondary);
   text-decoration: none;
   padding: var(--s-2) var(--s-3);
-  transition: color 150ms ease;
+  transition: color var(--k-motion-base) var(--k-ease);
 }
 .nav-link:hover {
   color: var(--k-text-primary);
@@ -122,7 +134,7 @@ select:focus {
   letter-spacing: 0.06em;
   color: var(--k-text-secondary);
   text-decoration: none;
-  transition: color 150ms ease;
+  transition: color var(--k-motion-base) var(--k-ease);
 }
 .footer-link:hover { color: var(--k-text-primary); }
 
@@ -150,14 +162,14 @@ select:focus {
 .je-card {
   background: var(--k-surface);
   border: 1px solid var(--k-border-light);
-  transition: border-color 150ms ease;
+  transition: border-color var(--k-motion-base) var(--k-ease);
 }
 .je-card:hover { border-color: var(--k-border-heavy); }
 
 .je-research-card {
   background: var(--k-surface);
   border: 1px solid var(--k-border-light);
-  transition: border-color 150ms ease;
+  transition: border-color var(--k-motion-base) var(--k-ease);
 }
 .je-research-card:hover { border-color: var(--k-border-heavy); }
 
@@ -174,7 +186,8 @@ select:focus {
   padding: var(--s-2) var(--s-4);
   display: inline-block;
   text-decoration: none;
-  transition: background 150ms ease, color 150ms ease;
+  transition: background var(--k-motion-base) var(--k-ease),
+              color var(--k-motion-base) var(--k-ease);
 }
 .je-card-link:hover,
 .je-research-link:hover {

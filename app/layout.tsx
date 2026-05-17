@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
           rel="stylesheet"
         />
       </head>
@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             justifyContent: "space-between", alignItems: "center",
           }}>
             <a href="/" style={{
-              fontFamily: "Impact, 'Arial Black', sans-serif",
+              fontFamily: "'Anton', Impact, 'Arial Black', sans-serif",
               fontSize: "1.1rem",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
@@ -88,7 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* Brand */}
               <div>
                 <div style={{
-                  fontFamily: "Impact, 'Arial Black', sans-serif",
+                  fontFamily: "'Anton', Impact, 'Arial Black', sans-serif",
                   fontSize: "1.5rem",
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",

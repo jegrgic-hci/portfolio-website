@@ -1,0 +1,1451 @@
+<!doctype html>
+<html lang="en" data-screen-label="00 Kronos v3.5">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kronos v3.5 — full design system</title>
+<link rel="stylesheet" href="tokens-v35.css">
+<link rel="stylesheet" href="components-v35.css">
+<style>
+  /* ---------- page chrome (this index only) ---------- */
+  .hero {
+    background: var(--k35-sidebar);
+    color: var(--k35-fg-on-dark-1);
+    padding: var(--k35-s-8) var(--k35-s-7) var(--k35-s-7);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
+    background: var(--k35-accent-rail);
+  }
+  .stamp-row {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    font-family: var(--k35-font-ui);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: var(--k35-track-label);
+    text-transform: uppercase;
+    color: var(--k35-fg-on-dark-3);
+    margin-bottom: var(--k35-s-4);
+  }
+  .stamp-row .pill {
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 4px 10px;
+    color: var(--k35-fg-on-dark-2);
+  }
+  .stamp-row .pill.is-rail {
+    border-color: var(--k35-accent-rail);
+    color: var(--k35-accent-200);
+  }
+  .hero h1 {
+    font-family: var(--k35-font-display);
+    font-size: clamp(64px, 11vw, 140px);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 0.9;
+    margin: 0 0 var(--k35-s-4);
+  }
+  .hero h1 .ver { color: var(--k35-accent-300); }
+  .hero .lede {
+    font-family: var(--k35-font-body);
+    font-size: var(--k35-text-md);
+    line-height: 1.6;
+    color: var(--k35-fg-on-dark-2);
+    max-width: 64ch;
+    margin: 0;
+  }
+  .hero code {
+    font-family: var(--k35-font-ui);
+    background: rgba(255,255,255,0.08);
+    padding: 1px 6px;
+    font-size: 13px;
+  }
+  .toc {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    margin-top: var(--k35-s-6);
+    padding-top: var(--k35-s-4);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    font-family: var(--k35-font-ui);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: var(--k35-track-ui);
+    text-transform: uppercase;
+  }
+  .toc a {
+    color: var(--k35-fg-on-dark-2);
+    text-decoration: none;
+    padding-bottom: 4px;
+    border-bottom: 1px solid transparent;
+    transition: color var(--k35-motion-quick) var(--k35-ease),
+                border-color var(--k35-motion-quick) var(--k35-ease);
+  }
+  .toc a:hover { color: #fff; border-bottom-color: var(--k35-accent-rail); }
+  .toc .grp {
+    color: var(--k35-fg-on-dark-3);
+    border-right: 1px solid rgba(255,255,255,0.12);
+    padding-right: 18px;
+    margin-right: 6px;
+  }
+
+  /* ---------- section scaffold ---------- */
+  .section {
+    padding: var(--k35-s-7) var(--k35-s-7);
+    border-bottom: 1px solid var(--k35-border-light);
+  }
+  .section.is-tight { padding: var(--k35-s-6) var(--k35-s-7); }
+  .section-h {
+    display: flex; align-items: baseline; gap: 14px;
+    margin-bottom: var(--k35-s-3);
+  }
+  .section-h .num {
+    font-family: var(--k35-font-ui);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: var(--k35-track-label);
+    text-transform: uppercase;
+    color: var(--k35-fg-4);
+  }
+  .section-h h2 {
+    font-family: var(--k35-font-body);
+    font-weight: 600;
+    font-size: var(--k35-text-lg);
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+  .section-l {
+    font-family: var(--k35-font-body);
+    font-size: var(--k35-text-base);
+    line-height: 1.6;
+    color: var(--k35-fg-3);
+    max-width: 70ch;
+    margin: 0 0 var(--k35-s-5);
+  }
+  .section-l code {
+    font-family: var(--k35-font-ui);
+    font-size: 13px;
+    background: var(--k35-n-100);
+    border: 1px solid var(--k35-border-light);
+    padding: 1px 5px;
+  }
+
+  /* ---------- demo blocks ---------- */
+  .demo {
+    background: var(--k35-surface);
+    border: 1px solid var(--k35-border-light);
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .demo + .demo { margin-top: 12px; }
+  .demo-row {
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+  }
+  .demo-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .demo-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .demo-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 960px) {
+    .demo-grid-3, .demo-grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .demo-grid-2, .demo-grid-3, .demo-grid-4 { grid-template-columns: 1fr; }
+  }
+  .demo-lbl {
+    font-family: var(--k35-font-ui);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: var(--k35-track-label);
+    text-transform: uppercase;
+    color: var(--k35-fg-3);
+    margin-bottom: 4px;
+  }
+
+  /* ---------- color scales ---------- */
+  .scale-grid {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 2px;
+  }
+  .scale-grid .step {
+    aspect-ratio: 1;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: var(--k35-font-ui);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .scale-grid .step .num { font-size: 10px; }
+  .scale-grid .step .hex { font-size: 8.5px; opacity: 0.7; }
+  @media (max-width: 700px) {
+    .scale-grid .step .hex { display: none; }
+  }
+  .scale-label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin: var(--k35-s-5) 0 8px;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .scale-label:first-child { margin-top: 0; }
+  .scale-label .name {
+    font-family: var(--k35-font-ui);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: var(--k35-track-label);
+    text-transform: uppercase;
+    color: var(--k35-fg-1);
+  }
+  .scale-label .meta {
+    font-family: var(--k35-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--k35-fg-4);
+  }
+  .sem-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: var(--k35-s-5);
+  }
+  @media (max-width: 700px) { .sem-row { grid-template-columns: 1fr 1fr; } }
+  .sem-card {
+    border: 1px solid var(--k35-border-light);
+    padding: 12px;
+    background: var(--k35-surface);
+  }
+  .sem-card .sw {
+    width: 100%; height: 36px;
+    margin-bottom: 8px;
+    display: flex; align-items: center;
+    padding-left: 10px;
+    color: #fff;
+    font-family: var(--k35-font-ui);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: var(--k35-track-label);
+    text-transform: uppercase;
+  }
+  .sem-card .name {
+    font-family: var(--k35-font-ui);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: var(--k35-track-ui);
+    text-transform: uppercase;
+    color: var(--k35-fg-1);
+  }
+  .sem-card .role {
+    font-family: var(--k35-font-body);
+    font-size: 12px; color: var(--k35-fg-3);
+    margin-top: 2px;
+  }
+
+  /* ---------- foundations cards ---------- */
+  .found {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 1000px) { .found { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .found { grid-template-columns: 1fr; } }
+  .found .card {
+    background: var(--k35-surface);
+    border: 1px solid var(--k35-border-light);
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .found .card .lbl {
+    font-family: var(--k35-font-ui);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: var(--k35-track-label);
+    text-transform: uppercase;
+    color: var(--k35-accent);
+  }
+  .found .card .h {
+    font-family: var(--k35-font-body);
+    font-weight: 600; font-size: 15px;
+    color: var(--k35-fg-1);
+  }
+  .found .card p {
+    font-family: var(--k35-font-body);
+    font-size: 13px; color: var(--k35-fg-3);
+    margin: 0; line-height: 1.55;
+  }
+  .found .card code {
+    font-family: var(--k35-font-ui);
+    font-size: 11px;
+    background: var(--k35-n-100);
+    border: 1px solid var(--k35-border-light);
+    padding: 1px 5px;
+  }
+
+  /* ---------- type specimen ---------- */
+  .type-spec {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--k35-border-light);
+    align-items: baseline;
+  }
+  .type-spec:last-child { border-bottom: none; }
+  .type-spec .meta {
+    font-family: var(--k35-font-ui);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: var(--k35-track-label);
+    text-transform: uppercase;
+    color: var(--k35-fg-4);
+    line-height: 1.5;
+  }
+  .type-spec .meta b {
+    color: var(--k35-fg-1);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .type-spec .sample { min-width: 0; }
+
+  /* ---------- spacing ---------- */
+  .space-row {
+    display: grid;
+    grid-template-columns: 80px 80px 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--k35-border-light);
+    font-family: var(--k35-font-ui);
+    font-size: 11px;
+    letter-spacing: var(--k35-track-ui);
+    text-transform: uppercase;
+  }
+  .space-row:last-child { border: none; }
+  .space-row .tok { color: var(--k35-fg-1); font-weight: 700; }
+  .space-row .px  { color: var(--k35-fg-3); }
+  .space-row .bar {
+    background: var(--k35-fg-1);
+    height: 14px;
+  }
+
+  /* ---------- motion bars ---------- */
+  .motion-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 70px;
+    gap: 16px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--k35-border-light);
+    font-family: var(--k35-font-ui);
+    font-size: 11px;
+    letter-spacing: var(--k35-track-ui);
+    text-transform: uppercase;
+  }
+  .motion-row:last-child { border: none; }
+  .motion-row .tok b { color: var(--k35-fg-1); }
+  .motion-row .tok { color: var(--k35-fg-3); display: flex; gap: 8px; align-items: baseline; }
+  .motion-row .bar {
+    height: 6px;
+    background: linear-gradient(90deg, var(--k35-accent-rail), var(--k35-accent-rail));
+    background-size: var(--w) 100%;
+    background-repeat: no-repeat;
+    background-color: var(--k35-border-light);
+  }
+  .motion-row .dur { text-align: right; color: var(--k35-fg-1); font-weight: 700; }
+
+  /* ---------- elevation ---------- */
+  .elev-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .elev-pair { grid-template-columns: 1fr; } }
+  .elev-tile {
+    background: var(--k35-surface);
+    border: 1px solid var(--k35-border-light);
+    padding: 28px 20px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .elev-tile.is-1 { box-shadow: var(--k35-elev-1); }
+  .elev-tile.is-2 { box-shadow: var(--k35-elev-2); }
+  .elev-tile .h {
+    font-family: var(--k35-font-ui);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: var(--k35-track-label);
+    text-transform: uppercase;
+    color: var(--k35-fg-1);
+  }
+  .elev-tile p {
+    font-family: var(--k35-font-body);
+    font-size: 13px;
+    color: var(--k35-fg-3);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ---------- density comparison ---------- */
+  .dens-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .dens-pair { grid-template-columns: 1fr; } }
+  .dens-card {
+    background: var(--k35-surface);
+    border: 1px solid var(--k35-border-light);
+    display: flex; flex-direction: column;
+  }
+  .dens-card .lbl {
+    font-family: var(--k35-font-ui);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: var(--k35-track-label);
+    text-transform: uppercase;
+    color: var(--k35-fg-3);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--k35-border-light);
+    background: var(--k35-surface-2);
+  }
+
+  /* ---------- dashboard wrapper ---------- */
+  .product-wrap {
+    background: var(--k35-n-100);
+    padding: var(--k35-s-5) var(--k35-s-7);
+  }
+  .product-wrap .demo-meta {
+    font-family: var(--k35-font-ui);
+    font-size: 10px; font-weight: 600;
+    letter-spacing: var(--k35-track-label);
+    text-transform: uppercase;
+    color: var(--k35-fg-4);
+    margin: 0 0 10px;
+  }
+
+  /* ---------- footer ---------- */
+  .footnav {
+    background: var(--k35-sidebar);
+    color: var(--k35-fg-on-dark-1);
+    padding: var(--k35-s-6) var(--k35-s-7);
+    display: flex; gap: 16px; align-items: center;
+    flex-wrap: wrap; justify-content: space-between;
+  }
+  .footnav .left {
+    font-family: var(--k35-font-body);
+    font-size: 13px; line-height: 1.55;
+    color: var(--k35-fg-on-dark-2);
+    max-width: 60ch;
+  }
+  .footnav .links { display: flex; gap: 8px; flex-wrap: wrap; }
+  .footnav a {
+    font-family: var(--k35-font-ui);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: var(--k35-track-ui);
+    text-transform: uppercase;
+    color: var(--k35-fg-on-dark-1);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 8px 14px;
+    text-decoration: none;
+    transition: background var(--k35-motion-quick) var(--k35-ease),
+                border-color var(--k35-motion-quick) var(--k35-ease);
+  }
+  .footnav a:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--k35-accent-rail);
+  }
+  .footnav a.is-primary {
+    border-color: var(--k35-accent-rail);
+    color: var(--k35-accent-200);
+  }
+
+  /* a few tiny inline helpers */
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero" data-screen-label="00 Hero">
+  <div class="stamp-row">
+    <span class="pill is-rail">Kronos · v3.5</span>
+    <span class="pill">Cerulean · canonical</span>
+    <span class="pill">Full system</span>
+    <span class="pill">17 May 2026</span>
+  </div>
+  <h1>Kronos <span class="ver">v3.5</span></h1>
+  <p class="lede">
+    The complete library. Every component shipped in v2 plus every v2.5
+    foundation — 11-step neutrals, elevation tokens, density modes, named
+    motion, KPI numerals, promo surface — consolidated under one namespace
+    <code>--k35-*</code> with Cerulean as the brand. No experiments, no
+    pickers, no parallel directions. This is the system.
+  </p>
+  <nav class="toc">
+    <span class="grp">Foundations</span>
+    <a href="#color">01 Color</a>
+    <a href="#type">02 Type</a>
+    <a href="#spacing">03 Spacing</a>
+    <a href="#motion">04 Motion</a>
+    <a href="#elevation">05 Elevation</a>
+    <a href="#density">06 Density</a>
+    <span class="grp" style="margin-left: 14px;">Components</span>
+    <a href="#buttons">07 Buttons</a>
+    <a href="#inputs">08 Inputs</a>
+    <a href="#tags">09 Tags</a>
+    <a href="#tabs">10 Tabs</a>
+    <a href="#cards">11 Cards</a>
+    <a href="#kpi">12 KPI</a>
+    <a href="#dropdown">13 Dropdown</a>
+    <a href="#banner">14 Banner</a>
+    <a href="#toast">15 Toast</a>
+    <a href="#tooltip">16 Tooltip</a>
+    <a href="#modal">17 Modal</a>
+    <a href="#stepper">18 Stepper</a>
+    <a href="#breadcrumb">19 Crumbs</a>
+    <a href="#progress">20 Progress</a>
+    <a href="#topnav">21 Top nav</a>
+    <a href="#promo">22 Promo</a>
+    <a href="#table">23 Table</a>
+    <a href="#dashboard">24 Dashboard</a>
+  </nav>
+</header>
+
+<!-- ============ 01 · COLOR ============ -->
+<section class="section" id="color" data-screen-label="01 Color">
+  <div class="section-h"><span class="num">01</span><h2>Color foundations</h2></div>
+  <p class="section-l">
+    Three scales, eleven steps each, plus four semantic. Accent stays mostly
+    invisible — rails, hover, tag tints, brand mark. Complement appears in
+    attention moments. Neutrals carry the document. Semantic info is
+    grey-blue, not blue, to avoid two-blues confusion with cerulean.
+  </p>
+
+  <div class="scale-label">
+    <span class="name">Accent · Cerulean</span>
+    <span class="meta">Brand mark 500 #137CB6 · text-safe 700 #0E5582 · 8.6:1 AAA</span>
+  </div>
+  <div class="scale-grid">
+    <div class="step" style="background: var(--k35-accent-50);  color: var(--k35-accent-800);"><span class="num">50</span><span class="hex">E6F2F9</span></div>
+    <div class="step" style="background: var(--k35-accent-100); color: var(--k35-accent-800);"><span class="num">100</span><span class="hex">C6E0F0</span></div>
+    <div class="step" style="background: var(--k35-accent-200); color: var(--k35-accent-800);"><span class="num">200</span><span class="hex">9BCAE6</span></div>
+    <div class="step" style="background: var(--k35-accent-300); color: var(--k35-accent-900);"><span class="num">300</span><span class="hex">6FAFD8</span></div>
+    <div class="step" style="background: var(--k35-accent-400); color: #fff;"><span class="num">400</span><span class="hex">4794C7</span></div>
+    <div class="step" style="background: var(--k35-accent-500); color: #fff;"><span class="num">500</span><span class="hex">137CB6</span></div>
+    <div class="step" style="background: var(--k35-accent-600); color: #fff;"><span class="num">600</span><span class="hex">1068A0</span></div>
+    <div class="step" style="background: var(--k35-accent-700); color: #fff;"><span class="num">700</span><span class="hex">0E5582</span></div>
+    <div class="step" style="background: var(--k35-accent-800); color: #fff;"><span class="num">800</span><span class="hex">0A4366</span></div>
+    <div class="step" style="background: var(--k35-accent-900); color: #fff;"><span class="num">900</span><span class="hex">07334D</span></div>
+    <div class="step" style="background: var(--k35-accent-950); color: #fff;"><span class="num">950</span><span class="hex">052336</span></div>
+  </div>
+
+  <div class="scale-label">
+    <span class="name">Complement · Warm rust</span>
+    <span class="meta">~180° from cerulean · blueprint-pencil warm · attention only</span>
+  </div>
+  <div class="scale-grid">
+    <div class="step" style="background: var(--k35-comp-50);  color: var(--k35-comp-700);"><span class="num">50</span><span class="hex">FBEEE6</span></div>
+    <div class="step" style="background: var(--k35-comp-100); color: var(--k35-comp-700);"><span class="num">100</span><span class="hex">F7DCC9</span></div>
+    <div class="step" style="background: var(--k35-comp-200); color: var(--k35-comp-800);"><span class="num">200</span><span class="hex">EFB994</span></div>
+    <div class="step" style="background: var(--k35-comp-300); color: var(--k35-comp-900);"><span class="num">300</span><span class="hex">E59465</span></div>
+    <div class="step" style="background: var(--k35-comp-400); color: #fff;"><span class="num">400</span><span class="hex">D26035</span></div>
+    <div class="step" style="background: var(--k35-comp-500); color: #fff;"><span class="num">500</span><span class="hex">B14826</span></div>
+    <div class="step" style="background: var(--k35-comp-600); color: #fff;"><span class="num">600</span><span class="hex">93371D</span></div>
+    <div class="step" style="background: var(--k35-comp-700); color: #fff;"><span class="num">700</span><span class="hex">762B17</span></div>
+    <div class="step" style="background: var(--k35-comp-800); color: #fff;"><span class="num">800</span><span class="hex">582012</span></div>
+    <div class="step" style="background: var(--k35-comp-900); color: #fff;"><span class="num">900</span><span class="hex">3D170D</span></div>
+    <div class="step" style="background: var(--k35-comp-950); color: #fff;"><span class="num">950</span><span class="hex">240D07</span></div>
+  </div>
+
+  <div class="scale-label">
+    <span class="name">Neutrals · cool grey</span>
+    <span class="meta">11 steps · 1° cool hue · all AA on #FAFBFB</span>
+  </div>
+  <div class="scale-grid">
+    <div class="step" style="background: var(--k35-n-50);  color: var(--k35-n-800);"><span class="num">50</span><span class="hex">FAFBFB</span></div>
+    <div class="step" style="background: var(--k35-n-100); color: var(--k35-n-800);"><span class="num">100</span><span class="hex">F2F3F4</span></div>
+    <div class="step" style="background: var(--k35-n-200); color: var(--k35-n-800);"><span class="num">200</span><span class="hex">E4E6E8</span></div>
+    <div class="step" style="background: var(--k35-n-300); color: var(--k35-n-800);"><span class="num">300</span><span class="hex">CDD0D3</span></div>
+    <div class="step" style="background: var(--k35-n-400); color: var(--k35-n-900);"><span class="num">400</span><span class="hex">A8ACB0</span></div>
+    <div class="step" style="background: var(--k35-n-500); color: #fff;"><span class="num">500</span><span class="hex">80858A</span></div>
+    <div class="step" style="background: var(--k35-n-600); color: #fff;"><span class="num">600</span><span class="hex">5C6166</span></div>
+    <div class="step" style="background: var(--k35-n-700); color: #fff;"><span class="num">700</span><span class="hex">44484C</span></div>
+    <div class="step" style="background: var(--k35-n-800); color: #fff;"><span class="num">800</span><span class="hex">2E3134</span></div>
+    <div class="step" style="background: var(--k35-n-900); color: #fff;"><span class="num">900</span><span class="hex">1C1E20</span></div>
+    <div class="step" style="background: var(--k35-n-950); color: #fff;"><span class="num">950</span><span class="hex">0F1012</span></div>
+  </div>
+
+  <div class="sem-row">
+    <div class="sem-card"><div class="sw" style="background: var(--k35-red);">#A8281C</div><div class="name">Error</div><div class="role">Destructive · invalid</div></div>
+    <div class="sem-card"><div class="sw" style="background: var(--k35-green);">#1F5A40</div><div class="name">Success</div><div class="role">Completed · shipped</div></div>
+    <div class="sem-card"><div class="sw" style="background: var(--k35-amber);">#8A5A00</div><div class="name">Warning</div><div class="role">Caution · approaching</div></div>
+    <div class="sem-card"><div class="sw" style="background: var(--k35-blue);">#3D556E</div><div class="name">Info</div><div class="role">Grey-blue · no 2-blues</div></div>
+  </div>
+</section>
+
+<!-- ============ 02 · TYPE ============ -->
+<section class="section" id="type" data-screen-label="02 Type">
+  <div class="section-h"><span class="num">02</span><h2>Type system</h2></div>
+  <p class="section-l">
+    Three families, one job each. <b>Anton</b> for display + KPI numerals.
+    <b>IBM Plex Mono</b> for all UI chrome (uppercase, tracking 0.08–0.10em).
+    <b>IBM Plex Sans</b> for body copy (sentence case, line-height 1.65,
+    max 62ch). Floor is 12px — no chrome smaller than that.
+  </p>
+  <div class="demo">
+    <div class="type-spec">
+      <div class="meta"><b>k35-display</b>Anton · 56px · 1.0 lh · uppercase</div>
+      <div class="sample"><div class="k35-display">KRONOS_LAB · V3.5</div></div>
+    </div>
+    <div class="type-spec">
+      <div class="meta"><b>k35-h1</b>Plex Sans 600 · 28px · -0.01em</div>
+      <div class="sample"><h1 class="k35-h1">Project overview — Atlas Tower</h1></div>
+    </div>
+    <div class="type-spec">
+      <div class="meta"><b>k35-h2</b>Plex Sans 600 · 22px · -0.005em</div>
+      <div class="sample"><h2 class="k35-h2">Phase 03 · structural progress</h2></div>
+    </div>
+    <div class="type-spec">
+      <div class="meta"><b>k35-h3</b>Plex Sans 600 · 18px</div>
+      <div class="sample"><h3 class="k35-h3">Critical path summary</h3></div>
+    </div>
+    <div class="type-spec">
+      <div class="meta"><b>k35-body</b>Plex Sans 400 · 16px · 1.65 lh · max 62ch</div>
+      <div class="sample"><p class="k35-body">Concrete pour scheduled for Tuesday through Thursday. The inspector has confirmed the weather window and forms are set. RFI-0412 on slab edge detail at grid line E is still awaiting GC response — we'll need it back before Tuesday morning.</p></div>
+    </div>
+    <div class="type-spec">
+      <div class="meta"><b>k35-helper</b>Plex Sans 400 · 13px · fg-3</div>
+      <div class="sample"><p class="k35-helper">Use to give context under a form field.</p></div>
+    </div>
+    <div class="type-spec">
+      <div class="meta"><b>k35-eyebrow</b>Plex Mono 600 · 12px · 0.10em · uppercase</div>
+      <div class="sample"><span class="k35-eyebrow">PROTOCOL_V4.0 · BUILD 35.0.0</span></div>
+    </div>
+    <div class="type-spec">
+      <div class="meta"><b>k35-label</b>Plex Sans 500 · 13px · fg-1</div>
+      <div class="sample"><span class="k35-label">Project name</span></div>
+    </div>
+    <div class="type-spec">
+      <div class="meta"><b>k35-link</b>accent text · underline 1px · offset 3px</div>
+      <div class="sample"><a href="#" class="k35-link">View case study →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 · SPACING ============ -->
+<section class="section" id="spacing" data-screen-label="03 Spacing">
+  <div class="section-h"><span class="num">03</span><h2>Spacing &amp; layout</h2></div>
+  <p class="section-l">
+    Strict 8px grid. Tokens <code>--k35-s-1</code> through <code>--k35-s-10</code>:
+    4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 / 128. The 4px token is reserved
+    for tag padding and ultra-tight inline groups. Sidebar width is 244px,
+    content max is 1120px.
+  </p>
+  <div class="demo">
+    <div class="space-row"><span class="tok">--k35-s-1</span><span class="px">4px</span><span class="bar" style="width: 4px;"></span></div>
+    <div class="space-row"><span class="tok">--k35-s-2</span><span class="px">8px</span><span class="bar" style="width: 8px;"></span></div>
+    <div class="space-row"><span class="tok">--k35-s-3</span><span class="px">12px</span><span class="bar" style="width: 12px;"></span></div>
+    <div class="space-row"><span class="tok">--k35-s-4</span><span class="px">16px</span><span class="bar" style="width: 16px;"></span></div>
+    <div class="space-row"><span class="tok">--k35-s-5</span><span class="px">24px</span><span class="bar" style="width: 24px;"></span></div>
+    <div class="space-row"><span class="tok">--k35-s-6</span><span class="px">32px</span><span class="bar" style="width: 32px;"></span></div>
+    <div class="space-row"><span class="tok">--k35-s-7</span><span class="px">48px</span><span class="bar" style="width: 48px;"></span></div>
+    <div class="space-row"><span class="tok">--k35-s-8</span><span class="px">64px</span><span class="bar" style="width: 64px;"></span></div>
+    <div class="space-row"><span class="tok">--k35-s-9</span><span class="px">96px</span><span class="bar" style="width: 96px;"></span></div>
+    <div class="space-row"><span class="tok">--k35-s-10</span><span class="px">128px</span><span class="bar" style="width: 128px;"></span></div>
+  </div>
+</section>
+
+<!-- ============ 04 · MOTION ============ -->
+<section class="section" id="motion" data-screen-label="04 Motion">
+  <div class="section-h"><span class="num">04</span><h2>Motion · named durations</h2></div>
+  <p class="section-l">
+    Fast and mechanical. Single easing curve (<code>cubic-bezier(0.4,0,0.2,1)</code>).
+    Four named durations cover everything. Transitions stay on
+    <code>color</code>, <code>background</code>, <code>border-color</code>,
+    <code>box-shadow</code> — no transforms, no spring physics.
+    <code>prefers-reduced-motion</code> zeros all four.
+  </p>
+  <div class="demo">
+    <div class="motion-row">
+      <span class="tok"><b>--k35-motion-quick</b></span>
+      <span class="bar" style="--w: 25%; background-size: 25% 100%;"></span>
+      <span class="dur">80ms</span>
+    </div>
+    <div class="motion-row">
+      <span class="tok"><b>--k35-motion-base</b></span>
+      <span class="bar" style="--w: 50%; background-size: 50% 100%;"></span>
+      <span class="dur">150ms</span>
+    </div>
+    <div class="motion-row">
+      <span class="tok"><b>--k35-motion-emphasis</b></span>
+      <span class="bar" style="--w: 75%; background-size: 75% 100%;"></span>
+      <span class="dur">240ms</span>
+    </div>
+    <div class="motion-row">
+      <span class="tok"><b>--k35-motion-enter</b></span>
+      <span class="bar" style="--w: 100%; background-size: 100% 100%;"></span>
+      <span class="dur">320ms</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 · ELEVATION ============ -->
+<section class="section" id="elevation" data-screen-label="05 Elevation">
+  <div class="section-h"><span class="num">05</span><h2>Elevation · two tokens, floating UI only</h2></div>
+  <p class="section-l">
+    Cards and buttons stay flat — borders do their work. Elevation is reserved
+    for things that genuinely <em>lift</em> off the page: dropdowns, popovers,
+    toasts, modals. Two tokens cover all of it.
+  </p>
+  <div class="elev-pair">
+    <div class="elev-tile is-1">
+      <span class="h">--k35-elev-1</span>
+      <p>Dropdown, popover, toast, tooltip. 1px hairline + 4px / 12px soft drop. Lifts ~1 surface above the page.</p>
+    </div>
+    <div class="elev-tile is-2">
+      <span class="h">--k35-elev-2</span>
+      <p>Modal, full-screen overlay. 16px / 32px wider drop. Lifts ~2 surfaces — clearly above any inline content.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 · DENSITY ============ -->
+<section class="section" id="density" data-screen-full data-screen-label="06 Density">
+  <div class="section-h"><span class="num">06</span><h2>Density · cozy &amp; compact</h2></div>
+  <p class="section-l">
+    Tables, lists, inputs and dropdowns read from <code>--k35-density-*</code>.
+    Set <code>data-density="compact"</code> on any container and everything
+    inside tightens. Buttons, cards, and modals are excluded — they don't
+    benefit from compaction.
+  </p>
+  <div class="dens-pair">
+    <div class="dens-card">
+      <div class="lbl">Cozy — default</div>
+      <table class="k35-table">
+        <thead><tr><th>ID</th><th>Project</th><th>Phase</th><th>Status</th><th>Owner</th></tr></thead>
+        <tbody>
+          <tr><td><b>P-001</b></td><td>Atlas Tower</td><td>Structural</td><td><span class="k35-tag is-success">On track</span></td><td>JG</td></tr>
+          <tr><td><b>P-002</b></td><td>Helix Yards</td><td>Foundation</td><td><span class="k35-tag is-comp">In progress</span></td><td>MS</td></tr>
+          <tr><td><b>P-003</b></td><td>Vector Field</td><td>Site prep</td><td><span class="k35-tag is-warning">Delayed</span></td><td>JG</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dens-card" data-density="compact">
+      <div class="lbl">Compact — for data surfaces</div>
+      <table class="k35-table">
+        <thead><tr><th>ID</th><th>Project</th><th>Phase</th><th>Status</th><th>Owner</th></tr></thead>
+        <tbody>
+          <tr><td><b>P-001</b></td><td>Atlas Tower</td><td>Structural</td><td><span class="k35-tag is-success">On track</span></td><td>JG</td></tr>
+          <tr><td><b>P-002</b></td><td>Helix Yards</td><td>Foundation</td><td><span class="k35-tag is-comp">In progress</span></td><td>MS</td></tr>
+          <tr><td><b>P-003</b></td><td>Vector Field</td><td>Site prep</td><td><span class="k35-tag is-warning">Delayed</span></td><td>JG</td></tr>
+          <tr><td><b>P-004</b></td><td>Lattice North</td><td>Permitting</td><td><span class="k35-tag is-info">Pending</span></td><td>JG</td></tr>
+          <tr><td><b>P-005</b></td><td>Substrate 04</td><td>Closeout</td><td><span class="k35-tag is-success">On track</span></td><td>MS</td></tr>
+          <tr><td><b>P-006</b></td><td>Quanta West</td><td>Punchlist</td><td><span class="k35-tag is-warning">3 overdue</span></td><td>RV</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 · BUTTONS ============ -->
+<section class="section" id="buttons" data-screen-label="07 Buttons">
+  <div class="section-h"><span class="num">07</span><h2>Buttons</h2></div>
+  <p class="section-l">
+    Five variants. Primary fills with <code>fg-1</code> and swaps to accent on
+    hover. Accent fills with cerulean direct. Secondary outlines. Ghost is
+    underline-only. Icon is a 36×36 square. Compact halves the height for
+    toolbar use.
+  </p>
+  <div class="demo">
+    <div>
+      <div class="demo-lbl">Default size · 36px</div>
+      <div class="demo-row">
+        <button class="k35-btn k35-btn-primary">Primary action</button>
+        <button class="k35-btn k35-btn-accent">Accent action</button>
+        <button class="k35-btn k35-btn-secondary">Secondary</button>
+        <button class="k35-btn k35-btn-ghost">Ghost →</button>
+        <button class="k35-btn k35-btn-icon" aria-label="Search">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <button class="k35-btn k35-btn-primary" disabled>Disabled</button>
+      </div>
+    </div>
+    <div>
+      <div class="demo-lbl">Compact · 28px · for toolbars and table headers</div>
+      <div class="demo-row">
+        <button class="k35-btn k35-btn-primary is-compact">New RFI</button>
+        <button class="k35-btn k35-btn-accent is-compact">Submit</button>
+        <button class="k35-btn k35-btn-secondary is-compact">Filter</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 · INPUTS ============ -->
+<section class="section" id="inputs" data-screen-label="08 Inputs">
+  <div class="section-h"><span class="num">08</span><h2>Inputs · form fields</h2></div>
+  <p class="section-l">
+    1px <code>border-mid</code> rest, darkens to <code>fg-1</code> on focus
+    plus a 2-layer focus ring. Error swaps the border to red and re-rings on
+    focus. Disabled uses real colors, never opacity.
+  </p>
+  <div class="demo demo-grid-3">
+    <div class="k35-field">
+      <label class="k35-label">Project name</label>
+      <input class="k35-input" placeholder="Atlas Tower" value="Atlas Tower">
+      <span class="k35-helper">Used in URLs and exports.</span>
+    </div>
+    <div class="k35-field">
+      <label class="k35-label">Permit number</label>
+      <input class="k35-input is-error" value="ATL-04-XX-???">
+      <span class="k35-helper is-error">Invalid format — use ABC-12-XX-001.</span>
+    </div>
+    <div class="k35-field">
+      <label class="k35-label">Cost code</label>
+      <input class="k35-input" placeholder="03-30-00 Cast-in-place" disabled>
+      <span class="k35-helper">Locked — set at project creation.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 · TAGS ============ -->
+<section class="section" id="tags" data-screen-label="09 Tags">
+  <div class="section-h"><span class="num">09</span><h2>Tags &amp; badges</h2></div>
+  <p class="section-l">
+    Mono uppercase, hairline border, semantic tint. Default is neutral; six
+    accent variants. Same tag works as a chip or a status pill.
+  </p>
+  <div class="demo">
+    <div class="demo-row">
+      <span class="k35-tag">UX research</span>
+      <span class="k35-tag is-accent">Featured</span>
+      <span class="k35-tag is-comp">In progress</span>
+      <span class="k35-tag is-info">In review</span>
+      <span class="k35-tag is-warning">Beta</span>
+      <span class="k35-tag is-success">Shipped</span>
+      <span class="k35-tag is-error">Deprecated</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 · TABS ============ -->
+<section class="section" id="tabs" data-screen-label="10 Tabs">
+  <div class="section-h"><span class="num">10</span><h2>Tabs · underline</h2></div>
+  <p class="section-l">
+    Mono labels. 2px bottom border on active. Always sits on a 1px
+    <code>border-light</code> rule the active border overlaps.
+  </p>
+  <div class="demo">
+    <nav class="k35-tabs">
+      <button class="k35-tab" aria-selected="true">All projects</button>
+      <button class="k35-tab" aria-selected="false">Active</button>
+      <button class="k35-tab" aria-selected="false">At risk</button>
+      <button class="k35-tab" aria-selected="false">Closeout</button>
+      <button class="k35-tab" aria-selected="false">Archived</button>
+    </nav>
+  </div>
+</section>
+
+<!-- ============ 11 · CARDS ============ -->
+<section class="section" id="cards" data-screen-label="11 Cards">
+  <div class="section-h"><span class="num">11</span><h2>Cards · with image slot</h2></div>
+  <p class="section-l">
+    1px light border, white surface, square corners. 16:9 image slot bleeds
+    to the card edges. Border darkens to <code>border-heavy</code> on hover —
+    no lift, no scale.
+  </p>
+  <div class="demo demo-grid-3">
+    <a class="k35-card" href="#">
+      <div class="k35-card-image">IMAGE CONTAINER</div>
+      <div class="k35-card-body">
+        <div class="k35-card-tags"><span class="k35-tag is-accent">Featured</span><span class="k35-tag">UX research</span></div>
+        <h3 class="k35-card-title">Atlas Tower · field crew app</h3>
+        <p class="k35-card-desc">Punch-list capture and daily logs, redesigned for one-handed use on a hard hat clip.</p>
+        <span class="k35-link" style="font-family: var(--k35-font-ui); font-size: 11px; letter-spacing: var(--k35-track-ui); text-transform: uppercase;">View case study →</span>
+      </div>
+    </a>
+    <a class="k35-card" href="#">
+      <div class="k35-card-image">IMAGE CONTAINER</div>
+      <div class="k35-card-body">
+        <div class="k35-card-tags"><span class="k35-tag is-comp">In progress</span></div>
+        <h3 class="k35-card-title">Helix Yards · submittal flow</h3>
+        <p class="k35-card-desc">Three-pane review with annotation parity between web and tablet. Currently in beta with two GCs.</p>
+        <span class="k35-link" style="font-family: var(--k35-font-ui); font-size: 11px; letter-spacing: var(--k35-track-ui); text-transform: uppercase;">View case study →</span>
+      </div>
+    </a>
+    <a class="k35-card" href="#">
+      <div class="k35-card-image">IMAGE CONTAINER</div>
+      <div class="k35-card-body">
+        <div class="k35-card-tags"><span class="k35-tag is-success">Shipped</span><span class="k35-tag">Systems</span></div>
+        <h3 class="k35-card-title">Kronos v3 — design system</h3>
+        <p class="k35-card-desc">11-step palette, named motion, density modes, and a documented elevation pair. The system you're reading.</p>
+        <span class="k35-link" style="font-family: var(--k35-font-ui); font-size: 11px; letter-spacing: var(--k35-track-ui); text-transform: uppercase;">View case study →</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 12 · KPI ============ -->
+<section class="section" id="kpi" data-screen-label="12 KPI">
+  <div class="section-h"><span class="num">12</span><h2>KPI tiles · Anton numeral</h2></div>
+  <p class="section-l">
+    Anton works as a numeral — wide, heavy, lab-specimen energy. Default is
+    neutral; <code>.is-accent</code> tints cerulean, <code>.is-comp</code>
+    tints rust. Up / down deltas use semantic green / red.
+  </p>
+  <div class="demo demo-grid-4">
+    <div class="k35-kpi">
+      <span class="label">Active projects</span>
+      <span class="num is-accent">12<span class="delta is-up">+2</span></span>
+      <span class="meta">this quarter</span>
+    </div>
+    <div class="k35-kpi">
+      <span class="label">Open RFIs</span>
+      <span class="num is-comp">23<span class="delta is-down">−5</span></span>
+      <span class="meta">7 awaiting reply</span>
+    </div>
+    <div class="k35-kpi">
+      <span class="label">Hours logged</span>
+      <span class="num">142</span>
+      <span class="meta">this week · 4 ppl</span>
+    </div>
+    <div class="k35-kpi">
+      <span class="label">Punch items</span>
+      <span class="num">08</span>
+      <span class="meta">3 overdue</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 · DROPDOWN ============ -->
+<section class="section" id="dropdown" data-screen-label="13 Dropdown">
+  <div class="section-h"><span class="num">13</span><h2>Select / dropdown — elev-1</h2></div>
+  <p class="section-l">
+    Closed state is an input. Open menu lifts via <code>--k35-elev-1</code>.
+    Selected item gets a check glyph and accent tint. Hover tints
+    <code>accent-bg</code>.
+  </p>
+  <div class="demo demo-grid-2">
+    <div>
+      <div class="demo-lbl">Closed</div>
+      <div class="k35-select-wrap" style="max-width: 320px;">
+        <button class="k35-select" type="button">
+          <span>UX research</span>
+          <svg class="chev" width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div>
+      <div class="demo-lbl">Open — menu elevated</div>
+      <div class="k35-select-wrap" style="max-width: 320px;">
+        <button class="k35-select" type="button" aria-expanded="true">
+          <span>UX research</span>
+          <svg class="chev" width="12" height="12" viewBox="0 0 16 16" fill="none" style="transform: rotate(180deg);"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="k35-menu" role="listbox">
+          <div class="k35-menu-item" aria-selected="true">UX research</div>
+          <div class="k35-menu-item">Product design</div>
+          <div class="k35-menu-item">Systems / DesignOps</div>
+          <div class="k35-menu-item">Advisory</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14 · BANNER ============ -->
+<section class="section" id="banner" data-screen-label="14 Banner">
+  <div class="section-h"><span class="num">14</span><h2>Banner · inline alert</h2></div>
+  <p class="section-l">
+    Four semantic variants. 1px border + 3px accent on the left edge.
+    Optional close button on dismissible variants. Inline icon optional but
+    standard.
+  </p>
+  <div class="demo col" style="gap: 12px;">
+    <div class="k35-banner is-info">
+      <span class="k35-banner-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M8 7V11M8 5V5.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+      <div class="k35-banner-body">
+        <div class="k35-banner-title">Submittal review scheduled</div>
+        <div class="k35-banner-msg">Owner walkthrough on Tuesday at 09:00. Calendar invites sent.</div>
+      </div>
+      <button class="k35-banner-close" aria-label="Dismiss">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="k35-banner is-success">
+      <span class="k35-banner-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <div class="k35-banner-body">
+        <div class="k35-banner-title">RFI-0408 resolved</div>
+        <div class="k35-banner-msg">Roof drain alignment confirmed — Atlas Tower structural.</div>
+      </div>
+    </div>
+    <div class="k35-banner is-warning">
+      <span class="k35-banner-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L14.5 13.5H1.5L8 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 7V10M8 11.5V11.51" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+      <div class="k35-banner-body">
+        <div class="k35-banner-title">Approaching deadline</div>
+        <div class="k35-banner-msg">Substantial completion in 90 days — 4 punch items pending.</div>
+      </div>
+    </div>
+    <div class="k35-banner is-error">
+      <span class="k35-banner-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 5.5L10.5 10.5M10.5 5.5L5.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+      <div class="k35-banner-body">
+        <div class="k35-banner-title">RFI-0410 is blocking</div>
+        <div class="k35-banner-msg">MEP conflict · level 04 ceiling — 6 days overdue.</div>
+      </div>
+      <button class="k35-banner-close" aria-label="Dismiss">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 15 · TOAST ============ -->
+<section class="section" id="toast" data-screen-label="15 Toast">
+  <div class="section-h"><span class="num">15</span><h2>Toast · transient confirm</h2></div>
+  <p class="section-l">
+    Inverse surface (<code>fg-1</code> background) so toasts read as
+    "system speaking," not a banner pinned to the page. 3px left accent rail
+    carries semantic. Lifted via <code>elev-1</code>.
+  </p>
+  <div class="demo col" style="gap: 12px;">
+    <div class="k35-toast">
+      <span><span class="k35-toast-title">Saved.</span> <span class="k35-toast-msg">Atlas Tower · daily log · 2 minutes ago.</span></span>
+    </div>
+    <div class="k35-toast is-success">
+      <span><span class="k35-toast-title">RFI submitted.</span> <span class="k35-toast-msg">RFI-0413 routed to BG &amp; Associates.</span></span>
+    </div>
+    <div class="k35-toast is-error">
+      <span><span class="k35-toast-title">Upload failed.</span> <span class="k35-toast-msg">Network timeout — file kept locally.</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 · TOOLTIP ============ -->
+<section class="section" id="tooltip" data-screen-label="16 Tooltip">
+  <div class="section-h"><span class="num">16</span><h2>Tooltip · with notch</h2></div>
+  <p class="section-l">
+    Mono label, inverse fill, 5px notch arrow, lifted via <code>elev-1</code>.
+    Typically anchored above the trigger.
+  </p>
+  <div class="demo demo-row" style="gap: 32px; padding-top: 36px;">
+    <div class="k35-tooltip-bubble">RFI · request for information</div>
+    <div class="k35-tooltip-bubble">Last sync · 2 min ago</div>
+    <div class="k35-tooltip-bubble">⌘K to open command bar</div>
+  </div>
+</section>
+
+<!-- ============ 17 · MODAL ============ -->
+<section class="section" id="modal" data-screen-label="17 Modal">
+  <div class="section-h"><span class="num">17</span><h2>Modal · elev-2</h2></div>
+  <p class="section-l">
+    480px max width, hairline border, head / body / foot regions.
+    Overlay scrim is <code>rgba(15,16,18,0.55)</code>. Lifts via
+    <code>elev-2</code>.
+  </p>
+  <div class="demo" style="background: var(--k35-n-100); padding: 0;">
+    <div class="k35-modal-overlay" style="height: 460px;">
+      <div class="k35-modal">
+        <div class="k35-modal-head">
+          <h3>Submit RFI · slab edge detail</h3>
+          <button class="k35-banner-close" aria-label="Close">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="k35-modal-body">
+          <div class="k35-field">
+            <label class="k35-label">Subject</label>
+            <input class="k35-input" value="Slab edge detail · grid line E">
+          </div>
+          <div class="k35-field">
+            <label class="k35-label">Routed to</label>
+            <div class="k35-select-wrap">
+              <button class="k35-select" type="button">
+                <span>BG &amp; Associates · structural</span>
+                <svg class="chev" width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <span class="k35-helper">Recipient will be notified by email and in-product.</span>
+        </div>
+        <div class="k35-modal-foot">
+          <button class="k35-btn k35-btn-secondary">Cancel</button>
+          <button class="k35-btn k35-btn-accent">Submit RFI</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 18 · STEPPER ============ -->
+<section class="section" id="stepper" data-screen-label="18 Stepper">
+  <div class="section-h"><span class="num">18</span><h2>Stepper · 2px top rule</h2></div>
+  <p class="section-l">
+    Done steps carry the accent rail color; current step carries
+    <code>fg-1</code>. Future steps stay <code>border-light</code>. No
+    circles, no shapes — just the rule above each label.
+  </p>
+  <div class="demo">
+    <div class="k35-stepper">
+      <div class="k35-step is-done"><span class="num">01 · Done</span><span class="name">Submitted</span></div>
+      <div class="k35-step is-done"><span class="num">02 · Done</span><span class="name">Reviewed</span></div>
+      <div class="k35-step is-current"><span class="num">03 · Active</span><span class="name">Approval</span></div>
+      <div class="k35-step"><span class="num">04</span><span class="name">Installed</span></div>
+      <div class="k35-step"><span class="num">05</span><span class="name">Closed</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 19 · BREADCRUMB ============ -->
+<section class="section" id="breadcrumb" data-screen-label="19 Breadcrumb">
+  <div class="section-h"><span class="num">19</span><h2>Breadcrumb</h2></div>
+  <p class="section-l">
+    Mono uppercase, slash separators. Current page bolds in
+    <code>fg-1</code>; ancestors stay <code>fg-3</code>. Typically lives in
+    the top bar of a content view.
+  </p>
+  <div class="demo">
+    <nav class="k35-crumbs">
+      <a href="#">Operator</a>
+      <span class="sep">/</span>
+      <a href="#">Projects</a>
+      <span class="sep">/</span>
+      <a href="#">Atlas Tower</a>
+      <span class="sep">/</span>
+      <span class="current">Overview</span>
+    </nav>
+  </div>
+</section>
+
+<!-- ============ 20 · PROGRESS ============ -->
+<section class="section" id="progress" data-screen-label="20 Progress">
+  <div class="section-h"><span class="num">20</span><h2>Progress · 6px bar</h2></div>
+  <p class="section-l">
+    Linear bars only. Default fills with <code>fg-1</code>; accent fills with
+    the rail; semantic warning / error available. No animated stripes, no
+    gradients.
+  </p>
+  <div class="demo col" style="gap: 18px;">
+    <div>
+      <div class="demo-lbl">Default · 35%</div>
+      <div class="k35-progress"><span style="width: 35%;"></span></div>
+    </div>
+    <div>
+      <div class="demo-lbl">Accent · 62%</div>
+      <div class="k35-progress is-accent"><span style="width: 62%;"></span></div>
+    </div>
+    <div>
+      <div class="demo-lbl">Warning · 80%</div>
+      <div class="k35-progress is-warning"><span style="width: 80%;"></span></div>
+    </div>
+    <div>
+      <div class="demo-lbl">Error · 95%</div>
+      <div class="k35-progress is-error"><span style="width: 95%;"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 21 · TOP NAV ============ -->
+<section class="section" id="topnav" data-screen-label="21 Top nav">
+  <div class="section-h"><span class="num">21</span><h2>Top nav · light + inverse</h2></div>
+  <p class="section-l">
+    Alternate to the sidebar pattern. Brand mark + version stamp, mono link
+    row, action cluster on the right. Same component, light or inverse
+    surface. Collapses to a hamburger below 640px.
+  </p>
+  <div class="demo" style="padding: 0;">
+    <nav class="k35-topnav">
+      <a class="k35-topnav-brand" href="#">
+        <span class="bar"></span>
+        <span class="mark">KRONOS_LAB</span>
+        <span class="version">PROTOCOL · V3.5</span>
+      </a>
+      <div class="k35-topnav-links">
+        <a href="#" aria-current="page">Overview</a>
+        <a href="#">Projects</a>
+        <a href="#">RFIs</a>
+        <a href="#">Schedule</a>
+        <a href="#">Reports</a>
+      </div>
+      <div class="k35-topnav-actions">
+        <button class="k35-btn k35-btn-secondary is-compact">Sign out</button>
+        <button class="k35-btn k35-btn-primary is-compact">New RFI</button>
+      </div>
+    </nav>
+  </div>
+  <div class="demo" style="padding: 0; margin-top: 12px;">
+    <nav class="k35-topnav is-inverse">
+      <a class="k35-topnav-brand" href="#">
+        <span class="bar"></span>
+        <span class="mark">KRONOS_LAB</span>
+        <span class="version">PROTOCOL · V3.5</span>
+      </a>
+      <div class="k35-topnav-links">
+        <a href="#" aria-current="page">Overview</a>
+        <a href="#">Projects</a>
+        <a href="#">RFIs</a>
+        <a href="#">Schedule</a>
+        <a href="#">Reports</a>
+      </div>
+      <div class="k35-topnav-actions">
+        <button class="k35-btn k35-btn-accent is-compact">New RFI</button>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<!-- ============ 22 · PROMO ============ -->
+<section class="section" id="promo" data-screen-label="22 Promo">
+  <div class="section-h"><span class="num">22</span><h2>Promo · loud accent surface</h2></div>
+  <p class="section-l">
+    One moment per page. Accent-surface fill, Anton headline, mono eyebrow,
+    6px right-edge rail in the brand-mark blue. Use sparingly — this is the
+    only place the system shouts.
+  </p>
+  <div class="demo" style="background: transparent; padding: 0; border: none;">
+    <div class="k35-promo">
+      <div class="pre">Phase 03 · Pour week · IFC-04</div>
+      <div class="h">Critical path</div>
+      <p>Concrete pour scheduled for Tue–Thu. Inspector confirmed, weather window open.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 23 · TABLE ============ -->
+<section class="section" id="table" data-screen-label="23 Table">
+  <div class="section-h"><span class="num">23</span><h2>Table · density-aware</h2></div>
+  <p class="section-l">
+    Mono header on <code>surface-2</code>, hairline row dividers, status dot
+    or tag in the rightmost column. Hover tints the row <code>n-50</code>.
+    Reads from <code>--k35-density-*</code>; setting
+    <code>data-density="compact"</code> on the table or any ancestor
+    tightens row padding and drops body text to 13px.
+  </p>
+  <div class="demo" style="padding: 0;">
+    <table class="k35-table">
+      <thead>
+        <tr>
+          <th style="width: 70px;">ID</th>
+          <th>Project</th>
+          <th style="width: 110px;">Phase</th>
+          <th style="width: 110px;">Health</th>
+          <th style="width: 110px;">Status</th>
+          <th style="width: 60px;">Owner</th>
+          <th style="width: 90px;">Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>P-001</b></td><td>Atlas Tower</td><td>Structural</td>
+          <td><span class="k35-dot up"></span>On track</td>
+          <td><span class="k35-tag is-accent">Active</span></td><td>JG</td><td>2h ago</td>
+        </tr>
+        <tr>
+          <td><b>P-002</b></td><td>Helix Yards</td><td>Foundation</td>
+          <td><span class="k35-dot warn"></span>At risk</td>
+          <td><span class="k35-tag is-comp">In progress</span></td><td>MS</td><td>1d ago</td>
+        </tr>
+        <tr>
+          <td><b>P-003</b></td><td>Vector Field</td><td>Site prep</td>
+          <td><span class="k35-dot late"></span>Delayed</td>
+          <td><span class="k35-tag is-warning">Behind</span></td><td>JG</td><td>3d ago</td>
+        </tr>
+        <tr>
+          <td><b>P-004</b></td><td>Lattice North</td><td>Permitting</td>
+          <td><span class="k35-dot idle"></span>Paused</td>
+          <td><span class="k35-tag is-info">Pending</span></td><td>JG</td><td>1w ago</td>
+        </tr>
+        <tr>
+          <td><b>P-005</b></td><td>Substrate 04</td><td>Closeout</td>
+          <td><span class="k35-dot up"></span>On track</td>
+          <td><span class="k35-tag is-success">Wrapping</span></td><td>MS</td><td>5h ago</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 24 · DASHBOARD DEMO ============ -->
+<section class="product-wrap" id="dashboard" data-screen-label="24 Dashboard">
+  <div class="section-h" style="padding: 0 0 var(--k35-s-2);"><span class="num">24</span><h2>Dashboard — everything together</h2></div>
+  <p class="demo-meta">Construction PM · Operator overview · Mid-quarter</p>
+
+  <div class="k35-app">
+    <aside class="k35-sidebar">
+      <div class="k35-sb-brand">
+        <span class="bar"></span>
+        <span>
+          <span class="mark">KRONOS_LAB</span>
+          <span class="version">PM_V3.5</span>
+        </span>
+      </div>
+      <button class="k35-sb-item is-active">
+        <svg class="icn" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="2.5" width="5" height="5" stroke="currentColor" stroke-width="1.5"/><rect x="8.5" y="2.5" width="5" height="5" stroke="currentColor" stroke-width="1.5"/><rect x="2.5" y="8.5" width="5" height="5" stroke="currentColor" stroke-width="1.5"/><rect x="8.5" y="8.5" width="5" height="5" stroke="currentColor" stroke-width="1.5"/></svg>
+        Overview
+      </button>
+      <button class="k35-sb-item">
+        <svg class="icn" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3.5" width="11" height="9" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 6.5H13.5" stroke="currentColor" stroke-width="1.5"/></svg>
+        Projects
+      </button>
+      <button class="k35-sb-item">
+        <svg class="icn" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M6 6.5C6 5.67 6.67 5 7.5 5H8.5C9.33 5 10 5.67 10 6.5C10 7.33 9.33 8 8.5 8H8V9.5M8 11.5V11.51" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        RFIs
+        <span class="badge">7</span>
+      </button>
+      <button class="k35-sb-item">
+        <svg class="icn" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3.5" width="11" height="10" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 6.5H13.5M5.5 2V4M10.5 2V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Schedule
+      </button>
+      <button class="k35-sb-item">
+        <svg class="icn" viewBox="0 0 16 16" fill="none"><path d="M3 12L7 8L9 10L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Reports
+      </button>
+      <div class="k35-sb-group">Team</div>
+      <button class="k35-sb-item">
+        <svg class="icn" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 13C3 10.79 5.24 9.5 8 9.5C10.76 9.5 13 10.79 13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Punch list
+      </button>
+      <button class="k35-sb-item">
+        <svg class="icn" viewBox="0 0 16 16" fill="none"><path d="M2.5 4H13.5L12 12H4L2.5 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        Settings
+      </button>
+    </aside>
+
+    <main class="k35-main">
+      <div class="k35-topbar">
+        <nav class="k35-crumbs">
+          <a href="#">Operator</a><span class="sep">/</span><span class="current">Overview</span>
+        </nav>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button class="k35-btn k35-btn-icon" aria-label="Search" style="background: transparent; color: var(--k35-fg-1); border-color: var(--k35-border-mid); width: 32px; height: 32px;">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <button class="k35-btn k35-btn-primary is-compact">New RFI</button>
+        </div>
+      </div>
+
+      <h1 class="k35-display" style="font-size: 40px; margin: 0 0 4px;">Good morning, Joseph</h1>
+      <p class="k35-helper" style="margin: 0 0 22px; font-size: 13px;">5 projects active · pour week on Atlas Tower starts Tuesday.</p>
+
+      <!-- KPI tiles -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;">
+        <div class="k35-kpi">
+          <span class="label">Active projects</span>
+          <span class="num is-accent">12<span class="delta is-up">+2</span></span>
+          <span class="meta">this quarter</span>
+        </div>
+        <div class="k35-kpi">
+          <span class="label">Open RFIs</span>
+          <span class="num is-comp">23<span class="delta is-down">−5</span></span>
+          <span class="meta">7 awaiting reply</span>
+        </div>
+        <div class="k35-kpi">
+          <span class="label">Hours logged</span>
+          <span class="num">142</span>
+          <span class="meta">this week · 4 ppl</span>
+        </div>
+        <div class="k35-kpi">
+          <span class="label">Punch items</span>
+          <span class="num">08</span>
+          <span class="meta">3 overdue</span>
+        </div>
+      </div>
+
+      <!-- Tabs + table -->
+      <nav class="k35-tabs" style="margin-bottom: 0;">
+        <button class="k35-tab" aria-selected="true">All projects</button>
+        <button class="k35-tab" aria-selected="false">Active</button>
+        <button class="k35-tab" aria-selected="false">At risk</button>
+        <button class="k35-tab" aria-selected="false">Closeout</button>
+      </nav>
+      <div style="background: var(--k35-surface); border: 1px solid var(--k35-border-light); border-top: none;">
+        <table class="k35-table" data-density="compact">
+          <thead><tr>
+            <th style="width: 70px;">ID</th>
+            <th>Project</th>
+            <th style="width: 110px;">Phase</th>
+            <th style="width: 110px;">Health</th>
+            <th style="width: 110px;">Status</th>
+            <th style="width: 60px;">Owner</th>
+            <th style="width: 90px;">Updated</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><b>P-001</b></td><td>Atlas Tower</td><td>Structural</td><td><span class="k35-dot up"></span>On track</td><td><span class="k35-tag is-accent">Active</span></td><td>JG</td><td>2h ago</td></tr>
+            <tr><td><b>P-002</b></td><td>Helix Yards</td><td>Foundation</td><td><span class="k35-dot warn"></span>At risk</td><td><span class="k35-tag is-comp">In progress</span></td><td>MS</td><td>1d ago</td></tr>
+            <tr><td><b>P-003</b></td><td>Vector Field</td><td>Site prep</td><td><span class="k35-dot late"></span>Delayed</td><td><span class="k35-tag is-warning">Behind</span></td><td>JG</td><td>3d ago</td></tr>
+            <tr><td><b>P-004</b></td><td>Lattice North</td><td>Permitting</td><td><span class="k35-dot idle"></span>Paused</td><td><span class="k35-tag is-info">Pending</span></td><td>JG</td><td>1w ago</td></tr>
+            <tr><td><b>P-005</b></td><td>Substrate 04</td><td>Closeout</td><td><span class="k35-dot up"></span>On track</td><td><span class="k35-tag is-success">Wrapping</span></td><td>MS</td><td>5h ago</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RFI + promo + stepper -->
+      <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-top: 24px;">
+        <div>
+          <h2 class="k35-h3" style="margin: 0 0 10px;">Recent RFIs</h2>
+          <div style="background: var(--k35-surface); border: 1px solid var(--k35-border-light);">
+            <div style="display: grid; grid-template-columns: 80px 1fr 110px 80px; gap: 14px; padding: 10px 14px; border-bottom: 1px solid var(--k35-border-light); align-items: center;">
+              <div style="font-family: var(--k35-font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: var(--k35-fg-1);">RFI-0412</div>
+              <div>
+                <div style="font-family: var(--k35-font-body); font-size: 13px; color: var(--k35-fg-1); font-weight: 500;">Slab edge detail · grid line E</div>
+                <div style="font-family: var(--k35-font-body); font-size: 12px; color: var(--k35-fg-3); margin-top: 1px;">Atlas Tower · structural</div>
+              </div>
+              <span class="k35-tag is-warning">Awaiting GC</span>
+              <div style="font-family: var(--k35-font-ui); font-size: 11px; color: var(--k35-fg-3); letter-spacing: 0.04em; text-align: right;">2d</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 80px 1fr 110px 80px; gap: 14px; padding: 10px 14px; border-bottom: 1px solid var(--k35-border-light); align-items: center;">
+              <div style="font-family: var(--k35-font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: var(--k35-fg-1);">RFI-0411</div>
+              <div>
+                <div style="font-family: var(--k35-font-body); font-size: 13px; color: var(--k35-fg-1); font-weight: 500;">Curtain wall anchor revision</div>
+                <div style="font-family: var(--k35-font-body); font-size: 12px; color: var(--k35-fg-3); margin-top: 1px;">Helix Yards · envelope</div>
+              </div>
+              <span class="k35-tag is-info">In review</span>
+              <div style="font-family: var(--k35-font-ui); font-size: 11px; color: var(--k35-fg-3); letter-spacing: 0.04em; text-align: right;">3d</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 80px 1fr 110px 80px; gap: 14px; padding: 10px 14px; border-bottom: 1px solid var(--k35-border-light); align-items: center;">
+              <div style="font-family: var(--k35-font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: var(--k35-fg-1);">RFI-0410</div>
+              <div>
+                <div style="font-family: var(--k35-font-body); font-size: 13px; color: var(--k35-fg-1); font-weight: 500;">MEP conflict · level 04 ceiling</div>
+                <div style="font-family: var(--k35-font-body); font-size: 12px; color: var(--k35-fg-3); margin-top: 1px;">Vector Field · MEP</div>
+              </div>
+              <span class="k35-tag is-error">Blocking</span>
+              <div style="font-family: var(--k35-font-ui); font-size: 11px; color: var(--k35-fg-3); letter-spacing: 0.04em; text-align: right;">6d</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 80px 1fr 110px 80px; gap: 14px; padding: 10px 14px; align-items: center;">
+              <div style="font-family: var(--k35-font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: var(--k35-fg-1);">RFI-0408</div>
+              <div>
+                <div style="font-family: var(--k35-font-body); font-size: 13px; color: var(--k35-fg-1); font-weight: 500;">Roof drain alignment</div>
+                <div style="font-family: var(--k35-font-body); font-size: 12px; color: var(--k35-fg-3); margin-top: 1px;">Atlas Tower · structural</div>
+              </div>
+              <span class="k35-tag is-success">Resolved</span>
+              <div style="font-family: var(--k35-font-ui); font-size: 11px; color: var(--k35-fg-3); letter-spacing: 0.04em; text-align: right;">1w</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <h2 class="k35-h3" style="margin: 0;">Phase 03 · Pour week</h2>
+          <div class="k35-promo">
+            <div class="pre">Atlas Tower · IFC-04</div>
+            <div class="h">Critical path</div>
+            <p>Concrete pour Tue–Thu. Inspector confirmed, weather window open.</p>
+          </div>
+
+          <div style="background: var(--k35-surface); border: 1px solid var(--k35-border-light); padding: 14px;">
+            <div style="font-family: var(--k35-font-ui); font-size: 10px; font-weight: 700; letter-spacing: var(--k35-track-label); text-transform: uppercase; color: var(--k35-fg-3); margin-bottom: 10px;">Submittal progress</div>
+            <div class="k35-stepper">
+              <div class="k35-step is-done"><span class="num">01 · Done</span><span class="name">Submitted</span></div>
+              <div class="k35-step is-done"><span class="num">02 · Done</span><span class="name">Reviewed</span></div>
+              <div class="k35-step is-current"><span class="num">03 · Active</span><span class="name">Approval</span></div>
+              <div class="k35-step"><span class="num">04</span><span class="name">Installed</span></div>
+            </div>
+            <div style="margin-top: 14px;">
+              <div style="font-family: var(--k35-font-ui); font-size: 10px; font-weight: 700; letter-spacing: var(--k35-track-label); text-transform: uppercase; color: var(--k35-fg-3); margin-bottom: 6px;">Overall · 62%</div>
+              <div class="k35-progress is-accent"><span style="width: 62%;"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footnav">
+  <div class="left">
+    <b style="color: #fff;">v3.5 — full canonical system.</b><br>
+    Drop-in: link <code style="font-family: var(--k35-font-ui); background: rgba(255,255,255,0.08); padding: 1px 6px; font-size: 12px;">tokens-v35.css</code>
+    + <code style="font-family: var(--k35-font-ui); background: rgba(255,255,255,0.08); padding: 1px 6px; font-size: 12px;">components-v35.css</code> and use any <code style="font-family: var(--k35-font-ui); background: rgba(255,255,255,0.08); padding: 1px 6px; font-size: 12px;">.k35-*</code> class. Tokens, components, density, motion, elevation, and the Cerulean palette are all included.
+  </div>
+  <div class="links">
+    <a href="#color" class="is-primary">Top ↑</a>
+    <a href="../Kronos v3/index.html">v3 (charter)</a>
+    <a href="../Kronos v2.5/index.html">v2.5 (picker)</a>
+    <a href="../Kronos v2/Kronos v2.html">v2 (proposal)</a>
+  </div>
+</footer>
+
+</body>
+</html>

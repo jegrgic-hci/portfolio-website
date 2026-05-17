@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kronos v2 — responsive demo</title>
+<link rel="stylesheet" href="tokens-v2.css">
+<link rel="stylesheet" href="components-v2.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  font-family: var(--k2-font-body);
+  background: var(--k2-bg);
+  color: var(--k2-fg-1);
+  display: grid;
+  grid-template-columns: var(--k2-sidebar-width) 1fr;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* sidebar */
+.sb {
+  background: var(--k2-sidebar);
+  color: var(--k2-fg-on-dark-1);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #000;
+  padding: 16px 0;
+}
+.sb-brand {
+  padding: 0 18px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  display: flex; align-items: center; gap: 10px;
+}
+.sb-brand .bar { width: 4px; height: 22px; background: var(--k2-teal-rail); }
+.sb-brand .mark {
+  font-family: var(--k2-font-display);
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.sb-brand .label { display: block; }
+.sb-version {
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.56);
+  margin-top: 2px;
+}
+.sb-group {
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.56);
+  padding: 18px 18px 6px;
+}
+.sb-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  color: rgba(255,255,255,0.78);
+  text-decoration: none;
+  font-family: var(--k2-font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-left: 3px solid transparent;
+  background: none;
+  cursor: pointer;
+}
+.sb-item:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.sb-item.is-active {
+  color: #fff;
+  background: rgba(122,147,147,0.20);
+  border-left-color: var(--k2-teal-rail);
+  padding-left: 15px;
+}
+.sb-item .icn { width: 14px; height: 14px; flex-shrink: 0; }
+.sb-item .label { display: inline; }
+
+/* main */
+.main { overflow: auto; padding: clamp(16px, 5vw, 56px); }
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--k2-border-light);
+  margin-bottom: 18px;
+}
+.topbar .crumbs {
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--k2-fg-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.topbar .crumbs .cur { color: var(--k2-fg-1); font-weight: 600; }
+.menu-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--k2-fg-1);
+  width: 36px; height: 36px;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--k2-fg-1);
+}
+.h1 {
+  font-family: var(--k2-font-body);
+  font-weight: 600;
+  font-size: clamp(20px, 3vw, 28px);
+  margin: 0 0 8px;
+  color: var(--k2-fg-1);
+  letter-spacing: -0.01em;
+}
+.sub {
+  font-family: var(--k2-font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--k2-fg-3);
+  margin: 0 0 22px;
+  max-width: 56ch;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.tile {
+  background: var(--k2-surface);
+  border: 1px solid var(--k2-border-light);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tile .swimg {
+  aspect-ratio: 16/9;
+  background: var(--k2-bg);
+  border: 1px solid var(--k2-border-light);
+  margin: -14px -14px 4px;
+  border-left: none; border-right: none; border-top: none;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--k2-fg-4);
+}
+.tile h3 {
+  font-family: var(--k2-font-body);
+  font-weight: 600;
+  font-size: 15px;
+  margin: 0;
+  color: var(--k2-fg-1);
+}
+.tile p {
+  font-family: var(--k2-font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--k2-fg-3);
+}
+
+/* ---- breakpoint: tablet — icon-only sidebar ---- */
+@media (max-width: 900px) {
+  body { grid-template-columns: 56px 1fr; }
+  .sb-brand { padding: 0 0 14px; justify-content: center; }
+  .sb-brand .mark, .sb-version { display: none; }
+  .sb-brand .bar { height: 18px; width: 3px; }
+  .sb-group { display: none; }
+  .sb-item { justify-content: center; padding: 10px 0; gap: 0; }
+  .sb-item.is-active { padding-left: 0; border-left-width: 2px; }
+  .sb-item .label { display: none; }
+}
+
+/* ---- breakpoint: mobile — drawer ---- */
+@media (max-width: 560px) {
+  body { grid-template-columns: 1fr; }
+  .sb {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 240px;
+    z-index: 20;
+    transform: translateX(-100%);
+    transition: transform var(--k2-t-med) var(--k2-ease);
+  }
+  .sb-brand { padding: 0 18px 14px; justify-content: flex-start; }
+  .sb-brand .mark, .sb-version { display: block; }
+  .sb-brand .bar { height: 22px; width: 4px; }
+  .sb-group { display: block; }
+  .sb-item { justify-content: flex-start; padding: 8px 18px; gap: 10px; }
+  .sb-item.is-active { padding-left: 15px; border-left-width: 3px; }
+  .sb-item .label { display: inline; }
+  body.is-drawer-open .sb { transform: translateX(0); box-shadow: 0 0 0 100vmax rgba(26,26,26,0.4); }
+  .menu-btn { display: inline-flex; }
+}
+</style>
+</head>
+<body>
+  <aside class="sb" aria-label="Sidebar">
+    <div class="sb-brand">
+      <span class="bar"></span>
+      <span><span class="mark">KRONOS_LAB</span><span class="sb-version">v5.0</span></span>
+    </div>
+    <div class="sb-group">Operator</div>
+    <button class="sb-item is-active">
+      <svg class="icn" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="2.5" width="11" height="11" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 6H13.5" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span class="label">Work</span>
+    </button>
+    <button class="sb-item">
+      <svg class="icn" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 13.5C3.5 11 5.5 9.5 8 9.5C10.5 9.5 12.5 11 12.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span class="label">About</span>
+    </button>
+    <button class="sb-item">
+      <svg class="icn" viewBox="0 0 16 16" fill="none"><path d="M3.5 2.5H10L12.5 5V13.5H3.5V2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 2.5V5H12.5" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span class="label">Writings</span>
+    </button>
+    <div class="sb-group">System</div>
+    <button class="sb-item">
+      <svg class="icn" viewBox="0 0 16 16" fill="none"><path d="M2.5 4H13.5L12 12H4L2.5 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <span class="label">Settings</span>
+    </button>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="menu-btn" aria-label="Open menu" onclick="document.body.classList.toggle('is-drawer-open')">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4H14M2 8H14M2 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <nav class="crumbs">
+        <span>Operator</span><span>/</span><span class="cur">Work</span>
+      </nav>
+      <button class="v2-btn v2-btn-secondary" style="padding: 6px 12px; min-height: 32px;">New</button>
+    </div>
+
+    <h1 class="h1">Latest projects</h1>
+    <p class="sub">Resize the frame above to see the sidebar collapse to an icon rail at 900px and to a drawer below 560px.</p>
+
+    <div class="grid">
+      <div class="tile">
+        <div class="swimg">16:9 image</div>
+        <div style="display: flex; gap: 6px;"><span class="v2-tag is-teal">Featured</span><span class="v2-tag">UX</span></div>
+        <h3>Atlas Console</h3>
+        <p>Operator-facing console for the Atlas data pipeline.</p>
+      </div>
+      <div class="tile">
+        <div class="swimg">16:9 image</div>
+        <div style="display: flex; gap: 6px;"><span class="v2-tag is-info">In review</span></div>
+        <h3>Helix Dashboard</h3>
+        <p>Multi-tenant analytics surface, 2025.</p>
+      </div>
+      <div class="tile">
+        <div class="swimg">16:9 image</div>
+        <div style="display: flex; gap: 6px;"><span class="v2-tag is-success">Shipped</span></div>
+        <h3>Vector Field</h3>
+        <p>Onboarding redesign — increased D7 retention 14%.</p>
+      </div>
+      <div class="tile">
+        <div class="swimg">16:9 image</div>
+        <div style="display: flex; gap: 6px;"><span class="v2-tag">Notes</span></div>
+        <h3>Protocol_V4 notes</h3>
+        <p>Internal post-mortem on the v4 design system rollout.</p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

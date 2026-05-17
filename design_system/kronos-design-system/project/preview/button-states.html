@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"></head><body>
+<style>
+.k-btn { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 10px; padding: 11px 22px; border: 1px solid var(--k-fg-1); background: var(--k-fg-1); color: white; }
+.lbl { font-family: var(--font-ui); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--k-fg-3); margin-top: 8px; display: block; text-align: center; }
+@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+</style>
+<div class="card">
+  <div class="tiny-cap" style="margin-bottom: 16px;">Button states</div>
+  <div class="row" style="gap: 14px; align-items: flex-start;">
+    <div><button class="k-btn">Default</button><span class="lbl">Default</span></div>
+    <div><button class="k-btn" style="background: #4A6363; border-color: #4A6363;">Hover</button><span class="lbl">Hover</span></div>
+    <div><button class="k-btn" style="outline: 2px solid #7A9393; outline-offset: 2px;">Focus</button><span class="lbl">Focus</span></div>
+    <div><button class="k-btn" style="opacity: 0.35; cursor: not-allowed;">Disabled</button><span class="lbl">Disabled</span></div>
+    <div><button class="k-btn" style="opacity: 0.75;"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="animation: spin 1s linear infinite;"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" stroke-dasharray="20 18" stroke-linecap="round"/></svg>Loading</button><span class="lbl">Loading</span></div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"></head><body>
+<style>
+.nl { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--k-fg-2); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; padding-bottom: 2px; }
+.nl.active { color: var(--k-fg-1); border-bottom: 2px solid var(--k-fg-1); }
+.nl.hover { color: var(--k-fg-1); }
+.lbl { font-family: var(--font-ui); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--k-fg-3); display: block; margin-top: 6px; }
+.col-item { display: flex; flex-direction: column; align-items: flex-start; }
+</style>
+<div class="card">
+  <div class="tiny-cap" style="margin-bottom: 14px;">Nav link — states</div>
+  <div class="row" style="gap: 32px; align-items: flex-start;">
+    <div class="col-item"><a class="nl">Default</a><span class="lbl">Default</span></div>
+    <div class="col-item"><a class="nl hover">Hover</a><span class="lbl">Hover</span></div>
+    <div class="col-item"><a class="nl active">Active</a><span class="lbl">Active</span></div>
+    <div class="col-item"><a class="nl" style="opacity: 0.4;">Disabled</a><span class="lbl">Disabled</span></div>
+  </div>
+</div>
+</body></html>

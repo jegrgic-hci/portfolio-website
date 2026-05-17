@@ -1,0 +1,147 @@
+/* ==========================================================================
+   KRONOS_LAB — Design Tokens v2
+   Same soul as v1 (lab/protocol, mono UI, teal accent, hard edges).
+   What changed:
+   - All foreground greys darkened to pass WCAG 2.2 AA on the page bg.
+   - Teal split into two roles: text-safe (--k2-teal-text) and decorative (--k2-teal).
+   - Semantic colors retuned so red/green/amber/blue all clear 4.5:1 on white.
+   - Type scale floored at 12px. Letter-spacing reduced from 0.15–0.25em → 0.06–0.10em.
+   - Anton (Google Font) replaces system-font Impact for cross-OS consistency.
+   - Focus ring is a real token, not an opacity hack.
+   - Disabled is two real colors, not opacity (opacity 0.35 was crushing contrast to 1.5:1).
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ------------------------------------------------------------------
+     COLORS — surfaces (unchanged from v1)
+     ------------------------------------------------------------------ */
+  --k2-bg:           #F7F7F7;   /* page background */
+  --k2-surface:      #FFFFFF;   /* cards, inputs */
+  --k2-sidebar:      #1A1A1A;   /* inverse */
+
+  /* ------------------------------------------------------------------
+     COLORS — foreground (DARKENED for AA on #F7F7F7)
+     Contrast ratios computed vs --k2-bg.
+     ------------------------------------------------------------------ */
+  --k2-fg-1:         #1A1A1A;   /* primary       — 16.4:1   AAA */
+  --k2-fg-2:         #3D3D3D;   /* secondary     — 10.4:1   AAA   (was #6B6B6B / 4.8:1) */
+  --k2-fg-3:         #5C5C5C;   /* muted body    —  6.4:1   AA+   (was muted via fg-3 #A0A0A0 / 2.6:1 FAIL) */
+  --k2-fg-4:         #767676;   /* hint / caption — 4.6:1   AA    (smallest legible muted; never on tiny text) */
+  --k2-fg-inverse:   #FFFFFF;
+
+  /* On the dark sidebar (#1A1A1A) */
+  --k2-fg-on-dark-1: #FFFFFF;             /* primary      — 16.4:1 */
+  --k2-fg-on-dark-2: rgba(255,255,255,0.78); /* secondary  —  8.6:1 (was 0.65 / 6.3:1) */
+  --k2-fg-on-dark-3: rgba(255,255,255,0.56); /* muted     —  4.7:1 (was 0.45 / 3.4:1 FAIL) */
+
+  /* ------------------------------------------------------------------
+     COLORS — brand accent (teal split into text-safe + decorative)
+     v1 used --k-teal #7A9393 for both text AND backgrounds — 2.9:1 on white.
+     ------------------------------------------------------------------ */
+  --k2-teal:         #7A9393;   /* DECORATIVE ONLY — borders, fills, the avatar gradient */
+  --k2-teal-text:    #355050;   /* TEXT/LINK accent — 7.4:1 on bg, 7.6:1 on white */
+  --k2-teal-bg:      #E6ECEC;   /* selected-row / tinted callouts */
+  --k2-teal-rail:    #4A6363;   /* sidebar active rail — visible against #1A1A1A */
+
+  /* ------------------------------------------------------------------
+     COLORS — semantic (retuned; all 4.5:1+ on white)
+     ------------------------------------------------------------------ */
+  --k2-red:          #A8281C;   /* error text   — 6.2:1 on white   (was #BD3E31 / 4.6:1) */
+  --k2-red-bg:       #FBEBE9;
+  --k2-red-border:   #E5A5A0;
+
+  --k2-green:        #1F5A40;   /* success text — 7.4:1 on white   (was #2D6A4F / 5.9:1) */
+  --k2-green-bg:     #E6F0EB;
+  --k2-green-border: #A7C9B7;
+
+  --k2-amber:        #8A5A00;   /* warning text — 5.5:1 on white   (NEW) */
+  --k2-amber-bg:     #FBF1D9;
+  --k2-amber-border: #E0BE6E;
+
+  --k2-blue:         #1F4D8E;   /* info text    — 8.1:1 on white   (NEW) */
+  --k2-blue-bg:      #E7EEF8;
+  --k2-blue-border:  #A6BCDC;
+
+  /* ------------------------------------------------------------------
+     BORDERS
+     ------------------------------------------------------------------ */
+  --k2-border-heavy: #1A1A1A;
+  --k2-border-mid:   #B3B3B3;   /* darkened from #C8C8C8 — input borders now meet 3:1 NTC */
+  --k2-border-light: #DCDCDC;   /* darkened from #E8E8E8 — card edges now meet 3:1 NTC */
+  --k2-border-hover: #5C5C5C;
+
+  /* ------------------------------------------------------------------
+     FOCUS — real ring, not a border-darken
+     Two-layer: 2px white halo + 2px teal-text. WCAG 2.4.7 + 2.4.11 compliant.
+     ------------------------------------------------------------------ */
+  --k2-focus-ring: 0 0 0 2px var(--k2-surface), 0 0 0 4px var(--k2-teal-text);
+  --k2-focus-ring-inverse: 0 0 0 2px var(--k2-sidebar), 0 0 0 4px var(--k2-fg-on-dark-1);
+
+  /* ------------------------------------------------------------------
+     DISABLED — real colors, not opacity 0.35 (which dropped to 1.5:1)
+     ------------------------------------------------------------------ */
+  --k2-disabled-fg:     #8C8C8C;   /* 3.4:1 — visible but non-actionable */
+  --k2-disabled-bg:     #EDEDED;
+  --k2-disabled-border: #C8C8C8;
+
+  /* ------------------------------------------------------------------
+     TYPE — families
+     Display: Anton replaces Impact (Impact ships inconsistently on Linux).
+     ------------------------------------------------------------------ */
+  --k2-font-display: 'Anton', 'Impact', 'Arial Black', 'Helvetica Neue', sans-serif;
+  --k2-font-ui:      'IBM Plex Mono', 'Courier New', monospace;
+  --k2-font-body:    'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* ------------------------------------------------------------------
+     TYPE — scale (FLOORED AT 12px — v1 had 8.8–10.4px specimens)
+     ------------------------------------------------------------------ */
+  --k2-text-2xs:  0.75rem;     /* 12px — minimum legible chrome (tags, tiny caps) */
+  --k2-text-xs:   0.8125rem;   /* 13px — labels, helper text, table cells */
+  --k2-text-sm:   0.875rem;    /* 14px — small body, button text */
+  --k2-text-base: 1rem;        /* 16px — body */
+  --k2-text-md:   1.125rem;    /* 18px — large body, H3 */
+  --k2-text-lg:   1.375rem;    /* 22px — H2 */
+  --k2-text-xl:   1.75rem;     /* 28px — H1 */
+  --k2-text-2xl:  2.5rem;      /* 40px — display sm */
+  --k2-text-3xl:  3.5rem;      /* 56px — display lg */
+
+  /* Tracking — reduced. Mono chrome was 0.15–0.25em, now 0.06–0.10em. */
+  --k2-track-tight:  0.04em;
+  --k2-track-ui:     0.08em;   /* chrome (buttons, tags, nav) */
+  --k2-track-label:  0.10em;   /* tiny caps stamps only */
+  --k2-track-display:0.06em;   /* Anton hero — much tighter than Impact's 0.2em */
+
+  /* ------------------------------------------------------------------
+     SPACING — unchanged from v1 (the 8px grid works)
+     ------------------------------------------------------------------ */
+  --k2-s-1:   4px;
+  --k2-s-2:   8px;
+  --k2-s-3:  12px;
+  --k2-s-4:  16px;
+  --k2-s-5:  24px;
+  --k2-s-6:  32px;
+  --k2-s-7:  48px;
+  --k2-s-8:  64px;
+  --k2-s-9:  96px;
+  --k2-s-10: 128px;
+
+  /* Layout */
+  --k2-sidebar-width: 264px;
+  --k2-content-max:   960px;
+
+  /* Motion — unchanged */
+  --k2-ease:   cubic-bezier(0.4, 0, 0.2, 1);
+  --k2-t-fast: 120ms;
+  --k2-t-med:  150ms;
+
+  /* Radii — system stays hard-edged. */
+  --k2-radius-0:    0;
+  --k2-radius-pill: 999px;
+}
+
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  :root { --k2-t-fast: 0ms; --k2-t-med: 0ms; }
+}

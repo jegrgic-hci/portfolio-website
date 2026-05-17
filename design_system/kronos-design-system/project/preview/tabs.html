@@ -1,0 +1,255 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="_card.css">
+<style>
+  /* ------------------------------------------------------------------
+     KRONOS TABS
+     Three variants — underline, segmented, vertical rail.
+     All share: uppercase mono, 0 radius, 1px borders, 150ms transitions.
+     ------------------------------------------------------------------ */
+
+  .tab-base {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--k-fg-2);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 150ms cubic-bezier(.4,0,.2,1),
+                background 150ms cubic-bezier(.4,0,.2,1),
+                border-color 150ms cubic-bezier(.4,0,.2,1);
+  }
+  .tab-base:disabled,
+  .tab-base[aria-disabled="true"] {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Count badge — paired with any tab variant */
+  .tab-count {
+    font-family: var(--font-ui);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--k-fg-3);
+    background: var(--k-bg);
+    border: 1px solid var(--k-border-mid);
+    padding: 1px 5px;
+    min-width: 16px;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .tab-base[aria-selected="true"] .tab-count {
+    color: var(--k-fg-1);
+    border-color: var(--k-fg-1);
+  }
+
+  /* ---------- A. Underline tabs ---------- */
+  .tabs-underline {
+    display: flex;
+    gap: 28px;
+    border-bottom: 1px solid var(--k-border-light);
+  }
+  .tab-underline {
+    padding: 10px 0 8px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;     /* overlap container rule */
+  }
+  .tab-underline:hover {
+    color: var(--k-fg-1);
+  }
+  .tab-underline[aria-selected="true"] {
+    color: var(--k-fg-1);
+    border-bottom-color: var(--k-fg-1);
+  }
+
+  /* ---------- B. Segmented tabs ---------- */
+  .tabs-segmented {
+    display: inline-flex;
+    border: 1px solid var(--k-fg-1);
+  }
+  .tab-segmented {
+    padding: 9px 16px;
+    border-right: 1px solid var(--k-fg-1);
+    background: var(--k-surface);
+  }
+  .tab-segmented:last-child { border-right: none; }
+  .tab-segmented:hover {
+    color: var(--k-fg-1);
+    background: var(--k-bg);
+  }
+  .tab-segmented[aria-selected="true"] {
+    color: #fff;
+    background: var(--k-fg-1);
+  }
+
+  /* ---------- C. Vertical rail tabs ---------- */
+  .tabs-vertical {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--k-border-light);
+  }
+  .tab-vertical {
+    padding: 10px 14px;
+    border-left: 3px solid transparent;
+    margin-left: -1px;       /* overlap container rule */
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .tab-vertical:hover {
+    color: var(--k-fg-1);
+  }
+  .tab-vertical[aria-selected="true"] {
+    color: var(--k-fg-1);
+    border-left-color: var(--k-teal);
+    background: rgba(122,147,147,0.10);
+  }
+
+  /* ---------- Inverse (on dark) — rail only ---------- */
+  .panel-dark {
+    background: var(--k-sidebar);
+    padding: 12px 0;
+  }
+  .tabs-vertical.on-dark {
+    border-left-color: rgba(255,255,255,0.12);
+  }
+  .tabs-vertical.on-dark .tab-vertical {
+    color: rgba(255,255,255,0.65);
+  }
+  .tabs-vertical.on-dark .tab-vertical:hover {
+    color: #fff;
+  }
+  .tabs-vertical.on-dark .tab-vertical[aria-selected="true"] {
+    color: #fff;
+    border-left-color: var(--k-teal);
+    background: rgba(122,147,147,0.18);
+  }
+
+  /* card layout helpers (file-local) */
+  .row-split {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 28px;
+  }
+  .col-block { display: flex; flex-direction: column; gap: 10px; }
+  .meta {
+    font-family: var(--font-ui);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--k-fg-3);
+  }
+  .group-label {
+    font-family: var(--font-ui);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--k-fg-3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .group-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--k-border-light);
+  }
+  .spec-line {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-ui);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--k-fg-2);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--k-border-light);
+  }
+  .spec-line:last-child { border-bottom: none; }
+  .spec-line b { color: var(--k-fg-1); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="tiny-cap" style="margin-bottom: 18px;">Tabs · 01.7 — Navigation atoms</div>
+
+  <!-- ============ A · Underline tabs ============ -->
+  <div class="group-label" style="margin-bottom: 14px;">A — Underline</div>
+  <nav class="tabs-underline" role="tablist" aria-label="Underline tabs">
+    <button class="tab-base tab-underline" role="tab" aria-selected="true">Work</button>
+    <button class="tab-base tab-underline" role="tab" aria-selected="false">About</button>
+    <button class="tab-base tab-underline" role="tab" aria-selected="false">
+      Writings <span class="tab-count">12</span>
+    </button>
+    <button class="tab-base tab-underline" role="tab" aria-selected="false">Contact</button>
+    <button class="tab-base tab-underline" role="tab" aria-selected="false" aria-disabled="true">Archive</button>
+  </nav>
+  <div class="meta" style="margin-top: 10px;">Active · default · default + count · default · disabled</div>
+
+  <div class="divider" style="margin: 24px 0;"></div>
+
+  <!-- ============ B · Segmented tabs ============ -->
+  <div class="group-label" style="margin-bottom: 14px;">B — Segmented</div>
+  <div role="tablist" aria-label="Segmented tabs">
+    <div class="tabs-segmented">
+      <button class="tab-base tab-segmented" role="tab" aria-selected="true">All</button>
+      <button class="tab-base tab-segmented" role="tab" aria-selected="false">Case Studies</button>
+      <button class="tab-base tab-segmented" role="tab" aria-selected="false">Notes</button>
+      <button class="tab-base tab-segmented" role="tab" aria-selected="false" aria-disabled="true">Drafts</button>
+    </div>
+  </div>
+  <div class="meta" style="margin-top: 10px;">Filter-style group · 1px heavy border · active fills #1A1A1A</div>
+
+  <div class="divider" style="margin: 24px 0;"></div>
+
+  <!-- ============ C · Vertical rail tabs ============ -->
+  <div class="group-label" style="margin-bottom: 14px;">C — Vertical rail</div>
+  <div class="row-split">
+    <div class="col-block" style="flex: 1;">
+      <nav class="tabs-vertical" role="tablist" aria-label="Vertical tabs">
+        <button class="tab-base tab-vertical" role="tab" aria-selected="true">01 — Overview</button>
+        <button class="tab-base tab-vertical" role="tab" aria-selected="false">02 — Process</button>
+        <button class="tab-base tab-vertical" role="tab" aria-selected="false">03 — Outcomes</button>
+        <button class="tab-base tab-vertical" role="tab" aria-selected="false" aria-disabled="true">04 — Appendix</button>
+      </nav>
+      <div class="meta">On light · 3px teal rail on active</div>
+    </div>
+
+    <div class="col-block" style="flex: 1;">
+      <div class="panel-dark">
+        <nav class="tabs-vertical on-dark" role="tablist" aria-label="Vertical tabs on dark">
+          <button class="tab-base tab-vertical" role="tab" aria-selected="true">Work</button>
+          <button class="tab-base tab-vertical" role="tab" aria-selected="false">About</button>
+          <button class="tab-base tab-vertical" role="tab" aria-selected="false">Writings</button>
+          <button class="tab-base tab-vertical" role="tab" aria-selected="false">Contact</button>
+        </nav>
+      </div>
+      <div class="meta">Inverse · matches sidebar treatment</div>
+    </div>
+  </div>
+
+  <div class="divider" style="margin: 24px 0 14px;"></div>
+
+  <!-- ============ Specs ============ -->
+  <div class="group-label" style="margin-bottom: 8px;">Specs</div>
+  <div class="spec-line"><span>Font</span><b>IBM Plex Mono · 0.7rem · 500 · 0.15em tracking</b></div>
+  <div class="spec-line"><span>Default · Hover · Active</span><b>fg-2 → fg-1 → fg-1 + indicator</b></div>
+  <div class="spec-line"><span>Indicator</span><b>2px underline (A) · filled #1A1A1A (B) · 3px teal rail (C)</b></div>
+  <div class="spec-line"><span>Transition</span><b>150ms cubic-bezier(.4, 0, .2, 1)</b></div>
+  <div class="spec-line"><span>Disabled</span><b>opacity 0.35 · pointer-events: none</b></div>
+  <div class="spec-line"><span>Radius</span><b>0 — hard edges, no exceptions</b></div>
+</div>
+</body>
+</html>

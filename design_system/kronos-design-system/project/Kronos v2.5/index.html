@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kronos v2.5 — pick a direction</title>
+<link rel="stylesheet" href="tokens-shared.css">
+<link rel="stylesheet" href="tokens-teal.css">
+<link rel="stylesheet" href="components-v25.css">
+<style>
+.hero {
+  background: var(--k25-sidebar);
+  color: var(--k25-fg-on-dark-1);
+  padding: var(--k25-s-7) var(--k25-s-7) var(--k25-s-6);
+}
+.hero .stamp {
+  font-family: var(--k25-font-ui);
+  font-size: 11px;
+  letter-spacing: var(--k25-track-label);
+  text-transform: uppercase;
+  color: var(--k25-fg-on-dark-3);
+  margin-bottom: 8px;
+}
+.hero h1 {
+  font-family: var(--k25-font-display);
+  font-size: clamp(48px, 7vw, 84px);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 0.95;
+  margin: 0;
+}
+.hero .ver {
+  font-family: var(--k25-font-ui);
+  font-size: 12px;
+  letter-spacing: var(--k25-track-ui);
+  text-transform: uppercase;
+  color: var(--k25-fg-on-dark-2);
+  margin-top: 12px;
+}
+.hero p {
+  font-family: var(--k25-font-body);
+  font-size: var(--k25-text-md);
+  line-height: 1.6;
+  color: var(--k25-fg-on-dark-2);
+  max-width: 70ch;
+  margin: var(--k25-s-4) 0 0;
+}
+
+/* shared upgrades summary */
+.summary {
+  padding: var(--k25-s-6) var(--k25-s-7);
+  background: var(--k25-bg);
+  border-bottom: 1px solid var(--k25-border-light);
+}
+.summary h2 {
+  font-family: var(--k25-font-body);
+  font-weight: 600;
+  font-size: var(--k25-text-lg);
+  margin: 0 0 6px;
+}
+.summary p {
+  font-family: var(--k25-font-body);
+  font-size: 14px;
+  color: var(--k25-fg-3);
+  margin: 0 0 16px;
+  max-width: 70ch;
+  line-height: 1.6;
+}
+.tier-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+@media (max-width: 900px) { .tier-row { grid-template-columns: 1fr; } }
+.tier-card {
+  background: var(--k25-surface);
+  border: 1px solid var(--k25-border-light);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tier-card .key {
+  font-family: var(--k25-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--k25-track-label);
+  text-transform: uppercase;
+  color: var(--k25-accent);
+}
+.tier-card .h {
+  font-family: var(--k25-font-body);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--k25-fg-1);
+}
+.tier-card p {
+  font-family: var(--k25-font-body);
+  font-size: 13px;
+  color: var(--k25-fg-3);
+  margin: 0;
+  line-height: 1.55;
+  max-width: none;
+}
+
+/* split */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--k25-border-light);
+}
+@media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+
+.dir {
+  background: var(--k25-surface);
+  padding: var(--k25-s-7) var(--k25-s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--k25-s-4);
+}
+.dir h2 {
+  font-family: var(--k25-font-display);
+  font-size: 56px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 0.92;
+  margin: 0;
+}
+.dir .voice {
+  font-family: var(--k25-font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--k25-track-ui);
+  text-transform: uppercase;
+  border-left: 3px solid currentColor;
+  padding: 4px 10px;
+  align-self: flex-start;
+}
+.dir p {
+  font-family: var(--k25-font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--k25-fg-2);
+  margin: 0;
+  max-width: 50ch;
+}
+
+.swatches { display: flex; gap: 2px; }
+.swatches .sw {
+  height: 36px;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 4px 6px;
+  font-family: var(--k25-font-ui);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.attr {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 10px;
+  font-family: var(--k25-font-ui);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--k25-border-light);
+}
+.attr:last-child { border-bottom: none; }
+.attr .k { color: var(--k25-fg-4); text-transform: uppercase; letter-spacing: var(--k25-track-label); font-weight: 700; font-size: 10px; }
+.attr .v { color: var(--k25-fg-1); font-family: var(--k25-font-body); font-size: 13px; letter-spacing: 0; }
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--k25-font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: var(--k25-track-ui);
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--k25-fg-1);
+  border: 1px solid var(--k25-fg-1);
+  padding: 12px 18px;
+  text-decoration: none;
+  align-self: flex-start;
+  transition: background var(--k25-motion-quick) var(--k25-ease);
+}
+
+/* direction-scoped tokens */
+.dir-teal .voice  { color: #355050; }
+.dir-teal .cta    { background: #355050; border-color: #355050; }
+.dir-teal .cta:hover { background: #283C3C; border-color: #283C3C; }
+
+.dir-cer .voice   { color: #0E5582; }
+.dir-cer .cta     { background: #0E5582; border-color: #0E5582; }
+.dir-cer .cta:hover { background: #0A4366; border-color: #0A4366; }
+
+/* footer */
+.foot {
+  padding: var(--k25-s-6) var(--k25-s-7);
+  background: var(--k25-bg);
+  border-top: 1px solid var(--k25-border-light);
+}
+.foot h3 {
+  font-family: var(--k25-font-body);
+  font-weight: 600;
+  font-size: var(--k25-text-md);
+  margin: 0 0 6px;
+}
+.foot p {
+  font-family: var(--k25-font-body);
+  font-size: 13px;
+  color: var(--k25-fg-3);
+  margin: 0 0 6px;
+  line-height: 1.6;
+}
+.foot ul {
+  font-family: var(--k25-font-body);
+  font-size: 13px;
+  color: var(--k25-fg-3);
+  line-height: 1.6;
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+.foot strong { color: var(--k25-fg-1); }
+.foot code {
+  background: var(--k25-n-100);
+  border: 1px solid var(--k25-border-light);
+  padding: 1px 5px;
+  font-size: 12px;
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="stamp">Brand decision · Pick a direction · 17 May 2026</div>
+  <h1>Kronos v2.5</h1>
+  <div class="ver">Two complete systems · same content · different palette</div>
+  <p>
+    Both directions ship the same three "next sprint" upgrades from the designer review:
+    expanded neutral scale, elevation tokens for floating UI, and density modes. They differ
+    only in the accent + complement pair. Open each, sit with it for a minute, and pick.
+  </p>
+</header>
+
+<section class="summary">
+  <h2>What both directions ship</h2>
+  <p>Identical foundations. Identical components. Identical dashboard demo. Different palette.</p>
+  <div class="tier-row">
+    <div class="tier-card">
+      <span class="key">Token-level</span>
+      <span class="h">Neutral scale → 11 steps</span>
+      <p>Cool 1° tint. Replaces v2's four greys. Aliases fg-1 through fg-4 still resolve, just point into the new scale.</p>
+    </div>
+    <div class="tier-card">
+      <span class="key">New tokens</span>
+      <span class="h">Elevation for floating UI</span>
+      <p><code>--k25-elev-1</code> (dropdown/popover/toast) and <code>--k25-elev-2</code> (modal). Cards and buttons stay flat.</p>
+    </div>
+    <div class="tier-card">
+      <span class="key">New tokens</span>
+      <span class="h">Density modes</span>
+      <p>Default = cozy. Add <code>data-density="compact"</code> to a container — table rows, list items, and inputs tighten.</p>
+    </div>
+  </div>
+</section>
+
+<div class="split">
+
+  <!-- ============ Lab Teal ============ -->
+  <article class="dir dir-teal">
+    <span class="voice">Direction A · Clinical · Brief · Mechanical</span>
+    <h2 style="color: #355050;">Lab Teal</h2>
+    <p>
+      Preserves the lab/protocol DNA. Desaturated teal stays the brand accent; ochre is added
+      as a true complement for warm/cool tension on attention moments (in-progress, on-site,
+      deadline approaching).
+    </p>
+
+    <div>
+      <div style="font-family: var(--k25-font-ui); font-size: 10px; font-weight: 700; letter-spacing: var(--k25-track-label); text-transform: uppercase; color: var(--k25-fg-3); margin-bottom: 6px;">Accent + complement</div>
+      <div class="swatches">
+        <div class="sw" style="background: #F0F4F4; color: #355050;">50</div>
+        <div class="sw" style="background: #91A6A6; color: #1A2A2A;">300</div>
+        <div class="sw" style="background: #4A6363; color: #fff;">500</div>
+        <div class="sw" style="background: #355050; color: #fff;">600</div>
+        <div class="sw" style="background: #283C3C; color: #fff;">700</div>
+      </div>
+      <div class="swatches" style="margin-top: 4px;">
+        <div class="sw" style="background: #F8EFD0; color: #7C5413;">50</div>
+        <div class="sw" style="background: #E5C66B; color: #5E3F0E;">300</div>
+        <div class="sw" style="background: #B5832A; color: #fff;">500</div>
+        <div class="sw" style="background: #9A6A1A; color: #fff;">600</div>
+        <div class="sw" style="background: #7C5413; color: #fff;">700</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="attr"><span class="k">Reads as</span><span class="v">Lab equipment, surveying gear, technical drawings</span></div>
+      <div class="attr"><span class="k">Voice fit</span><span class="v">Existing all-caps mono chrome, version stamps, decimal section codes</span></div>
+      <div class="attr"><span class="k">Sem info-blue</span><span class="v">Stays at #1F4D8E — no conflict</span></div>
+      <div class="attr"><span class="k">Best for</span><span class="v">Brand-first system. Construction product is an application of it.</span></div>
+    </div>
+
+    <a href="Lab Teal.html" class="cta">Open Lab Teal → </a>
+  </article>
+
+  <!-- ============ Cerulean ============ -->
+  <article class="dir dir-cer">
+    <span class="voice">Direction B · Confident · Direct · Helpful</span>
+    <h2 style="color: #0E5582;">Cerulean</h2>
+    <p>
+      Trades the lab clinical posture for engineering-software confidence. Your wireframe blue
+      becomes the brand mark; warm rust complements it on attention moments. Reads "construction
+      tech" from the first glance — Procore / Bluebeam / Autodesk territory.
+    </p>
+
+    <div>
+      <div style="font-family: var(--k25-font-ui); font-size: 10px; font-weight: 700; letter-spacing: var(--k25-track-label); text-transform: uppercase; color: var(--k25-fg-3); margin-bottom: 6px;">Accent + complement</div>
+      <div class="swatches">
+        <div class="sw" style="background: #E6F2F9; color: #0E5582;">50</div>
+        <div class="sw" style="background: #6FAFD8; color: #07334D;">300</div>
+        <div class="sw" style="background: #137CB6; color: #fff;">500</div>
+        <div class="sw" style="background: #1068A0; color: #fff;">600</div>
+        <div class="sw" style="background: #0E5582; color: #fff;">700</div>
+      </div>
+      <div class="swatches" style="margin-top: 4px;">
+        <div class="sw" style="background: #F7DCC9; color: #762B17;">50</div>
+        <div class="sw" style="background: #E59465; color: #3D170D;">300</div>
+        <div class="sw" style="background: #D26035; color: #fff;">400</div>
+        <div class="sw" style="background: #B14826; color: #fff;">500</div>
+        <div class="sw" style="background: #93371D; color: #fff;">600</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="attr"><span class="k">Reads as</span><span class="v">Modern engineering software, blueprints, construction tech</span></div>
+      <div class="attr"><span class="k">Voice fit</span><span class="v">Existing typography kept — but expect to soften the all-caps ratio over time</span></div>
+      <div class="attr"><span class="k">Sem info-blue</span><span class="v">Recolored to #3D556E grey-blue — semantic still readable, no 2-blues</span></div>
+      <div class="attr"><span class="k">Best for</span><span class="v">Product-first system. Construction product gets cultural recognition.</span></div>
+    </div>
+
+    <a href="Cerulean.html" class="cta">Open Cerulean → </a>
+  </article>
+
+</div>
+
+<section class="foot">
+  <h3>How to read these</h3>
+  <p>
+    Both directions render the same construction-PM dashboard slice — same KPIs, same project
+    list, same RFI table, same critical-path callout. Compare the two screens with the same
+    eye:
+  </p>
+  <ul>
+    <li>Does the KPI numeral feel "lab specimen" or "product metric"?</li>
+    <li>Does the critical-path callout earn its place or shout?</li>
+    <li>Does the sidebar's active rail read as a tool stamp or a brand?</li>
+    <li>Which one would <strong>you</strong> open every morning?</li>
+  </ul>
+  <p style="margin-top: 14px;">
+    Pick one and I'll consolidate it into the v2.5 canonical spec — retire the other, update
+    <code>tokens-v2.css</code> downstream, and we'll move on to building the dashboard for
+    real.
+  </p>
+</section>
+
+</body>
+</html>

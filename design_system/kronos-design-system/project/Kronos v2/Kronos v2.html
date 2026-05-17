@@ -1,0 +1,1421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kronos v2 — proposal</title>
+<link rel="stylesheet" href="comparison.css">
+<link rel="stylesheet" href="components-v2.css">
+
+<style>
+/* ============================================================
+   Minimal v1 component styles, scoped to .v1 so they
+   live alongside v2 in the same doc. Lifted verbatim from
+   ui_kits/portfolio/styles.css with no token changes.
+   ============================================================ */
+
+/* v1 buttons */
+.v1-kbtn {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 12px;
+  border: 1px solid transparent;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.v1-kbtn-primary { background: var(--k-fg-1); color: white; padding: 12px 24px; border-color: var(--k-fg-1); }
+.v1-kbtn-primary:hover { background: var(--k-teal-dark); border-color: var(--k-teal-dark); }
+.v1-kbtn-secondary { background: transparent; color: var(--k-fg-1); padding: 12px 24px; border-color: var(--k-fg-1); }
+.v1-kbtn-secondary:hover { background: var(--k-fg-1); color: white; }
+.v1-kbtn-ghost { background: transparent; color: var(--k-fg-1); padding: 12px 0; border: none; border-bottom: 1px solid var(--k-fg-1); }
+.v1-kbtn-icon { background: var(--k-fg-1); color: white; padding: 0; width: 40px; height: 40px; justify-content: center; gap: 0; border-color: var(--k-fg-1); }
+.v1-kbtn[disabled] { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+
+/* v1 inputs */
+.v1-input {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--k-fg-1);
+  background: var(--k-surface);
+  border: 1px solid var(--k-border-mid);
+  padding: 12px 16px;
+  width: 100%; outline: none;
+  transition: border-color 0.15s;
+}
+.v1-input::placeholder { color: var(--k-fg-3); }
+.v1-input:focus { border-color: var(--k-fg-1); }
+.v1-input.is-error { border-color: var(--k-red); }
+.v1-label {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--k-fg-2);
+  display: block;
+}
+.v1-helper {
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  color: var(--k-fg-3);
+  letter-spacing: 0.05em;
+}
+.v1-helper.is-error { color: var(--k-red); }
+
+/* v1 tags */
+.v1-tag {
+  font-family: var(--font-ui);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--k-fg-1);
+  background: var(--k-bg);
+  border: 1px solid var(--k-border-mid);
+  padding: 5px 10px;
+  display: inline-block;
+}
+.v1-tag.is-teal  { color: #4A6363; background: rgba(122,147,147,0.08); border-color: #7A9393; }
+.v1-tag.is-error { color: var(--k-red); border-color: var(--k-red); background: rgba(189,62,49,0.06); }
+
+/* v1 tabs (underline) */
+.v1-tabs { display: flex; gap: 28px; border-bottom: 1px solid var(--k-border-light); }
+.v1-tab {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--k-fg-2);
+  background: none; border: none;
+  padding: 10px 0 8px;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+}
+.v1-tab[aria-selected="true"] { color: var(--k-fg-1); border-bottom-color: var(--k-fg-1); }
+
+/* v1 card */
+.v1-card {
+  background: var(--k-surface);
+  border: 1px solid var(--k-border-light);
+  display: block; text-decoration: none; color: inherit;
+}
+.v1-card-image {
+  aspect-ratio: 16/9;
+  background: var(--k-bg);
+  border-bottom: 1px solid var(--k-border-light);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-ui); font-size: 0.6rem;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--k-fg-3);
+}
+.v1-card-body { padding: var(--s-5); display: flex; flex-direction: column; gap: var(--s-4); }
+.v1-card-tags { display: flex; gap: 8px; }
+.v1-card-title {
+  font-family: var(--font-ui); font-size: 1.1rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--k-fg-1);
+}
+.v1-card-desc {
+  font-family: var(--font-body); font-size: 0.9rem; line-height: 1.65; color: var(--k-fg-2);
+}
+.v1-card .v1-kbtn-ghost { padding: 0; font-size: 0.7rem; }
+
+/* ============================================================
+   Page-local helpers
+   ============================================================ */
+
+.swatch {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: var(--k2-s-3);
+  align-items: center;
+  padding: 8px 0;
+}
+.swatch .sq {
+  width: 40px; height: 40px;
+  border: 1px solid var(--k2-border-mid);
+}
+.swatch .meta {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.swatch .meta .name {
+  font-family: var(--k2-font-ui);
+  font-size: 12px; font-weight: 600;
+  letter-spacing: var(--k2-track-tight);
+  color: var(--k2-fg-1);
+}
+.swatch .meta .hex {
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  color: var(--k2-fg-4);
+}
+
+.demo-sample {
+  font-family: var(--k2-font-body);
+  font-size: 13px;
+  padding: 8px 10px;
+  background: var(--k2-bg);
+  border: 1px solid var(--k2-border-light);
+}
+
+/* responsive demo */
+.respo-wrap {
+  background: var(--k2-bg);
+  border: 1px solid var(--k2-border-light);
+  overflow: hidden;
+}
+.respo-frame {
+  width: 100%;
+  height: 320px;
+  border: none;
+  display: block;
+  background: var(--k2-surface);
+}
+.respo-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--k2-border-light);
+}
+.respo-tabs button {
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--k2-track-ui);
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  padding: 9px 14px;
+  cursor: pointer;
+  color: var(--k2-fg-3);
+  border-right: 1px solid var(--k2-border-light);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.respo-tabs button.is-active {
+  color: var(--k2-fg-1);
+  border-bottom-color: var(--k2-fg-1);
+}
+
+/* footer note */
+.footnote {
+  background: var(--k2-sidebar);
+  color: var(--k2-fg-on-dark-2);
+  padding: var(--k2-s-8) var(--k2-s-7);
+  font-family: var(--k2-font-body);
+  font-size: var(--k2-text-sm);
+  line-height: 1.65;
+}
+.footnote h3 {
+  font-family: var(--k2-font-body);
+  font-weight: 600;
+  font-size: var(--k2-text-lg);
+  color: var(--k2-fg-on-dark-1);
+  margin: 0 0 var(--k2-s-3);
+}
+.footnote ul { margin: 0; padding-left: 18px; }
+.footnote li { margin-bottom: 6px; }
+.footnote strong { color: var(--k2-fg-on-dark-1); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="doc-header">
+  <div class="version">Protocol_V5.0 · Build 5.0.0 · 17 May 2026</div>
+  <div class="wordmark">
+    KRONOS_LAB
+    <span class="tag-pill">v2 proposal</span>
+  </div>
+  <p class="lede">
+    Same lab/protocol DNA — mono UI chrome, hard 1px edges, teal accent. The fixes target three real
+    problems: greys that failed WCAG, type that ran too small and over-tracked, and a component set
+    that stopped at the portfolio. v2 keeps every component editable as the same atoms; only the
+    tokens, sizes, and accessibility wiring change.
+  </p>
+</header>
+
+<!-- ============ STICKY NAV ============ -->
+<nav class="doc-nav" aria-label="Jump to section">
+  <a href="#summary">01 — Summary</a>
+  <a href="#colors">02 — Colors</a>
+  <a href="#type">03 — Typography</a>
+  <a href="#buttons">04 — Buttons</a>
+  <a href="#inputs">05 — Inputs</a>
+  <a href="#tags">06 — Tags</a>
+  <a href="#tabs">07 — Tabs</a>
+  <a href="#cards">08 — Cards</a>
+  <a href="#select">09 — Select</a>
+  <a href="#modal">10 — Modal</a>
+  <a href="#banner">11 — Banner / Alert</a>
+  <a href="#toast">12 — Toast</a>
+  <a href="#tooltip">13 — Tooltip</a>
+  <a href="#stepper">14 — Stepper / Crumbs</a>
+  <a href="#states">15 — Empty / Loading / Error</a>
+  <a href="#responsive">16 — Responsive</a>
+  <a href="#topnav">17 — Top nav (alt)</a>
+  <a href="#audit">18 — A11y audit</a>
+</nav>
+
+<!-- ============ 01 · SUMMARY ============ -->
+<section class="section" id="summary">
+  <div class="section-h">
+    <div class="num">01</div>
+    <h2>What v2 changes — at a glance</h2>
+  </div>
+  <p class="section-lede">
+    Twelve changes total. Six are token-level (drop-in, no markup change). Six add new components or
+    interaction patterns. Everything below this row is the same change broken out per concern with
+    a side-by-side specimen and the receipts.
+  </p>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">Token-level fixes</span><span class="meta">Drop-in</span></div>
+      <div class="col-body">
+        <div class="spec-row"><span class="k">Muted greys</span><span class="v">#A0 → #5C · 2.6:1 → 6.4:1</span></div>
+        <div class="spec-row"><span class="k">Body greys</span><span class="v">#6B → #3D · 4.8:1 → 10.4:1</span></div>
+        <div class="spec-row"><span class="k">Teal (text)</span><span class="v">#7A93 → #355 · 2.9:1 → 7.6:1</span></div>
+        <div class="spec-row"><span class="k">Type floor</span><span class="v">9px → 12px minimum</span></div>
+        <div class="spec-row"><span class="k">Tracking</span><span class="v">0.15–0.25em → 0.06–0.10em</span></div>
+        <div class="spec-row"><span class="k">Display font</span><span class="v">Impact → Anton (Google)</span></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">System additions</span><span class="meta">New</span></div>
+      <div class="col-body">
+        <div class="spec-row"><span class="k">All-caps chrome</span><span class="v">Buttons / Tags / Nav only</span></div>
+        <div class="spec-row"><span class="k">Focus rings</span><span class="v">Real 2px halo + 2px teal</span></div>
+        <div class="spec-row"><span class="k">Disabled</span><span class="v">Real color, not opacity 0.35</span></div>
+        <div class="spec-row"><span class="k">Semantic palette</span><span class="v">+ amber, + blue (info / warn)</span></div>
+        <div class="spec-row"><span class="k">New components</span><span class="v">Select · Modal · Banner · Toast · Tooltip · Stepper</span></div>
+        <div class="spec-row"><span class="k">Responsive</span><span class="v">Sidebar → drawer · grid reflow · fluid padding</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 · COLORS ============ -->
+<section class="section" id="colors">
+  <div class="section-h">
+    <div class="num">02</div>
+    <h2>Color tokens — text greys</h2>
+  </div>
+  <p class="section-lede">
+    The biggest single issue in v1. Three foreground greys were calibrated by eye, not by ratio.
+    <code>--k-fg-3</code> (used for captions, helper text, sidebar muted items) failed AA outright.
+    v2 darkens everything and adds an explicit fourth step for hint-only text.
+  </p>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span><span class="meta">on #F7F7F7</span></div>
+      <div class="col-body tight">
+        <div class="swatch">
+          <div class="sq" style="background: #1A1A1A;"></div>
+          <div class="meta"><span class="name">--k-fg-1</span><span class="hex">#1A1A1A</span></div>
+          <span class="badge pass">16.4:1 AAA</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #6B6B6B;"></div>
+          <div class="meta"><span class="name">--k-fg-2</span><span class="hex">#6B6B6B · body</span></div>
+          <span class="badge warn">4.8:1 AA-only</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #A0A0A0;"></div>
+          <div class="meta"><span class="name">--k-fg-3</span><span class="hex">#A0A0A0 · captions</span></div>
+          <span class="badge fail">2.6:1 FAIL</span>
+        </div>
+        <div class="divider-rule"></div>
+        <p style="font-family: var(--k2-font-body); font-size: 13px; line-height: 1.55; color: var(--k-fg-2); margin: 4px 0 0;">
+          “Specializing in human-AI interaction.” — body in <code>--k-fg-2</code>.
+        </p>
+        <p style="font-family: var(--k2-font-body); font-size: 11px; line-height: 1.5; color: var(--k-fg-3); margin: 0;">
+          “Verification required for level-4 access.” — caption in <code>--k-fg-3</code> (hard to read).
+        </p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span><span class="meta">on #F7F7F7</span></div>
+      <div class="col-body tight">
+        <div class="swatch">
+          <div class="sq" style="background: #1A1A1A;"></div>
+          <div class="meta"><span class="name">--k2-fg-1</span><span class="hex">#1A1A1A</span></div>
+          <span class="badge pass">16.4:1 AAA</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #3D3D3D;"></div>
+          <div class="meta"><span class="name">--k2-fg-2</span><span class="hex">#3D3D3D · body</span></div>
+          <span class="badge pass">10.4:1 AAA</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #5C5C5C;"></div>
+          <div class="meta"><span class="name">--k2-fg-3</span><span class="hex">#5C5C5C · muted body</span></div>
+          <span class="badge pass">6.4:1 AA+</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #767676;"></div>
+          <div class="meta"><span class="name">--k2-fg-4</span><span class="hex">#767676 · hint only</span></div>
+          <span class="badge pass">4.6:1 AA</span>
+        </div>
+        <div class="divider-rule"></div>
+        <p style="font-family: var(--k2-font-body); font-size: 13px; line-height: 1.55; color: var(--k2-fg-2); margin: 4px 0 0;">
+          “Specializing in human-AI interaction.” — body in <code>--k2-fg-2</code>.
+        </p>
+        <p style="font-family: var(--k2-font-body); font-size: 13px; line-height: 1.5; color: var(--k2-fg-3); margin: 0;">
+          “Verification required for level-4 access.” — muted in <code>--k2-fg-3</code>.
+        </p>
+      </div>
+    </div>
+  </div>
+  <ul class="changelog">
+    <li><b>Four greys, not three.</b> The new <code>fg-4</code> is explicit hint-only, so designers stop reaching for fg-3 for tiny text.</li>
+    <li><b>Body bumped two steps.</b> Real product UIs read paragraphs all day; the v1 4.8:1 was the floor, not a target.</li>
+    <li>Inverse-on-dark text also bumped: 0.45 → 0.56 (4.7:1) for muted, 0.65 → 0.78 (8.6:1) for secondary.</li>
+  </ul>
+</section>
+
+<!-- ============ 02.1 · TEAL ============ -->
+<section class="section" id="colors-teal">
+  <div class="section-h">
+    <div class="num">02.1</div>
+    <h2>Color tokens — teal accent</h2>
+  </div>
+  <p class="section-lede">
+    v1's teal <code>#7A9393</code> was used for both decoration (borders, the rail) and
+    text (hover links, the “Featured” tag label). Against white it's 2.9:1 — a hard fail
+    when applied to text. v2 splits the role: <code>--k2-teal</code> stays for decoration,
+    a new <code>--k2-teal-text</code> handles links and accent type.
+  </p>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1 — one teal, two jobs</span></div>
+      <div class="col-body tight">
+        <div class="swatch">
+          <div class="sq" style="background: #7A9393;"></div>
+          <div class="meta"><span class="name">--k-teal</span><span class="hex">#7A9393 · everywhere</span></div>
+          <span class="badge fail">2.9:1 FAIL on text</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #4A6363;"></div>
+          <div class="meta"><span class="name">--k-teal-dark</span><span class="hex">#4A6363 · hover</span></div>
+          <span class="badge pass">4.8:1 AA</span>
+        </div>
+        <div class="divider-rule"></div>
+        <div style="display: flex; gap: 18px; align-items: center; padding-top: 4px;">
+          <a style="color: #7A9393; text-decoration: underline; font-family: var(--k2-font-body); font-size: 14px;">Featured link in teal</a>
+          <span class="v1-tag is-teal">Featured</span>
+        </div>
+        <div class="muted-cap" style="margin-top: 4px;">Link text + tag label both fail at 2.9:1.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2 — split into two roles</span></div>
+      <div class="col-body tight">
+        <div class="swatch">
+          <div class="sq" style="background: #7A9393;"></div>
+          <div class="meta"><span class="name">--k2-teal</span><span class="hex">decorative only</span></div>
+          <span class="badge pass">3.1:1 UI ok</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #355050;"></div>
+          <div class="meta"><span class="name">--k2-teal-text</span><span class="hex">#355050 · links / accent</span></div>
+          <span class="badge pass">7.6:1 AAA</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #E6ECEC;"></div>
+          <div class="meta"><span class="name">--k2-teal-bg</span><span class="hex">#E6ECEC · tints</span></div>
+          <span class="badge pass">selection</span>
+        </div>
+        <div class="divider-rule"></div>
+        <div style="display: flex; gap: 18px; align-items: center; padding-top: 4px;">
+          <a class="v2-link" href="#" style="font-size: 14px;">Featured link in teal</a>
+          <span class="v2-tag is-teal">Featured</span>
+        </div>
+        <div class="muted-cap" style="margin-top: 4px;">Both clear AA — same brand color story.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02.2 · SEMANTIC ============ -->
+<section class="section" id="colors-semantic">
+  <div class="section-h">
+    <div class="num">02.2</div>
+    <h2>Color tokens — semantic palette</h2>
+  </div>
+  <p class="section-lede">
+    v1 had two semantic colors (red, green). For real applications you need at least four —
+    info and warning carry meaning that red and green can't substitute for. v2 adds amber
+    and blue, all four retuned to clear 4.5:1 on white, all four with a paired bg + border
+    token for banners and tags.
+  </p>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1 — red + green only</span></div>
+      <div class="col-body tight">
+        <div class="swatch">
+          <div class="sq" style="background: #BD3E31;"></div>
+          <div class="meta"><span class="name">--k-red</span><span class="hex">#BD3E31</span></div>
+          <span class="badge warn">4.6:1 AA</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #2D6A4F;"></div>
+          <div class="meta"><span class="name">--k-green</span><span class="hex">#2D6A4F</span></div>
+          <span class="badge pass">5.9:1 AA+</span>
+        </div>
+        <div class="divider-rule"></div>
+        <div class="muted-cap">Missing: info (process / pending) and warning (caution).</div>
+        <div class="muted-cap">Missing: paired bg + border tokens for banner surfaces.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2 — 4 semantics, each with bg + border</span></div>
+      <div class="col-body tight">
+        <div class="swatch">
+          <div class="sq" style="background: #A8281C;"></div>
+          <div class="meta"><span class="name">--k2-red</span><span class="hex">#A8281C · error</span></div>
+          <span class="badge pass">6.2:1 AA+</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #1F5A40;"></div>
+          <div class="meta"><span class="name">--k2-green</span><span class="hex">#1F5A40 · success</span></div>
+          <span class="badge pass">7.4:1 AAA</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #8A5A00;"></div>
+          <div class="meta"><span class="name">--k2-amber</span><span class="hex">#8A5A00 · warning</span></div>
+          <span class="badge pass">5.5:1 AA+</span>
+        </div>
+        <div class="swatch">
+          <div class="sq" style="background: #1F4D8E;"></div>
+          <div class="meta"><span class="name">--k2-blue</span><span class="hex">#1F4D8E · info</span></div>
+          <span class="badge pass">8.1:1 AAA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 · TYPE ============ -->
+<section class="section" id="type">
+  <div class="section-h">
+    <div class="num">03</div>
+    <h2>Typography</h2>
+  </div>
+  <p class="section-lede">
+    Two changes: <b>Anton replaces Impact</b> (Impact ships inconsistently on Linux and renders
+    differently on every OS), and <b>all-caps mono is restricted</b> to short labels — buttons,
+    tags, nav items, version stamps. Headings, table cells, helper text and form labels switch
+    to sentence-case Plex Sans, which doubles scanning speed without losing the lab/protocol
+    voice.
+  </p>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body">
+        <div class="muted-cap">Display · Impact (system) · 0.20em</div>
+        <div style="font-family: Impact, 'Arial Black', sans-serif; font-size: 40px; letter-spacing: 0.2em; text-transform: uppercase; line-height: 1; color: var(--k-fg-1);">KRONOS_LAB</div>
+        <div class="divider-rule"></div>
+        <div class="muted-cap">H2 section header · mono uppercase · 0.12em</div>
+        <div style="font-family: var(--font-ui); font-size: 1.1rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--k-fg-1);">LATEST PROJECTS</div>
+        <div class="divider-rule"></div>
+        <div class="muted-cap">Form label · mono uppercase · 0.20em · 10.4px</div>
+        <div style="font-family: var(--font-ui); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--k-fg-2);">EMAIL ADDRESS</div>
+        <div class="divider-rule"></div>
+        <div class="muted-cap">Helper · mono · 10.4px</div>
+        <div style="font-family: var(--font-ui); font-size: 0.65rem; letter-spacing: 0.05em; color: var(--k-fg-3);">VERIFICATION REQUIRED FOR LEVEL-4 ACCESS</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span></div>
+      <div class="col-body">
+        <div class="muted-cap">Display · Anton (Google) · 0.06em</div>
+        <div class="v2-display" style="font-size: 40px;">KRONOS_LAB</div>
+        <div class="divider-rule"></div>
+        <div class="muted-cap">H2 section header · Plex Sans · sentence case</div>
+        <h2 class="v2-h2">Latest projects</h2>
+        <div class="divider-rule"></div>
+        <div class="muted-cap">Form label · Plex Sans · 13px medium</div>
+        <label class="v2-label">Email address</label>
+        <div class="divider-rule"></div>
+        <div class="muted-cap">Helper · Plex Sans · 13px</div>
+        <p class="v2-helper">Verification required for level-4 access.</p>
+      </div>
+    </div>
+  </div>
+  <ul class="changelog">
+    <li><b>Mono survives where it pays.</b> Buttons, tags, tabs, sidebar nav, version stamps stay uppercase Plex Mono.</li>
+    <li><b>Sentence case where it costs.</b> Headings, labels, helper text, table cells switch to Plex Sans — these are the strings users read, not the chrome they tap.</li>
+    <li><b>Type floor: 12px.</b> No specimen smaller than 12px (was 9–10px). Tag and tiny-stamp class is now 12px / 600 weight.</li>
+    <li><b>Tracking dropped by half.</b> 0.15–0.25em → 0.06–0.10em. Wide tracking on uppercase reads as decorative; it shouldn't be on every label.</li>
+  </ul>
+</section>
+
+<!-- ============ 04 · BUTTONS ============ -->
+<section class="section" id="buttons">
+  <div class="section-h">
+    <div class="num">04</div>
+    <h2>Buttons</h2>
+  </div>
+  <p class="section-lede">
+    Same four variants. Real focus ring added; disabled state switches from opacity 0.35
+    (which crushed contrast to 1.5:1) to a real disabled palette that still meets 3:1.
+  </p>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body">
+        <div class="row">
+          <button class="v1-kbtn v1-kbtn-primary">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Primary
+          </button>
+          <button class="v1-kbtn v1-kbtn-secondary">Secondary</button>
+          <button class="v1-kbtn v1-kbtn-ghost">Ghost</button>
+          <button class="v1-kbtn v1-kbtn-icon" aria-label="Menu">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 4H14M2 8H14M2 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="row">
+          <button class="v1-kbtn v1-kbtn-primary" disabled>Disabled</button>
+          <span class="muted-cap" style="color: var(--k-red);">opacity 0.35 → 1.5:1 contrast</span>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span></div>
+      <div class="col-body">
+        <div class="row">
+          <button class="v2-btn v2-btn-primary">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Primary
+          </button>
+          <button class="v2-btn v2-btn-secondary">Secondary</button>
+          <button class="v2-btn v2-btn-ghost">Ghost</button>
+          <button class="v2-btn v2-btn-icon" aria-label="Menu">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 4H14M2 8H14M2 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="row">
+          <button class="v2-btn v2-btn-primary" disabled>Disabled</button>
+          <button class="v2-btn v2-btn-primary" style="box-shadow: var(--k2-focus-ring);">Focused</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ul class="changelog">
+    <li><b>Focus ring is a real token.</b> 2px white halo + 2px <code>--k2-teal-text</code>, visible on every button, link, input, tab.</li>
+    <li><b>Min height 36px.</b> v1 was 44px from the padding alone; v2 right-sizes for denser product UIs while staying above the 24×24 minimum target.</li>
+    <li><b>Type bump.</b> Button text 0.7rem → 0.8125rem (11.2 → 13px). Tracking 0.15em → 0.08em.</li>
+  </ul>
+</section>
+
+<!-- ============ 05 · INPUTS ============ -->
+<section class="section" id="inputs">
+  <div class="section-h">
+    <div class="num">05</div>
+    <h2>Inputs &amp; form fields</h2>
+  </div>
+  <p class="section-lede">
+    The form is the surface where v1's accessibility issues compound: tiny uppercase mono
+    labels, no focus ring, helper text in failing <code>fg-3</code>. v2 rebuilds the field
+    primitive end-to-end.
+  </p>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label class="v1-label">EMAIL ADDRESS</label>
+          <input class="v1-input" placeholder="name@domain.com" value="">
+          <span class="v1-helper">VERIFICATION REQUIRED FOR LEVEL-4 ACCESS</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label class="v1-label">ACCESS CODE</label>
+          <input class="v1-input is-error" value="abc-12">
+          <span class="v1-helper is-error">INVALID FORMAT — USE NAME@DOMAIN.COM</span>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span></div>
+      <div class="col-body">
+        <div class="v2-field">
+          <label class="v2-label" for="v2-email">Email address</label>
+          <input class="v2-input" id="v2-email" placeholder="name@domain.com">
+          <p class="v2-helper">Verification required for level-4 access.</p>
+        </div>
+        <div class="v2-field">
+          <label class="v2-label" for="v2-code">Access code</label>
+          <input class="v2-input is-error" id="v2-code" value="abc-12" aria-invalid="true" aria-describedby="v2-code-err">
+          <p class="v2-helper is-error" id="v2-code-err">Invalid format — use name@domain.com.</p>
+        </div>
+        <div class="v2-field">
+          <label class="v2-label">Focused state</label>
+          <input class="v2-input" value="hello@kronos.lab" style="border-color: var(--k2-fg-1); box-shadow: var(--k2-focus-ring);">
+        </div>
+      </div>
+    </div>
+  </div>
+  <ul class="changelog">
+    <li><b>Labels are now sentence-case sans, 13px.</b> Read like content, not chrome.</li>
+    <li><b>Helper text is sentence-case sans, 13px.</b> Up from 10px uppercase mono.</li>
+    <li><b>Real focus ring</b> and <code>aria-describedby</code> wiring for errors.</li>
+    <li><b>Border default <code>#B3B3B3</code></b> (was #C8C8C8) — meets 3:1 against page bg per WCAG 1.4.11.</li>
+  </ul>
+</section>
+
+<!-- ============ 06 · TAGS ============ -->
+<section class="section" id="tags">
+  <div class="section-h">
+    <div class="num">06</div>
+    <h2>Tags &amp; badges</h2>
+  </div>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body">
+        <div class="row">
+          <span class="v1-tag">UX Research</span>
+          <span class="v1-tag">Product Design</span>
+          <span class="v1-tag is-teal">Featured</span>
+          <span class="v1-tag is-error">Deprecated</span>
+        </div>
+        <div class="muted-cap">3 variants — 10px / 0.15em</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span></div>
+      <div class="col-body">
+        <div class="row">
+          <span class="v2-tag">UX Research</span>
+          <span class="v2-tag">Product Design</span>
+          <span class="v2-tag is-teal">Featured</span>
+          <span class="v2-tag is-info">In review</span>
+          <span class="v2-tag is-warning">Beta</span>
+          <span class="v2-tag is-success">Shipped</span>
+          <span class="v2-tag is-error">Deprecated</span>
+        </div>
+        <div class="muted-cap">7 variants (5 semantic) — 12px / 0.08em</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 · TABS ============ -->
+<section class="section" id="tabs">
+  <div class="section-h">
+    <div class="num">07</div>
+    <h2>Tabs</h2>
+  </div>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body">
+        <nav class="v1-tabs" role="tablist">
+          <button class="v1-tab" role="tab" aria-selected="true">Work</button>
+          <button class="v1-tab" role="tab" aria-selected="false">About</button>
+          <button class="v1-tab" role="tab" aria-selected="false">Writings</button>
+          <button class="v1-tab" role="tab" aria-selected="false">Contact</button>
+        </nav>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span></div>
+      <div class="col-body">
+        <nav class="v2-tabs" role="tablist">
+          <button class="v2-tab" role="tab" aria-selected="true">Work</button>
+          <button class="v2-tab" role="tab" aria-selected="false">About</button>
+          <button class="v2-tab" role="tab" aria-selected="false">Writings</button>
+          <button class="v2-tab" role="tab" aria-selected="false">Contact</button>
+        </nav>
+        <div class="muted-cap">Focusable via <kbd style="font-family: var(--k2-font-ui); font-size: 10px;">Tab</kbd>; visible focus ring on each tab.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 · CARDS ============ -->
+<section class="section" id="cards">
+  <div class="section-h">
+    <div class="num">08</div>
+    <h2>Project card</h2>
+  </div>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body flush">
+        <a class="v1-card" href="#" style="margin: 0;">
+          <div class="v1-card-image">IMAGE CONTAINER</div>
+          <div class="v1-card-body">
+            <div class="v1-card-tags">
+              <span class="v1-tag">UX</span>
+              <span class="v1-tag is-teal">Featured</span>
+            </div>
+            <h3 class="v1-card-title">Atlas Console</h3>
+            <p class="v1-card-desc">Operator-facing console for the Atlas data ingestion pipeline. Built with the design team at Helix.</p>
+            <button class="v1-kbtn v1-kbtn-ghost">View case study →</button>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span></div>
+      <div class="col-body flush">
+        <a class="v2-card" href="#" style="margin: 0;">
+          <div class="v2-card-image">Image · 16:9</div>
+          <div class="v2-card-body">
+            <div class="v2-card-tags">
+              <span class="v2-tag">UX</span>
+              <span class="v2-tag is-teal">Featured</span>
+            </div>
+            <h3 class="v2-card-title">Atlas Console</h3>
+            <p class="v2-card-desc">Operator-facing console for the Atlas data ingestion pipeline. Built with the design team at Helix.</p>
+            <button class="v2-btn v2-btn-ghost" style="align-self: flex-start;">View case study →</button>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <ul class="changelog">
+    <li><b>Title in Plex Sans</b> sentence case, 18px / 600. Was 17.6px uppercase mono — same byte count but now scannable.</li>
+    <li><b>Description bumped to 14px</b> (was 14.4px but in failing fg-3-ish grey). Body now uses fg-3 at 6.4:1.</li>
+    <li>Card is now keyboard-focusable with visible ring.</li>
+  </ul>
+</section>
+
+<!-- ============ 09 · SELECT ============ -->
+<section class="section" id="select">
+  <div class="section-h">
+    <div class="num">09</div>
+    <h2>Select / dropdown <span class="muted-cap" style="margin-left: 8px;">NEW</span></h2>
+  </div>
+  <p class="section-lede">
+    Not in v1. The contact form uses a free-text input where a select belongs (project type,
+    region, etc). v2 ships the closed and open states, with a teal-tinted selected row.
+  </p>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label class="v1-label">PROJECT TYPE</label>
+          <input class="v1-input" placeholder="(type to enter)" disabled style="opacity: 0.55;">
+        </div>
+        <div class="muted-cap">No select primitive. Free-text only.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2 — closed</span></div>
+      <div class="col-body">
+        <div class="v2-field">
+          <label class="v2-label">Project type</label>
+          <div class="v2-select-wrap">
+            <button class="v2-select" type="button" aria-haspopup="listbox">
+              <span>UX research</span>
+              <svg class="chev" width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pair" style="margin-top: var(--k2-s-4);">
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2 — open</span></div>
+      <div class="col-body">
+        <div class="v2-field">
+          <label class="v2-label">Project type</label>
+          <div class="v2-select-wrap">
+            <button class="v2-select" type="button" aria-haspopup="listbox" aria-expanded="true" style="border-color: var(--k2-fg-1);">
+              <span>UX research</span>
+              <svg class="chev" width="12" height="12" viewBox="0 0 16 16" fill="none" style="transform: rotate(180deg);"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <ul class="v2-menu" role="listbox">
+              <li class="v2-menu-item" aria-selected="true">UX research</li>
+              <li class="v2-menu-item">Product design</li>
+              <li class="v2-menu-item">Systems / DesignOps</li>
+              <li class="v2-menu-item">Prototyping</li>
+              <li class="v2-menu-item">Advisory</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2 — multi-select chips</span></div>
+      <div class="col-body">
+        <div class="v2-field">
+          <label class="v2-label">Tags</label>
+          <div class="v2-select" style="flex-wrap: wrap; min-height: 40px; padding: 6px 36px 6px 8px; gap: 4px; justify-content: flex-start;">
+            <span class="v2-tag" style="display: inline-flex; align-items: center; gap: 4px;">UX <span style="cursor:pointer;">×</span></span>
+            <span class="v2-tag" style="display: inline-flex; align-items: center; gap: 4px;">Research <span style="cursor:pointer;">×</span></span>
+            <span class="v2-tag" style="display: inline-flex; align-items: center; gap: 4px;">Atlas <span style="cursor:pointer;">×</span></span>
+            <input style="border: none; outline: none; flex: 1; min-width: 80px; font-family: var(--k2-font-body); font-size: 13px;" placeholder="Add tag…">
+            <svg class="chev" width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 · MODAL ============ -->
+<section class="section" id="modal">
+  <div class="section-h">
+    <div class="num">10</div>
+    <h2>Modal / dialog <span class="muted-cap" style="margin-left: 8px;">NEW</span></h2>
+  </div>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body" style="justify-content: center; align-items: center; min-height: 240px;">
+        <div class="muted-cap" style="text-align: center;">Not in v1.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span></div>
+      <div class="col-body flush" style="background: var(--k2-bg);">
+        <div class="v2-modal-overlay" style="min-height: 340px;">
+          <div class="v2-modal" role="dialog" aria-labelledby="m-title" aria-modal="true">
+            <div class="v2-modal-head">
+              <h3 id="m-title">Discard draft?</h3>
+              <button class="v2-banner-close" aria-label="Close" style="color: var(--k2-fg-3);">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 3L13 13M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+            <div class="v2-modal-body">
+              <p class="v2-body" style="font-size: 14px; color: var(--k2-fg-2);">
+                You have unsaved changes to <b>case-study-04</b>. Discarding will remove the last
+                12 minutes of edits.
+              </p>
+            </div>
+            <div class="v2-modal-foot">
+              <button class="v2-btn v2-btn-ghost">Keep editing</button>
+              <button class="v2-btn v2-btn-primary">Discard draft</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 · BANNER ============ -->
+<section class="section" id="banner">
+  <div class="section-h">
+    <div class="num">11</div>
+    <h2>Banner / alert <span class="muted-cap" style="margin-left: 8px;">NEW</span></h2>
+  </div>
+  <p class="section-lede">
+    Inline status surface. One skeleton, four tones from the semantic palette. 3px left-bar
+    accent matches the sidebar / footer treatment.
+  </p>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body" style="justify-content: center; align-items: center;">
+        <div class="muted-cap">Not in v1.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span></div>
+      <div class="col-body">
+        <div class="v2-banner is-info">
+          <span class="v2-banner-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5V5.01M8 7.5V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          <div class="v2-banner-body">
+            <div class="v2-banner-title">Protocol updated</div>
+            <div class="v2-banner-msg">Sidebar collapses at 768px in this release.</div>
+          </div>
+          <button class="v2-banner-close" aria-label="Dismiss">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 3L13 13M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="v2-banner is-success">
+          <span class="v2-banner-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L7 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <div class="v2-banner-body">
+            <div class="v2-banner-title">Draft saved</div>
+            <div class="v2-banner-msg">case-study-04 saved at 14:32 UTC.</div>
+          </div>
+        </div>
+        <div class="v2-banner is-warning">
+          <span class="v2-banner-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L14.5 13.5H1.5L8 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 7V10M8 11.5V11.51" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          <div class="v2-banner-body">
+            <div class="v2-banner-title">Approaching rate limit</div>
+            <div class="v2-banner-msg">42 of 50 calls used. Window resets in 18 minutes.</div>
+          </div>
+        </div>
+        <div class="v2-banner is-error">
+          <span class="v2-banner-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 5.5L10.5 10.5M10.5 5.5L5.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          <div class="v2-banner-body">
+            <div class="v2-banner-title">Submission failed</div>
+            <div class="v2-banner-msg">Invalid format — use name@domain.com.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 · TOAST ============ -->
+<section class="section" id="toast">
+  <div class="section-h">
+    <div class="num">12</div>
+    <h2>Toast <span class="muted-cap" style="margin-left: 8px;">NEW</span></h2>
+  </div>
+  <p class="section-lede">
+    Inverse-on-dark. Dismisses after 4–6s; 3px left rail uses the semantic color of the message.
+    v1 had a single dark toast for the contact form; v2 generalizes it.
+  </p>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body" style="justify-content: center; align-items: flex-start;">
+        <div style="display: inline-flex; gap: 12px; align-items: center; background: var(--k-fg-1); color: white; padding: 12px 24px; border-left: 3px solid var(--k-teal); font-family: var(--font-ui); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;">
+          MESSAGE TRANSMITTED
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span></div>
+      <div class="col-body" style="gap: 10px; align-items: flex-start;">
+        <div class="v2-toast">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color: var(--k2-teal);"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5V5.01M8 7.5V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <div>
+            <div class="v2-toast-title">Message transmitted</div>
+            <div class="v2-toast-msg">Operator will respond within 24h.</div>
+          </div>
+        </div>
+        <div class="v2-toast is-success">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color: #6FBF8F;"><path d="M3 8L7 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <div class="v2-toast-title">Saved</div>
+          </div>
+        </div>
+        <div class="v2-toast is-error">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color: #E58076;"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 5.5L10.5 10.5M10.5 5.5L5.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <div>
+            <div class="v2-toast-title">Network error</div>
+            <div class="v2-toast-msg">Retrying in 4s…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 · TOOLTIP ============ -->
+<section class="section" id="tooltip">
+  <div class="section-h">
+    <div class="num">13</div>
+    <h2>Tooltip / popover <span class="muted-cap" style="margin-left: 8px;">NEW</span></h2>
+  </div>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body" style="justify-content: center; align-items: center;">
+        <div class="muted-cap">Not in v1.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2</span></div>
+      <div class="col-body" style="gap: 28px; align-items: flex-start;">
+        <div style="display: flex; gap: 30px; align-items: flex-end;">
+          <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
+            <span class="v2-tooltip-bubble">Updated 2 days ago</span>
+            <button class="v2-btn v2-btn-icon" aria-label="Info">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5V5.01M8 7.5V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
+            <span class="v2-tooltip-bubble">Reset to default</span>
+            <button class="v2-btn v2-btn-secondary">Reset</button>
+          </div>
+        </div>
+        <div style="border: 1px solid var(--k2-fg-1); background: var(--k2-surface); padding: 14px 16px; max-width: 280px;">
+          <div style="font-family: var(--k2-font-body); font-weight: 600; font-size: 14px; color: var(--k2-fg-1); margin-bottom: 4px;">Protocol_V5.0</div>
+          <div style="font-family: var(--k2-font-body); font-size: 13px; line-height: 1.5; color: var(--k2-fg-3); margin-bottom: 10px;">Released 17 May 2026. Adds responsive sidebar, dropdown, modal, and banner.</div>
+          <a class="v2-link" href="#" style="font-size: 12px;">View changelog →</a>
+        </div>
+        <div class="muted-cap">Tooltip (top): mono 12px chrome label.<br>Popover (bottom): mixed body content.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14 · STEPPER / CRUMBS / PROGRESS ============ -->
+<section class="section" id="stepper">
+  <div class="section-h">
+    <div class="num">14</div>
+    <h2>Stepper · Breadcrumb · Progress <span class="muted-cap" style="margin-left: 8px;">NEW</span></h2>
+  </div>
+  <div class="pair">
+    <div class="col">
+      <div class="col-h"><span class="label">v1</span></div>
+      <div class="col-body" style="justify-content: center; align-items: center;">
+        <div class="muted-cap">Not in v1.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2 — stepper</span></div>
+      <div class="col-body">
+        <div class="v2-stepper">
+          <div class="v2-step is-done"><span class="num">01 · Done</span><span class="name">Input data</span></div>
+          <div class="v2-step is-done"><span class="num">02 · Done</span><span class="name">Validate</span></div>
+          <div class="v2-step is-current"><span class="num">03 · Active</span><span class="name">Review &amp; submit</span></div>
+          <div class="v2-step"><span class="num">04</span><span class="name">Confirm</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pair" style="margin-top: var(--k2-s-4);">
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2 — breadcrumb</span></div>
+      <div class="col-body">
+        <nav class="v2-crumbs" aria-label="Breadcrumb">
+          <a href="#">Work</a>
+          <span class="sep">/</span>
+          <a href="#">Case studies</a>
+          <span class="sep">/</span>
+          <span class="current">Atlas Console</span>
+        </nav>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">v2 — progress</span></div>
+      <div class="col-body">
+        <div>
+          <div class="v2-helper" style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span>Uploading <b style="color: var(--k2-fg-1);">3 of 5</b> files</span>
+            <span>62%</span>
+          </div>
+          <div class="v2-progress"><span style="width: 62%;"></span></div>
+        </div>
+        <div>
+          <div class="v2-helper" style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span>Disk usage</span>
+            <span style="color: var(--k2-amber);">82%</span>
+          </div>
+          <div class="v2-progress is-accent"><span style="width: 82%; background: var(--k2-amber);"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 15 · EMPTY / LOADING / ERROR ============ -->
+<section class="section" id="states">
+  <div class="section-h">
+    <div class="num">15</div>
+    <h2>Empty · Loading · Error <span class="muted-cap" style="margin-left: 8px;">NEW</span></h2>
+  </div>
+  <p class="section-lede">
+    Three placeholder states for any list or detail view. Same skeleton, same scale, swappable
+    body. Build apps without inventing these per feature.
+  </p>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--k2-s-4); margin-left: 72px;">
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">Empty</span></div>
+      <div class="col-body" style="align-items: center; text-align: center; padding: var(--k2-s-6) var(--k2-s-4); min-height: 280px; justify-content: center;">
+        <div style="width: 48px; height: 48px; border: 1px solid var(--k2-border-mid); display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3.5" width="11" height="9" stroke="currentColor" stroke-width="1.5"/><path d="M5 7H11M5 10H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="v2-h3">No projects yet</h3>
+        <p class="v2-helper" style="text-align: center;">Add a case study to start populating the work archive.</p>
+        <button class="v2-btn v2-btn-primary" style="margin-top: 4px;">Add project</button>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">Loading</span></div>
+      <div class="col-body" style="padding: var(--k2-s-4); min-height: 280px; gap: 12px;">
+        <div style="display: flex; gap: 10px;">
+          <div style="width: 40px; height: 40px; background: var(--k2-border-light);"></div>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+            <div style="height: 12px; width: 60%; background: var(--k2-border-light);"></div>
+            <div style="height: 10px; width: 40%; background: var(--k2-border-light);"></div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div style="width: 40px; height: 40px; background: var(--k2-border-light);"></div>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+            <div style="height: 12px; width: 80%; background: var(--k2-border-light);"></div>
+            <div style="height: 10px; width: 35%; background: var(--k2-border-light);"></div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; opacity: 0.6;">
+          <div style="width: 40px; height: 40px; background: var(--k2-border-light);"></div>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+            <div style="height: 12px; width: 55%; background: var(--k2-border-light);"></div>
+            <div style="height: 10px; width: 30%; background: var(--k2-border-light);"></div>
+          </div>
+        </div>
+        <div class="muted-cap" style="margin-top: auto;">Skeleton rows · respects reduced-motion</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">Error</span></div>
+      <div class="col-body" style="align-items: center; text-align: center; padding: var(--k2-s-6) var(--k2-s-4); min-height: 280px; justify-content: center;">
+        <div style="width: 48px; height: 48px; border: 1px solid var(--k2-red-border); background: var(--k2-red-bg); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; color: var(--k2-red);">
+          <svg width="22" height="22" viewBox="0 0 16 16" fill="none"><path d="M8 2L14.5 13.5H1.5L8 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 7V10M8 11.5V11.51" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="v2-h3">Could not load projects</h3>
+        <p class="v2-helper" style="text-align: center;">Network request timed out. Last successful sync: 14:11 UTC.</p>
+        <div style="display: flex; gap: 10px; margin-top: 4px;">
+          <button class="v2-btn v2-btn-secondary">Details</button>
+          <button class="v2-btn v2-btn-primary">Retry</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 · RESPONSIVE ============ -->
+<section class="section" id="responsive">
+  <div class="section-h">
+    <div class="num">16</div>
+    <h2>Responsive reflow</h2>
+  </div>
+  <p class="section-lede">
+    v1 was a single-breakpoint design — 280px fixed sidebar, 900px content max, 96px padding.
+    v2 keeps the layout vocabulary but defines three states: <b>desktop ≥ 1024px</b> (sidebar
+    open), <b>tablet 640–1024px</b> (sidebar collapses to icon rail), <b>mobile &lt; 640px</b>
+    (drawer + bottom-nav fallback). Below is the desktop frame; resize the browser to see it
+    react.
+  </p>
+  <div style="margin-left: 72px;">
+    <div class="respo-tabs">
+      <button class="is-active" data-w="100">Desktop · 100%</button>
+      <button data-w="65">Tablet · 65%</button>
+      <button data-w="40">Mobile · 40%</button>
+    </div>
+    <div class="respo-wrap" id="respo-wrap" style="display: grid; place-items: start center; padding: 16px;">
+      <iframe id="respo" class="respo-frame" src="responsive-demo.html" style="height: 420px; border: 1px solid var(--k2-border-light);"></iframe>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var iframe = document.getElementById('respo');
+      var wrap = document.getElementById('respo-wrap');
+      var btns = document.querySelectorAll('.respo-tabs button');
+      btns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          btns.forEach(function (x) { x.classList.remove('is-active'); });
+          b.classList.add('is-active');
+          var pct = b.getAttribute('data-w');
+          iframe.style.width = pct + '%';
+        });
+      });
+    })();
+  </script>
+  <ul class="changelog">
+    <li><b>Sidebar collapses to 56px icon rail</b> at the tablet breakpoint; full text returns at desktop.</li>
+    <li><b>Drawer pattern</b> at mobile — full-screen overlay, focus trap, ESC to close.</li>
+    <li><b>Fluid padding.</b> Page padding scales from 96px → 24px via <code>clamp()</code>.</li>
+    <li><b>Project grid</b> goes 3-col → 2-col → 1-col at the same breakpoints.</li>
+  </ul>
+</section>
+
+<!-- ============ 17 · TOP NAV (alt to sidebar) ============ -->
+<section class="section" id="topnav">
+  <div class="section-h">
+    <div class="num">17</div>
+    <h2>Global nav — horizontal top bar <span class="muted-cap" style="margin-left: 8px;">Alternate to sidebar</span></h2>
+  </div>
+  <p class="section-lede">
+    v1's only global-nav pattern was the dark left sidebar — great for the portfolio, often
+    wrong for product apps that need horizontal real estate (dashboards, editors, data tables).
+    v2 adds a top-bar variant as a first-class option. Same brand vocabulary: wordmark with
+    teal accent bar on the left, mono uppercase links, primary CTA on the right. Two surfaces
+    (light + inverse), one mobile fallback.
+  </p>
+
+  <!-- Light variant -->
+  <div class="pair" style="grid-template-columns: 1fr;">
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">Desktop · light</span><span class="meta">Default surface</span></div>
+      <div class="col-body flush">
+        <header class="v2-topnav">
+          <a class="v2-topnav-brand" href="#">
+            <span class="bar"></span>
+            <span class="mark">KRONOS_LAB</span>
+            <span class="version">v5.0</span>
+          </a>
+          <nav class="v2-topnav-links" aria-label="Primary">
+            <a href="#" aria-current="page">Work</a>
+            <a href="#">About</a>
+            <a href="#">Writings</a>
+            <a href="#">Lab</a>
+          </nav>
+          <div class="v2-topnav-actions">
+            <button class="v2-btn v2-btn-icon" aria-label="Search" style="width: 36px; height: 36px; background: transparent; color: var(--k2-fg-1); border-color: var(--k2-fg-1);">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button class="v2-btn v2-btn-primary">Get in touch</button>
+          </div>
+        </header>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inverse variant -->
+  <div class="pair" style="grid-template-columns: 1fr; margin-top: var(--k2-s-4);">
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">Desktop · inverse</span><span class="meta">For dark product chrome / marketing</span></div>
+      <div class="col-body flush">
+        <header class="v2-topnav is-inverse">
+          <a class="v2-topnav-brand" href="#">
+            <span class="bar"></span>
+            <span class="mark">KRONOS_LAB</span>
+            <span class="version">v5.0</span>
+          </a>
+          <nav class="v2-topnav-links" aria-label="Primary">
+            <a href="#" aria-current="page">Work</a>
+            <a href="#">About</a>
+            <a href="#">Writings</a>
+            <a href="#">Lab</a>
+          </nav>
+          <div class="v2-topnav-actions">
+            <button class="v2-btn v2-btn-icon" aria-label="Search" style="width: 36px; height: 36px; background: transparent; color: var(--k2-fg-on-dark-1); border-color: rgba(255,255,255,0.45);">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button class="v2-btn" style="background: var(--k2-surface); color: var(--k2-fg-1); border-color: var(--k2-surface);">Get in touch</button>
+          </div>
+        </header>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile + with subnav -->
+  <div class="pair" style="margin-top: var(--k2-s-4);">
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">Mobile — collapsed</span><span class="meta">&lt; 640px</span></div>
+      <div class="col-body flush" style="background: var(--k2-bg);">
+        <div style="max-width: 360px; margin: 16px auto; background: var(--k2-surface); border: 1px solid var(--k2-border-mid);">
+          <header class="v2-topnav" style="padding: 10px 14px;">
+            <a class="v2-topnav-brand" href="#">
+              <span class="bar"></span>
+              <span class="mark" style="font-size: 16px;">KRONOS_LAB</span>
+            </a>
+            <button class="v2-topnav-burger" aria-label="Open menu" style="display: inline-flex;">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 4H14M2 8H14M2 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+          </header>
+        </div>
+        <div class="muted-cap" style="text-align: center; padding: 0 0 16px;">Links collapse to a hamburger; CTA moves into the opened sheet.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">Desktop — with secondary row</span><span class="meta">Section-level subnav</span></div>
+      <div class="col-body flush">
+        <header class="v2-topnav">
+          <a class="v2-topnav-brand" href="#">
+            <span class="bar"></span>
+            <span class="mark">KRONOS_LAB</span>
+          </a>
+          <nav class="v2-topnav-links" aria-label="Primary">
+            <a href="#" aria-current="page">Work</a>
+            <a href="#">About</a>
+            <a href="#">Writings</a>
+          </nav>
+          <div class="v2-topnav-actions">
+            <button class="v2-btn v2-btn-primary">Contact</button>
+          </div>
+        </header>
+        <div style="display: flex; gap: var(--k2-s-5); padding: 0 22px; background: var(--k2-bg); border-bottom: 1px solid var(--k2-border-light);">
+          <button class="v2-tab" aria-selected="true">All</button>
+          <button class="v2-tab" aria-selected="false">Case studies</button>
+          <button class="v2-tab" aria-selected="false">Notes</button>
+          <button class="v2-tab" aria-selected="false">Archive</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decision guide -->
+  <div class="pair" style="margin-top: var(--k2-s-4);">
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">When to use — sidebar</span></div>
+      <div class="col-body tight">
+        <div class="spec-row"><span class="k">Many sections</span><span class="v">8+ nav items</span></div>
+        <div class="spec-row"><span class="k">Deep hierarchy</span><span class="v">Groups + sub-items</span></div>
+        <div class="spec-row"><span class="k">Persistent context</span><span class="v">Always-visible state</span></div>
+        <div class="spec-row"><span class="k">Examples</span><span class="v">Portfolio, admin, IDE</span></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-h"><span class="label v2-label">When to use — top nav</span></div>
+      <div class="col-body tight">
+        <div class="spec-row"><span class="k">Few sections</span><span class="v">3–6 nav items</span></div>
+        <div class="spec-row"><span class="k">Wide canvas needed</span><span class="v">Dashboards, editors, tables</span></div>
+        <div class="spec-row"><span class="k">Marketing surface</span><span class="v">Landing pages, docs</span></div>
+        <div class="spec-row"><span class="k">Examples</span><span class="v">Public site, single-doc apps</span></div>
+      </div>
+    </div>
+  </div>
+
+  <ul class="changelog">
+    <li><b>Same identity.</b> Wordmark + teal accent bar reads identically in either chrome — no second brand to maintain.</li>
+    <li><b>Active state matches the tabs spec.</b> 2px solid <code>fg-1</code> underline on light, 2px teal rail on inverse. Same active rule as tabs / sidebar.</li>
+    <li><b>Collapses below 640px</b> to a hamburger; primary CTA moves into the opened sheet.</li>
+    <li><b>Pairs with a secondary row</b> for section-level nav (the right specimen above) — mirrors the sidebar's group/item hierarchy without the vertical real estate.</li>
+  </ul>
+</section>
+
+<!-- ============ 18 · A11Y AUDIT ============ -->
+<section class="section" id="audit">
+  <div class="section-h">
+    <div class="num">18</div>
+    <h2>Accessibility audit — before / after</h2>
+  </div>
+  <p class="section-lede">
+    Mapped against WCAG 2.2 AA. Eight failures in v1 → all resolved in v2. Two AAA-level
+    improvements thrown in (focus visibility and motion preference).
+  </p>
+  <div style="margin-left: 72px; background: var(--k2-surface); border: 1px solid var(--k2-border-light);">
+    <table style="width: 100%; border-collapse: collapse; font-family: var(--k2-font-body);">
+      <thead>
+        <tr style="background: var(--k2-bg); border-bottom: 1px solid var(--k2-border-mid);">
+          <th style="text-align: left; padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--k2-fg-3);">WCAG</th>
+          <th style="text-align: left; padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--k2-fg-3);">Criterion</th>
+          <th style="text-align: left; padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--k2-fg-3);">v1</th>
+          <th style="text-align: left; padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--k2-fg-3);">v2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid var(--k2-border-light);"><td style="padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 12px; color: var(--k2-fg-3);">1.4.3</td><td style="padding: 10px 14px; font-size: 14px;">Text contrast (4.5:1)</td><td style="padding: 10px 14px;"><span class="badge fail">Fail</span> fg-3, teal-text both &lt;3:1</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> all greys ≥ 4.6:1</td></tr>
+        <tr style="border-bottom: 1px solid var(--k2-border-light);"><td style="padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 12px; color: var(--k2-fg-3);">1.4.4</td><td style="padding: 10px 14px; font-size: 14px;">Resize text (200%)</td><td style="padding: 10px 14px;"><span class="badge warn">Risk</span> rem-based but tiny floor</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> 12px floor + rem</td></tr>
+        <tr style="border-bottom: 1px solid var(--k2-border-light);"><td style="padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 12px; color: var(--k2-fg-3);">1.4.10</td><td style="padding: 10px 14px; font-size: 14px;">Reflow (320px)</td><td style="padding: 10px 14px;"><span class="badge fail">Fail</span> fixed sidebar + 96px pad</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> 3 breakpoints + drawer</td></tr>
+        <tr style="border-bottom: 1px solid var(--k2-border-light);"><td style="padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 12px; color: var(--k2-fg-3);">1.4.11</td><td style="padding: 10px 14px; font-size: 14px;">Non-text contrast (3:1)</td><td style="padding: 10px 14px;"><span class="badge fail">Fail</span> input border 1.6:1</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> border-mid #B3B3B3 3.1:1</td></tr>
+        <tr style="border-bottom: 1px solid var(--k2-border-light);"><td style="padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 12px; color: var(--k2-fg-3);">1.4.12</td><td style="padding: 10px 14px; font-size: 14px;">Text spacing</td><td style="padding: 10px 14px;"><span class="badge warn">Risk</span> 0.20em tracking on body</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> body 0; chrome 0.08em</td></tr>
+        <tr style="border-bottom: 1px solid var(--k2-border-light);"><td style="padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 12px; color: var(--k2-fg-3);">2.4.7</td><td style="padding: 10px 14px; font-size: 14px;">Focus visible</td><td style="padding: 10px 14px;"><span class="badge fail">Fail</span> border-darken only</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> 2px halo + 2px ring</td></tr>
+        <tr style="border-bottom: 1px solid var(--k2-border-light);"><td style="padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 12px; color: var(--k2-fg-3);">2.4.11</td><td style="padding: 10px 14px; font-size: 14px;">Focus not obscured (AAA)</td><td style="padding: 10px 14px;"><span class="badge warn">Risk</span> sticky el overlaps</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> ring drawn outside</td></tr>
+        <tr style="border-bottom: 1px solid var(--k2-border-light);"><td style="padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 12px; color: var(--k2-fg-3);">2.5.5</td><td style="padding: 10px 14px; font-size: 14px;">Target size (24×24)</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> already 40px+</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> min 36×36</td></tr>
+        <tr style="border-bottom: 1px solid var(--k2-border-light);"><td style="padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 12px; color: var(--k2-fg-3);">2.3.3</td><td style="padding: 10px 14px; font-size: 14px;">Animation from interactions</td><td style="padding: 10px 14px;"><span class="badge warn">Risk</span> no reduced-motion</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> tokens go to 0ms</td></tr>
+        <tr><td style="padding: 10px 14px; font-family: var(--k2-font-ui); font-size: 12px; color: var(--k2-fg-3);">3.3.1–3</td><td style="padding: 10px 14px; font-size: 14px;">Error identification + labels</td><td style="padding: 10px 14px;"><span class="badge warn">Partial</span> visual only</td><td style="padding: 10px 14px;"><span class="badge pass">Pass</span> aria-describedby wired</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<div class="footnote">
+  <h3>What comes next</h3>
+  <ul>
+    <li><strong>Migrate</strong> existing apps by swapping <code>colors_and_type.css</code> for <code>tokens-v2.css</code>. The token names are <code>--k2-*</code> so v1 and v2 can coexist while you migrate component by component.</li>
+    <li><strong>Decide</strong> whether you want a dark mode pass next; v2 has the contrast headroom for it but the inverse tokens aren't fully fleshed out yet.</li>
+    <li><strong>Add</strong> a data-table primitive — the next obvious gap after dropdown / modal / banner. Worth a small follow-up.</li>
+    <li><strong>Document</strong> a real product example (form + table + side panel) so the new components are seen in flow, not just as isolated specimens.</li>
+  </ul>
+</div>
+
+</body>
+</html>

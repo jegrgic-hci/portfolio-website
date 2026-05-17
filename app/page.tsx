@@ -44,7 +44,7 @@ function Tag({ type }: { type: string }) {
       letterSpacing: "0.12em",
       border: "1px solid var(--k-teal)",
       color: "var(--k-teal-dark)",
-      background: "rgba(122,147,147,0.08)",
+      background: "rgba(19,124,182,0.07)",
       padding: "2px 8px",
     }}>
       {label}
@@ -291,7 +291,7 @@ export default function Home() {
 
         {/* H1 — Impact display */}
         <h1 style={{
-          fontFamily: "Impact, 'Arial Black', sans-serif",
+          fontFamily: "'Anton', Impact, 'Arial Black', sans-serif",
           fontSize: "clamp(48px, 7vw, 88px)",
           fontWeight: 400,
           lineHeight: 1.0,
@@ -332,7 +332,7 @@ export default function Home() {
               padding: "var(--s-3) var(--s-5)",
               border: "1px solid var(--k-text-primary)",
               textDecoration: "none",
-              transition: "all 150ms ease",
+              transition: "background 150ms cubic-bezier(.4,0,.2,1), color 150ms cubic-bezier(.4,0,.2,1), border-color 150ms cubic-bezier(.4,0,.2,1)",
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -359,7 +359,7 @@ export default function Home() {
                 padding: "var(--s-3) var(--s-5)",
                 border: "1px solid var(--k-border-heavy)",
                 textDecoration: "none",
-                transition: "all 150ms ease",
+                transition: "background 150ms cubic-bezier(.4,0,.2,1), color 150ms cubic-bezier(.4,0,.2,1), border-color 150ms cubic-bezier(.4,0,.2,1)",
               }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -396,7 +396,7 @@ export default function Home() {
                   border: "1px solid var(--k-border-mid)",
                   padding: "var(--s-2) var(--s-4)",
                   textDecoration: "none",
-                  transition: "all 150ms ease",
+                  transition: "background 150ms cubic-bezier(.4,0,.2,1), color 150ms cubic-bezier(.4,0,.2,1), border-color 150ms cubic-bezier(.4,0,.2,1)",
                 }}
               >
                 {chip.label}

@@ -1,0 +1,57 @@
+/* ==========================================================================
+   Kronos v2.5 — CERULEAN direction
+   - Primary accent: cerulean #137CB6 at 11 steps, engineer voice
+   - Complement: warm rust (true complement to cerulean ~199°)
+   - Semantic info-blue recolored to grey-blue to avoid two-blues conflict
+   ========================================================================== */
+
+:root {
+  /* Accent — Cerulean 11-step (#137CB6 at step 500) */
+  --k25-accent-50:  #E6F2F9;
+  --k25-accent-100: #C6E0F0;
+  --k25-accent-200: #9BCAE6;
+  --k25-accent-300: #6FAFD8;
+  --k25-accent-400: #4794C7;
+  --k25-accent-500: #137CB6;   /* user's wireframe blue */
+  --k25-accent-600: #1068A0;
+  --k25-accent-700: #0E5582;   /* text-safe — 8.6:1 on white */
+  --k25-accent-800: #0A4366;
+  --k25-accent-900: #07334D;
+  --k25-accent-950: #052336;
+
+  /* Accent semantic aliases — note text default is 700 (not 500)
+     because 500 is only 4.6:1 — barely AA on body text */
+  --k25-accent:         var(--k25-accent-700);  /* text use */
+  --k25-accent-text:    var(--k25-accent-700);
+  --k25-accent-rail:    var(--k25-accent-500);  /* the brand-mark blue */
+  --k25-accent-deco:    var(--k25-accent-300);
+  --k25-accent-bg:      var(--k25-accent-50);
+  --k25-accent-bg-2:    var(--k25-accent-100);
+  --k25-accent-surface: var(--k25-accent-700);  /* loud surfaces — use 700 for contrast against white type */
+  --k25-accent-light:   var(--k25-accent-300);
+
+  /* Complement — Warm rust 11-step (~20° hue, blueprint-pencil warm) */
+  --k25-comp-50:   #FBEEE6;
+  --k25-comp-100:  #F7DCC9;
+  --k25-comp-200:  #EFB994;
+  --k25-comp-300:  #E59465;
+  --k25-comp-400:  #D26035;
+  --k25-comp-500:  #B14826;
+  --k25-comp-600:  #93371D;
+  --k25-comp-700:  #762B17;
+  --k25-comp-800:  #582012;
+  --k25-comp-900:  #3D170D;
+  --k25-comp-950:  #240D07;
+
+  --k25-comp:       var(--k25-comp-600);
+  --k25-comp-text:  var(--k25-comp-600);
+  --k25-comp-rail:  var(--k25-comp-500);
+  --k25-comp-bg:    var(--k25-comp-50);
+  --k25-comp-bg-2:  var(--k25-comp-100);
+  --k25-comp-deco:  var(--k25-comp-300);
+
+  /* RECOLOR semantic info to grey-blue — avoids two-blues conflict */
+  --k25-blue:        #3D556E;
+  --k25-blue-bg:     #ECEFF3;
+  --k25-blue-border: #B4BFCC;
+}

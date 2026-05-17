@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"></head><body>
+<style>
+.input-atom { font-family: var(--font-ui); font-size: 0.78rem; color: var(--k-fg-1); background: #fff; border: 1px solid var(--k-border-mid); padding: 11px 14px; width: 100%; outline: none; box-sizing: border-box; }
+.input-atom::placeholder { color: var(--k-fg-3); }
+.lbl { font-family: var(--font-ui); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--k-fg-3); display: block; margin-bottom: 6px; }
+</style>
+<div class="card">
+  <div class="tiny-cap" style="margin-bottom: 14px;">Inputs — states</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px 24px;">
+    <div><span class="lbl" style="color: var(--k-fg-2); font-weight: 700;">Default</span><input class="input-atom" placeholder="Enter value..."></div>
+    <div><span class="lbl" style="color: var(--k-fg-2); font-weight: 700;">Focus</span><input class="input-atom" value="Active input" style="border-color: var(--k-fg-1);"></div>
+    <div><span class="lbl" style="color: var(--k-red); font-weight: 700;">Error</span><input class="input-atom" value="invalid@" style="border-color: var(--k-red);"></div>
+    <div><span class="lbl" style="color: var(--k-fg-2); font-weight: 700; opacity: 0.4;">Disabled</span><input class="input-atom" value="Read only" disabled style="opacity: 0.4; background: var(--k-bg);"></div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css"></head><body>
+<style>
+.k-btn { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; border: 1px solid transparent; }
+.k-btn-primary { background: var(--k-fg-1); color: white; padding: 12px 24px; border-color: var(--k-fg-1); }
+.k-btn-secondary { background: transparent; color: var(--k-fg-1); padding: 12px 24px; border-color: var(--k-fg-1); }
+.k-btn-ghost { background: transparent; color: var(--k-fg-1); padding: 12px 0; border: none; border-bottom: 1px solid var(--k-fg-1); }
+.k-btn-icon { background: var(--k-fg-1); color: white; padding: 0; width: 40px; height: 40px; justify-content: center; border-color: var(--k-fg-1); gap: 0; }
+</style>
+<div class="card">
+  <div class="tiny-cap" style="margin-bottom: 16px;">Button variants</div>
+  <div class="row" style="gap: 16px;">
+    <button class="k-btn k-btn-primary"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Primary</button>
+    <button class="k-btn k-btn-secondary">Secondary</button>
+    <button class="k-btn k-btn-ghost">Ghost</button>
+    <button class="k-btn k-btn-icon" aria-label="Menu"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 4H14M2 8H14M2 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+  </div>
+</div>
+</body></html>

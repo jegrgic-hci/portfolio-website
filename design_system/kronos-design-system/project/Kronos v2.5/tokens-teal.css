@@ -1,0 +1,51 @@
+/* ==========================================================================
+   Kronos v2.5 — LAB TEAL direction
+   - Primary accent: teal at 11 steps, lab/protocol voice
+   - Complement: ochre (true complement, ~180° from teal)
+   - Semantic info-blue stays at v2's #1F4D8E (no conflict)
+   ========================================================================== */
+
+:root {
+  /* Accent — Teal 11-step (~180° hue, low saturation) */
+  --k25-accent-50:  #F0F4F4;
+  --k25-accent-100: #DCE5E5;
+  --k25-accent-200: #BAC9C9;
+  --k25-accent-300: #91A6A6;
+  --k25-accent-400: #6E8585;
+  --k25-accent-500: #4A6363;
+  --k25-accent-600: #355050;
+  --k25-accent-700: #283C3C;
+  --k25-accent-800: #1F2D2D;
+  --k25-accent-900: #161F1F;
+  --k25-accent-950: #0B1212;
+
+  /* Accent semantic aliases */
+  --k25-accent:        var(--k25-accent-600);  /* text-safe — 7.4:1 */
+  --k25-accent-text:   var(--k25-accent-600);
+  --k25-accent-rail:   var(--k25-accent-500);
+  --k25-accent-deco:   var(--k25-accent-300);  /* decorative borders */
+  --k25-accent-bg:     var(--k25-accent-50);
+  --k25-accent-bg-2:   var(--k25-accent-100);
+  --k25-accent-surface: var(--k25-accent-600); /* for loud accent surfaces */
+  --k25-accent-light:  var(--k25-accent-300);  /* for inverse focus ring */
+
+  /* Complement — Ochre 11-step (~50° hue, drafting/surveyor warmth) */
+  --k25-comp-50:   #FBF7E9;
+  --k25-comp-100:  #F8EFD0;
+  --k25-comp-200:  #F0DEA3;
+  --k25-comp-300:  #E5C66B;
+  --k25-comp-400:  #D4A848;
+  --k25-comp-500:  #B5832A;
+  --k25-comp-600:  #9A6A1A;
+  --k25-comp-700:  #7C5413;
+  --k25-comp-800:  #5E3F0E;
+  --k25-comp-900:  #422C09;
+  --k25-comp-950:  #2A1C05;
+
+  --k25-comp:       var(--k25-comp-600);
+  --k25-comp-text:  var(--k25-comp-600);
+  --k25-comp-rail:  var(--k25-comp-500);
+  --k25-comp-bg:    var(--k25-comp-50);
+  --k25-comp-bg-2:  var(--k25-comp-100);
+  --k25-comp-deco:  var(--k25-comp-300);
+}

@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kronos v2 — designer review &amp; modernization options</title>
+<link rel="stylesheet" href="tokens-v2.css">
+<link rel="stylesheet" href="components-v2.css">
+<link rel="stylesheet" href="comparison.css">
+<style>
+/* page chrome */
+.review-hero {
+  background: var(--k2-sidebar);
+  color: var(--k2-fg-on-dark-1);
+  padding: var(--k2-s-7) var(--k2-s-7) var(--k2-s-6);
+}
+.review-hero .version {
+  font-family: var(--k2-font-ui);
+  font-size: var(--k2-text-2xs);
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-fg-on-dark-3);
+  margin-bottom: 8px;
+}
+.review-hero .h {
+  font-family: var(--k2-font-body);
+  font-weight: 600;
+  font-size: clamp(28px, 4.2vw, 44px);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0;
+  max-width: 22ch;
+}
+.review-hero .lede {
+  font-family: var(--k2-font-body);
+  font-size: var(--k2-text-md);
+  line-height: 1.55;
+  color: var(--k2-fg-on-dark-2);
+  max-width: 64ch;
+  margin: var(--k2-s-4) 0 0;
+}
+
+/* lever cards */
+.lever {
+  padding: var(--k2-s-7) var(--k2-s-7);
+  border-bottom: 1px solid var(--k2-border-light);
+}
+.lever-head {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: baseline;
+  gap: var(--k2-s-4);
+  margin-bottom: var(--k2-s-3);
+}
+.lever-head .num {
+  font-family: var(--k2-font-ui);
+  font-size: var(--k2-text-2xs);
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-fg-4);
+}
+.lever-head h2 {
+  font-family: var(--k2-font-body);
+  font-weight: 600;
+  font-size: var(--k2-text-lg);
+  letter-spacing: -0.005em;
+  margin: 0;
+  color: var(--k2-fg-1);
+}
+.risk-pill {
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid currentColor;
+}
+.risk-pill.lo  { color: var(--k2-green); background: var(--k2-green-bg); border-color: var(--k2-green-border); }
+.risk-pill.md  { color: var(--k2-amber); background: var(--k2-amber-bg); border-color: var(--k2-amber-border); }
+.risk-pill.hi  { color: var(--k2-red);   background: var(--k2-red-bg);   border-color: var(--k2-red-border); }
+
+.lever-lede {
+  font-family: var(--k2-font-body);
+  font-size: var(--k2-text-base);
+  line-height: 1.6;
+  color: var(--k2-fg-3);
+  max-width: 70ch;
+  margin: 0 0 var(--k2-s-5) 96px;
+}
+.lever-grid {
+  margin-left: 96px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--k2-s-4);
+}
+@media (max-width: 900px) {
+  .lever { padding: var(--k2-s-6) var(--k2-s-4); }
+  .lever-head { grid-template-columns: 1fr auto; }
+  .lever-head .num { display: none; }
+  .lever-lede, .lever-grid, .verdict { margin-left: 0; }
+  .lever-grid { grid-template-columns: 1fr; }
+}
+
+.demo {
+  background: var(--k2-surface);
+  border: 1px solid var(--k2-border-light);
+  display: flex;
+  flex-direction: column;
+}
+.demo-h {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--k2-border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.demo-h .lbl {
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-fg-1);
+}
+.demo-h .lbl.is-proposed {
+  color: var(--k2-teal-text);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.demo-h .lbl.is-proposed::before {
+  content: ''; width: 6px; height: 6px; background: var(--k2-teal-rail);
+}
+.demo-h .meta {
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-fg-4);
+}
+.demo-b {
+  padding: var(--k2-s-5);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k2-s-4);
+  min-height: 220px;
+}
+
+.verdict {
+  margin: var(--k2-s-4) 0 0 96px;
+  background: var(--k2-bg);
+  border-left: 3px solid var(--k2-teal-rail);
+  padding: 12px 16px;
+  font-family: var(--k2-font-body);
+  font-size: var(--k2-text-sm);
+  line-height: 1.6;
+  color: var(--k2-fg-2);
+}
+.verdict b {
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-fg-1);
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* specimens */
+.kpi-old {
+  display: flex; gap: 14px; align-items: baseline;
+  padding: 14px;
+  border: 1px solid var(--k2-border-light);
+}
+.kpi-old .lbl {
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-fg-3);
+}
+.kpi-old .num {
+  font-family: var(--k2-font-ui);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--k2-fg-1);
+}
+
+.kpi-new {
+  border: 1px solid var(--k2-border-light);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.kpi-new .num {
+  font-family: var(--k2-font-display);
+  font-size: 72px;
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: var(--k2-fg-1);
+}
+.kpi-new .num .delta {
+  font-family: var(--k2-font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--k2-green);
+  vertical-align: super;
+  margin-left: 6px;
+}
+.kpi-new .lbl {
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--k2-track-ui);
+  text-transform: uppercase;
+  color: var(--k2-fg-3);
+}
+
+.divider-old {
+  display: flex; gap: 14px; align-items: baseline;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--k2-border-heavy);
+}
+.divider-old .lbl {
+  font-family: var(--k2-font-ui);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--k2-fg-1);
+}
+.divider-new {
+  display: flex; gap: 16px; align-items: baseline;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--k2-border-heavy);
+}
+.divider-new .num {
+  font-family: var(--k2-font-display);
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--k2-fg-1);
+}
+.divider-new .lbl {
+  font-family: var(--k2-font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--k2-fg-3);
+}
+
+/* neutral ladder */
+.ladder {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 4px;
+}
+.ladder .step {
+  aspect-ratio: 1;
+  border: 1px solid var(--k2-border-light);
+  display: flex;
+  align-items: flex-end;
+  padding: 4px;
+  font-family: var(--k2-font-ui);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}
+
+/* elevation demo */
+.dd-flat {
+  width: 220px;
+  background: var(--k2-surface);
+  border: 1px solid var(--k2-fg-1);
+}
+.dd-elev {
+  width: 220px;
+  background: var(--k2-surface);
+  border: 1px solid var(--k2-border-mid);
+  box-shadow:
+    0 1px 0 var(--k2-border-mid),
+    0 8px 16px -4px rgba(26,26,26,0.12),
+    0 2px 4px rgba(26,26,26,0.06);
+}
+.dd-item {
+  font-family: var(--k2-font-body);
+  font-size: 13px;
+  color: var(--k2-fg-1);
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--k2-border-light);
+}
+.dd-item:last-child { border-bottom: none; }
+.dd-item.is-on { background: var(--k2-teal-bg); color: var(--k2-teal-text); }
+
+/* loud accent demo */
+.callout-quiet {
+  border: 1px solid var(--k2-border-light);
+  padding: 16px;
+  display: flex; gap: 12px;
+  align-items: center;
+}
+.callout-quiet .v2-tag { flex-shrink: 0; }
+.callout-loud {
+  background: var(--k2-teal-text);
+  color: #fff;
+  padding: 20px;
+  display: flex; flex-direction: column;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+.callout-loud::before {
+  content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 8px;
+  background: var(--k2-teal-rail);
+}
+.callout-loud .pre {
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+}
+.callout-loud .h {
+  font-family: var(--k2-font-display);
+  font-size: 32px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 4px 0 6px;
+}
+.callout-loud p {
+  font-family: var(--k2-font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  color: rgba(255,255,255,0.85);
+}
+
+/* density demo rows */
+.dens-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--k2-font-body);
+  font-size: 13px;
+}
+.dens-table th, .dens-table td {
+  text-align: left;
+  border-bottom: 1px solid var(--k2-border-light);
+  color: var(--k2-fg-2);
+}
+.dens-table th {
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-ui);
+  text-transform: uppercase;
+  color: var(--k2-fg-3);
+  border-bottom-color: var(--k2-border-mid);
+}
+.dens-table.cozy th, .dens-table.cozy td { padding: 14px 12px; }
+.dens-table.compact th, .dens-table.compact td { padding: 6px 8px; }
+.dens-table td b { color: var(--k2-fg-1); font-weight: 500; }
+
+/* motion bars */
+.motion-rail {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0;
+}
+.motion-rail .name {
+  width: 110px;
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--k2-track-ui);
+  text-transform: uppercase;
+  color: var(--k2-fg-2);
+}
+.motion-rail .ms {
+  width: 50px;
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  color: var(--k2-fg-4);
+}
+.motion-rail .bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--k2-border-light);
+  position: relative;
+  overflow: hidden;
+}
+.motion-rail .bar-track > span {
+  position: absolute; inset: 0;
+  background: var(--k2-fg-1);
+  transform: translateX(-101%);
+  animation: slide 3s var(--k2-ease) infinite;
+}
+@keyframes slide {
+  0%   { transform: translateX(-101%); }
+  40%  { transform: translateX(0); }
+  60%  { transform: translateX(0); }
+  100% { transform: translateX(101%); }
+}
+.motion-rail.t-quick  > .bar-track > span { animation-duration: 1.6s; background: var(--k2-fg-1); }
+.motion-rail.t-base   > .bar-track > span { animation-duration: 2.0s; background: var(--k2-fg-1); }
+.motion-rail.t-empha  > .bar-track > span { animation-duration: 2.6s; background: var(--k2-teal-text); }
+.motion-rail.t-enter  > .bar-track > span { animation-duration: 3.0s; background: var(--k2-teal-text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-rail .bar-track > span { animation: none; transform: translateX(0); }
+}
+
+/* recommendation */
+.recommend {
+  background: var(--k2-sidebar);
+  color: var(--k2-fg-on-dark-1);
+  padding: var(--k2-s-7) var(--k2-s-7);
+}
+.recommend h2 {
+  font-family: var(--k2-font-body);
+  font-weight: 600;
+  font-size: var(--k2-text-lg);
+  margin: 0 0 var(--k2-s-4);
+  letter-spacing: -0.005em;
+}
+.recommend .tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--k2-s-4);
+}
+@media (max-width: 900px) {
+  .recommend .tiers { grid-template-columns: 1fr; }
+  .recommend { padding: var(--k2-s-6) var(--k2-s-4); }
+}
+.tier {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 16px;
+}
+.tier .when {
+  font-family: var(--k2-font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-teal-rail);
+  margin-bottom: 6px;
+}
+.tier h3 {
+  font-family: var(--k2-font-body);
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 8px;
+  color: var(--k2-fg-on-dark-1);
+}
+.tier ul {
+  margin: 0; padding-left: 16px;
+  font-family: var(--k2-font-body);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--k2-fg-on-dark-2);
+}
+.tier li { margin-bottom: 4px; }
+
+/* strengths */
+.strengths {
+  background: var(--k2-bg);
+  padding: var(--k2-s-6) var(--k2-s-7);
+  border-bottom: 1px solid var(--k2-border-light);
+}
+.strengths h2 {
+  font-family: var(--k2-font-body);
+  font-weight: 600;
+  font-size: var(--k2-text-md);
+  margin: 0 0 var(--k2-s-3);
+  color: var(--k2-fg-1);
+}
+.strengths .row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--k2-s-4);
+}
+@media (max-width: 900px) {
+  .strengths { padding: var(--k2-s-5) var(--k2-s-4); }
+  .strengths .row { grid-template-columns: 1fr 1fr; }
+}
+.strength {
+  border-left: 2px solid var(--k2-green);
+  padding-left: 10px;
+}
+.strength .lbl {
+  font-family: var(--k2-font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--k2-track-label);
+  text-transform: uppercase;
+  color: var(--k2-green);
+}
+.strength p {
+  font-family: var(--k2-font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--k2-fg-2);
+  margin: 4px 0 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="review-hero">
+  <div class="version">Designer review · 17 May 2026 · Kronos v2 → v2.5</div>
+  <h1 class="h">v2 is a solid foundation. It's also a little quiet.</h1>
+  <p class="lede">
+    The accessibility fixes landed and the component library is comprehensive. But sitting with
+    it as a product designer, six things stand out as unrealized potential — opportunities to
+    make Kronos feel <em>distinctive</em> in a product context, not just <em>correct</em>. Below
+    are six modernization levers ranked by impact and brand risk. Pick the ones that fit your
+    appetite.
+  </p>
+</header>
+
+<!-- ============ WHAT'S STRONG (leave alone) ============ -->
+<section class="strengths">
+  <h2>What v2 already gets right — don't touch these.</h2>
+  <div class="row">
+    <div class="strength">
+      <div class="lbl">Keep</div>
+      <p>Hard 1px edges. The whole identity rests on this; softening it kills the brand.</p>
+    </div>
+    <div class="strength">
+      <div class="lbl">Keep</div>
+      <p>Two-register casing (mono uppercase chrome, sentence body). Distinctive and now AA-safe.</p>
+    </div>
+    <div class="strength">
+      <div class="lbl">Keep</div>
+      <p>Teal as the only chromatic accent. Resist adding a second brand color.</p>
+    </div>
+    <div class="strength">
+      <div class="lbl">Keep</div>
+      <p>Lab/protocol voice and version stamps. Charmingly specific. Most systems are voiceless.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LEVER 01 — Anton as workhorse ============ -->
+<section class="lever">
+  <div class="lever-head">
+    <div class="num">01</div>
+    <h2>Make the display face do real work</h2>
+    <span class="risk-pill lo">Low risk · High impact</span>
+  </div>
+  <p class="lever-lede">
+    Anton only appears in the wordmark. That's the brand's most distinctive piece of type and
+    it's relegated to a single moment. In a product UI, large numerals — KPI metrics, dates,
+    counts, section codes — are the natural place for display type to shine. Right now those
+    moments are set in IBM Plex Mono, which is fine, but it's the same face as every label
+    and button. Display type is wasted as decoration.
+  </p>
+  <div class="lever-grid">
+    <div class="demo">
+      <div class="demo-h"><span class="lbl">Today — KPI in mono</span><span class="meta">28px · Plex Mono</span></div>
+      <div class="demo-b">
+        <div class="kpi-old">
+          <span class="lbl">Active projects</span>
+          <span class="num">47</span>
+        </div>
+        <div class="divider-old">
+          <span class="lbl">03 — STATUS</span>
+        </div>
+      </div>
+    </div>
+    <div class="demo">
+      <div class="demo-h"><span class="lbl is-proposed">Proposed — Anton on metrics</span><span class="meta">72/40px · Anton</span></div>
+      <div class="demo-b">
+        <div class="kpi-new">
+          <div class="num">47<span class="delta">+4</span></div>
+          <div class="lbl">Active projects · this quarter</div>
+        </div>
+        <div class="divider-new">
+          <div class="num">03</div>
+          <div class="lbl">Status overview</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">
+    <b>Verdict</b>
+    Highest-leverage change. Anton makes a Kronos dashboard look like a Kronos dashboard, not
+    a generic admin theme. Suggested usage: KPIs, section codes (the 01 / 02 / 03 stamps),
+    page titles in product chrome, big empty-state numerals.
+  </div>
+</section>
+
+<!-- ============ LEVER 02 — Neutral scale + temperature ============ -->
+<section class="lever">
+  <div class="lever-head">
+    <div class="num">02</div>
+    <h2>Expand the neutral scale (and pick a temperature)</h2>
+    <span class="risk-pill lo">Low risk · Med impact</span>
+  </div>
+  <p class="lever-lede">
+    v2 has four greys (fg-1 through fg-4) plus three borders. That's enough for a portfolio.
+    For a product surface with stacked cards, tables, side panels, and modals, it isn't —
+    designers end up using border-light against light-grey-on-white and everything blurs.
+    Modern systems use an 11-step neutral ladder. Also: pure greys read clinical-cold. A 1°
+    cool tint reads modern and engineered; a 1° warm tint reads humane. Either is fine —
+    pure neutral is the unconfident choice.
+  </p>
+  <div class="lever-grid">
+    <div class="demo">
+      <div class="demo-h"><span class="lbl">Today — 4 greys, pure neutral</span></div>
+      <div class="demo-b">
+        <div class="ladder" style="grid-template-columns: repeat(7, 1fr); gap: 4px;">
+          <div class="step" style="background: #F7F7F7;">F7</div>
+          <div class="step" style="background: #E8E8E8;">E8</div>
+          <div class="step" style="background: #C8C8C8;">C8</div>
+          <div class="step" style="background: #A0A0A0; color: #fff;">A0</div>
+          <div class="step" style="background: #6B6B6B; color: #fff;">6B</div>
+          <div class="step" style="background: #3D3D3D; color: #fff;">3D</div>
+          <div class="step" style="background: #1A1A1A; color: #fff;">1A</div>
+        </div>
+        <p class="v2-helper" style="margin-top: 8px;">Gaps between 6B and 3D, and between C8 and A0, are too wide for layered surfaces.</p>
+      </div>
+    </div>
+    <div class="demo">
+      <div class="demo-h"><span class="lbl is-proposed">Proposed — 11 steps, slight cool</span><span class="meta">+ 1° hue shift</span></div>
+      <div class="demo-b">
+        <div class="ladder" style="grid-template-columns: repeat(11, 1fr); gap: 3px;">
+          <div class="step" style="background: #FAFBFB;">50</div>
+          <div class="step" style="background: #F2F3F4;">100</div>
+          <div class="step" style="background: #E4E6E8;">200</div>
+          <div class="step" style="background: #CDD0D3;">300</div>
+          <div class="step" style="background: #A8ACB0; color: #fff;">400</div>
+          <div class="step" style="background: #80858A; color: #fff;">500</div>
+          <div class="step" style="background: #5C6166; color: #fff;">600</div>
+          <div class="step" style="background: #44484C; color: #fff;">700</div>
+          <div class="step" style="background: #2E3134; color: #fff;">800</div>
+          <div class="step" style="background: #1C1E20; color: #fff;">900</div>
+          <div class="step" style="background: #0F1012; color: #fff;">950</div>
+        </div>
+        <p class="v2-helper" style="margin-top: 8px;">Cool-leaning (~210° hue at 2% saturation). Page bg shifts from #F7F7F7 → #FAFBFB; everything else stays AA-clean.</p>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">
+    <b>Verdict</b>
+    Ship it. The token names (50–950) are industry-standard and read clearly in code. Cool
+    temperature is the recommended pick — fits the lab/engineered voice. The fg-1 through fg-4
+    aliases stay; they just point into the new scale.
+  </div>
+</section>
+
+<!-- ============ LEVER 03 — Selective elevation ============ -->
+<section class="lever">
+  <div class="lever-head">
+    <div class="num">03</div>
+    <h2>Allow elevation — but only on floating UI</h2>
+    <span class="risk-pill md">Med risk · Med impact</span>
+  </div>
+  <p class="lever-lede">
+    v2's "no shadows" rule was built for the portfolio. In a product with stacked layers
+    (modal over page, dropdown over content, toast over everything), flat 1px borders blur
+    the depth and become a usability problem — users can't see what's on top. Modern systems
+    keep flat-by-default but reserve one or two elevation tokens for floating things only.
+    Cards stay flat. Dropdowns/modals/toasts/popovers lift.
+  </p>
+  <div class="lever-grid">
+    <div class="demo">
+      <div class="demo-h"><span class="lbl">Today — flat dropdown</span></div>
+      <div class="demo-b" style="background: var(--k2-bg);">
+        <div class="dd-flat">
+          <div class="dd-item is-on">✓ UX research</div>
+          <div class="dd-item">Product design</div>
+          <div class="dd-item">Systems / DesignOps</div>
+          <div class="dd-item">Advisory</div>
+        </div>
+        <p class="v2-helper">Reads as a flat block welded to the page. Hard to tell what's floating.</p>
+      </div>
+    </div>
+    <div class="demo">
+      <div class="demo-h"><span class="lbl is-proposed">Proposed — subtle lift</span><span class="meta">elev-1 token</span></div>
+      <div class="demo-b" style="background: var(--k2-bg);">
+        <div class="dd-elev">
+          <div class="dd-item is-on">✓ UX research</div>
+          <div class="dd-item">Product design</div>
+          <div class="dd-item">Systems / DesignOps</div>
+          <div class="dd-item">Advisory</div>
+        </div>
+        <p class="v2-helper">1px border + soft 8/16px shadow. Reads as floating without going web-2.0.</p>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">
+    <b>Verdict</b>
+    Ship two tokens only: <code>--k2-elev-1</code> (dropdowns, popovers, toasts) and
+    <code>--k2-elev-2</code> (modals). Document them as <em>only</em> for floating UI. If
+    someone reaches for elevation on a card or button, they're using the system wrong.
+  </div>
+</section>
+
+<!-- ============ LEVER 04 — Loud accent ============ -->
+<section class="lever">
+  <div class="lever-head">
+    <div class="num">04</div>
+    <h2>Let teal be loud — as a surface, not just a stroke</h2>
+    <span class="risk-pill lo">Low risk · High impact</span>
+  </div>
+  <p class="lever-lede">
+    Right now teal whispers. It's a 2px sidebar rail, a tiny border on the "Featured" tag, an
+    underline on a hovered link. Brand colors do more brand work when they occasionally take
+    over a surface — hero promos, empty states, marketing callouts. The trick is reserving it
+    for <em>one</em> moment per page so it stays earned, not decorative.
+  </p>
+  <div class="lever-grid">
+    <div class="demo">
+      <div class="demo-h"><span class="lbl">Today — quiet accent</span></div>
+      <div class="demo-b">
+        <div class="callout-quiet">
+          <span class="v2-tag is-teal">Featured</span>
+          <div>
+            <div style="font-family: var(--k2-font-body); font-weight: 600; font-size: 15px;">Atlas Console v2 shipping</div>
+            <div style="font-family: var(--k2-font-body); font-size: 13px; color: var(--k2-fg-3);">Read the launch notes →</div>
+          </div>
+        </div>
+        <p class="v2-helper">Reads as a row in a list. Teal does no work.</p>
+      </div>
+    </div>
+    <div class="demo">
+      <div class="demo-h"><span class="lbl is-proposed">Proposed — teal as a surface</span></div>
+      <div class="demo-b">
+        <div class="callout-loud">
+          <div class="pre">Protocol_V5.0 · Live now</div>
+          <div class="h">Now responsive</div>
+          <p>The system reflows across desktop, tablet, and mobile. Sidebar collapses to a drawer at 560px.</p>
+          <a href="#" style="font-family: var(--k2-font-ui); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; text-decoration: none; border-bottom: 1px solid #fff; padding-bottom: 1px; align-self: flex-start; margin-top: 6px;">Read the release notes →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">
+    <b>Verdict</b>
+    Ship — but write the rule: <em>at most one teal surface per page</em>. Reserve for product
+    moments that earn it (launch banners, empty states, paid-feature callouts). The Anton title
+    here is also lever 01 in action; the two compound.
+  </div>
+</section>
+
+<!-- ============ LEVER 05 — Density modes ============ -->
+<section class="lever">
+  <div class="lever-head">
+    <div class="num">05</div>
+    <h2>Two density modes — cozy &amp; compact</h2>
+    <span class="risk-pill md">Med risk · Med impact</span>
+  </div>
+  <p class="lever-lede">
+    v2 is calibrated for portfolio scale: generous padding, 40px inputs, 24px gaps. That
+    breaks for data-heavy product UIs — admin tables, planner views, log readers — where
+    users need to see 20 rows on a screen, not 7. Most modern systems ship a density mode
+    toggle (or per-component <code>size</code> prop) and define both scales as tokens.
+  </p>
+  <div class="lever-grid">
+    <div class="demo">
+      <div class="demo-h"><span class="lbl">Cozy — today's default</span><span class="meta">14px · 14px row pad</span></div>
+      <div class="demo-b" style="padding: 0;">
+        <table class="dens-table cozy">
+          <thead>
+            <tr><th>ID</th><th>Project</th><th>Status</th><th>Owner</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>P-001</b></td><td>Atlas Console</td><td><span class="v2-tag is-success">Shipped</span></td><td>JG</td></tr>
+            <tr><td><b>P-002</b></td><td>Helix Dashboard</td><td><span class="v2-tag is-info">In review</span></td><td>JG</td></tr>
+            <tr><td><b>P-003</b></td><td>Vector Field</td><td><span class="v2-tag is-warning">Beta</span></td><td>MS</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="demo">
+      <div class="demo-h"><span class="lbl is-proposed">Compact — for data surfaces</span><span class="meta">13px · 6px row pad</span></div>
+      <div class="demo-b" style="padding: 0;">
+        <table class="dens-table compact">
+          <thead>
+            <tr><th>ID</th><th>Project</th><th>Status</th><th>Owner</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>P-001</b></td><td>Atlas Console</td><td><span class="v2-tag is-success">Shipped</span></td><td>JG</td></tr>
+            <tr><td><b>P-002</b></td><td>Helix Dashboard</td><td><span class="v2-tag is-info">In review</span></td><td>JG</td></tr>
+            <tr><td><b>P-003</b></td><td>Vector Field</td><td><span class="v2-tag is-warning">Beta</span></td><td>MS</td></tr>
+            <tr><td><b>P-004</b></td><td>Lattice</td><td><span class="v2-tag">Planning</span></td><td>JG</td></tr>
+            <tr><td><b>P-005</b></td><td>Protocol_V5</td><td><span class="v2-tag is-success">Shipped</span></td><td>JG</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">
+    <b>Verdict</b>
+    Add a density token (<code>--k2-density: 1</code> or <code>0.75</code>) that components
+    can multiply their padding by. Worth doing for tables, lists, and form rows. Skip it for
+    buttons and modals — those don't benefit.
+  </div>
+</section>
+
+<!-- ============ LEVER 06 — Motion vocabulary ============ -->
+<section class="lever">
+  <div class="lever-head">
+    <div class="num">06</div>
+    <h2>Name the motion — not just the durations</h2>
+    <span class="risk-pill lo">Low risk · Low impact</span>
+  </div>
+  <p class="lever-lede">
+    v2 has two timing tokens (<code>--k2-t-fast: 120ms</code> and <code>--k2-t-med: 150ms</code>)
+    and one easing. That covers hovers, but real product UIs have entrance moments — a modal
+    sliding in, a toast announcing itself, a tab indicator gliding to its new spot. Without
+    named tokens, these get hand-rolled per feature and drift. Ship a small motion vocabulary.
+  </p>
+  <div class="lever-grid" style="grid-template-columns: 1fr;">
+    <div class="demo">
+      <div class="demo-h"><span class="lbl is-proposed">Proposed motion tokens</span><span class="meta">Named by intent</span></div>
+      <div class="demo-b" style="gap: 4px;">
+        <div class="motion-rail t-quick">
+          <div class="name">--motion-quick</div>
+          <div class="ms">80ms</div>
+          <div class="bar-track"><span></span></div>
+        </div>
+        <div class="motion-rail t-base">
+          <div class="name">--motion-base</div>
+          <div class="ms">150ms</div>
+          <div class="bar-track"><span></span></div>
+        </div>
+        <div class="motion-rail t-empha">
+          <div class="name">--motion-emphasis</div>
+          <div class="ms">240ms</div>
+          <div class="bar-track"><span></span></div>
+        </div>
+        <div class="motion-rail t-enter">
+          <div class="name">--motion-enter</div>
+          <div class="ms">320ms</div>
+          <div class="bar-track"><span></span></div>
+        </div>
+        <p class="v2-helper" style="margin-top: 8px;">
+          <b>quick</b>: hover/press color changes. <b>base</b>: small state shifts (focus ring, tab indicator).
+          <b>emphasis</b>: a real moment (button success state). <b>enter</b>: a thing appearing (modal, toast, drawer).
+          All collapse to 0ms under <code>prefers-reduced-motion</code>.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">
+    <b>Verdict</b>
+    Cheap to add, pays off when you build the dashboard. Most useful is <code>--motion-enter</code>
+    — modal/drawer/toast all need a calmer 300ms-ish entrance than v2 currently allows.
+  </div>
+</section>
+
+<!-- ============ RECOMMENDATION ============ -->
+<section class="recommend">
+  <h2>My recommendation — three tiers</h2>
+  <div class="tiers">
+    <div class="tier">
+      <div class="when">Ship this week</div>
+      <h3>The "free wins" tier</h3>
+      <ul>
+        <li>01 · Anton on metrics, section codes, dashboard hero numerals.</li>
+        <li>04 · Allow one teal surface moment per page.</li>
+        <li>06 · Add the four motion tokens.</li>
+      </ul>
+      <p style="font-family: var(--k2-font-body); font-size: 12px; color: var(--k2-fg-on-dark-3); margin: 10px 0 0; line-height: 1.5;">
+        Low brand risk, immediate visual upgrade. All three are token-level or new specimens,
+        no breaking changes.
+      </p>
+    </div>
+    <div class="tier">
+      <div class="when">Ship next sprint</div>
+      <h3>The "for product use" tier</h3>
+      <ul>
+        <li>02 · Expand neutrals to 11 steps with a cool 1° tint.</li>
+        <li>03 · Add two elevation tokens, gate to floating UI only.</li>
+        <li>05 · Add density tokens for tables and lists.</li>
+      </ul>
+      <p style="font-family: var(--k2-font-body); font-size: 12px; color: var(--k2-fg-on-dark-3); margin: 10px 0 0; line-height: 1.5;">
+        These pay off when you build the construction-engineering dashboard. Worth a focused
+        sprint before that work starts.
+      </p>
+    </div>
+    <div class="tier">
+      <div class="when">Don't ship yet</div>
+      <h3>The "wait and see" tier</h3>
+      <ul>
+        <li>Full dark mode — needs the neutral expansion (02) first.</li>
+        <li>Data viz palette — wait until a real chart need shows up.</li>
+        <li>Iconography expansion — only when the hand-drawn set starts breaking.</li>
+      </ul>
+      <p style="font-family: var(--k2-font-body); font-size: 12px; color: var(--k2-fg-on-dark-3); margin: 10px 0 0; line-height: 1.5;">
+        Resist building these on spec. Add them when a real product surface needs them — that
+        way the decisions are grounded, not speculative.
+      </p>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

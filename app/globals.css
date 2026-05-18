@@ -2,48 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Design Tokens — Kronos v3 · Cerulean direction ────────────────────── */
+@import '../design_system/kronos-design-system/tokens.css';
+@import '../design_system/kronos-design-system/components.css';
+
+/* ── Portfolio-specific tokens ──────────────────────────────────────────── */
 :root {
-  /* Color — neutral scale (11-step, cool 1° tint) */
-  --k-bg:             #FAFBFB;   /* n-50  */
-  --k-surface:        #FFFFFF;
-  --k-text-primary:   #1C1E20;   /* n-900 */
-  --k-text-secondary: #5C6166;   /* n-600 */
-  --k-text-muted:     #80858A;   /* n-500 */
-  --k-border-heavy:   #1C1E20;   /* n-900 */
-  --k-border-mid:     #CDD0D3;   /* n-300 */
-  --k-border-light:   #E4E6E8;   /* n-200 */
-
-  /* Color — cerulean accent (replaces teal) */
-  --k-teal:           #137CB6;   /* cerulean-500 · decorative rail */
-  --k-teal-dark:      #0E5582;   /* cerulean-700 · text-safe, 8.6:1 */
-  --k-teal-bg:        #E6F2F9;   /* cerulean-50  · tinted surfaces */
-
-  /* Color — semantic */
-  --k-red:            #A8281C;
-  --k-green:          #1F5A40;
-
-  /* Motion — named tokens */
-  --k-ease:             cubic-bezier(0.4, 0, 0.2, 1);
-  --k-motion-quick:     80ms;
-  --k-motion-base:      150ms;
-  --k-motion-emphasis:  240ms;
-  --k-motion-enter:     320ms;
-
-  /* Spacing — 8px base scale */
-  --s-1:  4px;
-  --s-2:  8px;
-  --s-3:  12px;
-  --s-4:  16px;
-  --s-5:  24px;
-  --s-6:  32px;
-  --s-7:  48px;
-  --s-8:  64px;
-  --s-9:  96px;
-  --s-10: 128px;
-
-  /* Layout */
-  --content-max: 1080px;
   --content-pad: 40px;
 }
 
@@ -60,24 +23,16 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-  }
-}
-
 :focus-visible {
-  outline: 2px solid var(--k-teal);
+  outline: 2px solid var(--k40-accent-rail);
   outline-offset: 2px;
 }
 
 body {
   line-height: 1.7;
-  color: var(--k-text-primary);
-  background-color: var(--k-surface);
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  color: var(--k40-fg-1);
+  background-color: var(--k40-surface);
+  font-family: var(--k40-font-body);
 }
 
 a {
@@ -101,121 +56,121 @@ input,
 textarea,
 select {
   outline: none;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--k40-font-ui);
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: var(--k-border-heavy) !important;
+  border-color: var(--k40-border-heavy) !important;
   outline: none;
 }
 
 /* ── Nav links ──────────────────────────────────────────────────────────── */
 .nav-link {
   display: inline-block;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.7rem;
+  font-family: var(--k40-font-ui);
+  font-size: var(--k40-text-2xs);
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--k40-track-label);
   text-transform: uppercase;
-  color: var(--k-text-secondary);
+  color: var(--k40-fg-3);
   text-decoration: none;
-  padding: var(--s-2) var(--s-3);
-  transition: color var(--k-motion-base) var(--k-ease);
+  padding: var(--k40-s-2) var(--k40-s-3);
+  transition: color var(--k40-motion-base) var(--k40-ease);
 }
 .nav-link:hover {
-  color: var(--k-text-primary);
+  color: var(--k40-fg-1);
 }
 
 .footer-link {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
-  color: var(--k-text-secondary);
+  font-family: var(--k40-font-ui);
+  font-size: var(--k40-text-2xs);
+  letter-spacing: var(--k40-track-ui);
+  color: var(--k40-fg-3);
   text-decoration: none;
-  transition: color var(--k-motion-base) var(--k-ease);
+  transition: color var(--k40-motion-base) var(--k40-ease);
 }
-.footer-link:hover { color: var(--k-text-primary); }
+.footer-link:hover { color: var(--k40-fg-1); }
 
 /* ── Section label ──────────────────────────────────────────────────────── */
 .section-label-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--s-6);
-  padding-bottom: var(--s-4);
-  border-bottom: 1px solid var(--k-border-heavy);
+  margin-bottom: var(--k40-s-6);
+  padding-bottom: var(--k40-s-4);
+  border-bottom: 1px solid var(--k40-border-heavy);
 }
 
 .section-label-text {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--k40-font-ui);
   font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: var(--k-text-primary);
+  color: var(--k40-fg-1);
   white-space: nowrap;
 }
 
 /* ── Cards ──────────────────────────────────────────────────────────────── */
 .je-card {
-  background: var(--k-surface);
-  border: 1px solid var(--k-border-light);
-  transition: border-color var(--k-motion-base) var(--k-ease);
+  background: var(--k40-surface);
+  border: 1px solid var(--k40-border-light);
+  transition: border-color var(--k40-motion-base) var(--k40-ease);
 }
-.je-card:hover { border-color: var(--k-border-heavy); }
+.je-card:hover { border-color: var(--k40-border-heavy); }
 
 .je-research-card {
-  background: var(--k-surface);
-  border: 1px solid var(--k-border-light);
-  transition: border-color var(--k-motion-base) var(--k-ease);
+  background: var(--k40-surface);
+  border: 1px solid var(--k40-border-light);
+  transition: border-color var(--k40-motion-base) var(--k40-ease);
 }
-.je-research-card:hover { border-color: var(--k-border-heavy); }
+.je-research-card:hover { border-color: var(--k40-border-heavy); }
 
 /* ── Card links ─────────────────────────────────────────────────────────── */
 .je-card-link,
 .je-research-link {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--k40-font-ui);
   font-size: 0.65rem;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--k40-track-label);
   text-transform: uppercase;
-  color: var(--k-text-primary);
-  border: 1px solid var(--k-border-heavy);
-  padding: var(--s-2) var(--s-4);
+  color: var(--k40-fg-1);
+  border: 1px solid var(--k40-border-heavy);
+  padding: var(--k40-s-2) var(--k40-s-4);
   display: inline-block;
   text-decoration: none;
-  transition: background var(--k-motion-base) var(--k-ease),
-              color var(--k-motion-base) var(--k-ease);
+  transition: background var(--k40-motion-base) var(--k40-ease),
+              color var(--k40-motion-base) var(--k40-ease);
 }
 .je-card-link:hover,
 .je-research-link:hover {
-  background: var(--k-text-primary);
-  color: var(--k-surface);
+  background: var(--k40-fg-1);
+  color: var(--k40-surface);
 }
 
 /* ── Hero interactions ──────────────────────────────────────────────────── */
 .hero-btn:hover {
-  background: var(--k-text-primary) !important;
-  border-color: var(--k-text-primary) !important;
-  color: var(--k-surface) !important;
+  background: var(--k40-fg-1) !important;
+  border-color: var(--k40-fg-1) !important;
+  color: var(--k40-surface) !important;
 }
 
 .hero-btn-cta:hover {
-  background: var(--k-teal-dark) !important;
-  border-color: var(--k-teal-dark) !important;
+  background: var(--k40-accent) !important;
+  border-color: var(--k40-accent) !important;
 }
 
 .hero-chip:hover {
-  background: var(--k-text-primary) !important;
-  border-color: var(--k-text-primary) !important;
-  color: var(--k-surface) !important;
+  background: var(--k40-fg-1) !important;
+  border-color: var(--k40-fg-1) !important;
+  color: var(--k40-surface) !important;
 }
 
 /* ── Writing rows ───────────────────────────────────────────────────────── */
 .je-writing-row:hover {
-  background: var(--k-bg);
+  background: var(--k40-bg);
 }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
@@ -228,6 +183,6 @@ select:focus {
 
 /* ── Scrollbar ──────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--k-bg); }
-::-webkit-scrollbar-thumb { background: var(--k-border-mid); }
-::-webkit-scrollbar-thumb:hover { background: var(--k-teal); }
+::-webkit-scrollbar-track { background: var(--k40-bg); }
+::-webkit-scrollbar-thumb { background: var(--k40-border-mid); }
+::-webkit-scrollbar-thumb:hover { background: var(--k40-accent-rail); }

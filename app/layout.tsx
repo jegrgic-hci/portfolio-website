@@ -38,11 +38,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* ── Nav ─────────────────────────────────────────────────────── */}
         <header style={{
           position: "sticky", top: 0, zIndex: 50,
-          background: "var(--k-surface)",
-          borderBottom: "1px solid var(--k-border-heavy)",
+          background: "var(--k40-surface)",
+          borderBottom: "1px solid var(--k40-border-heavy)",
         }}>
           <nav style={{
-            maxWidth: "var(--content-max)", margin: "0 auto",
+            maxWidth: "var(--k40-content-max)", margin: "0 auto",
             padding: "0 var(--content-pad)",
             height: "56px", display: "flex",
             justifyContent: "space-between", alignItems: "center",
@@ -52,12 +52,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               fontSize: "1.1rem",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "var(--k-text-primary)",
+              color: "var(--k40-fg-1)",
               textDecoration: "none",
             }}>
               JG
             </a>
-            <ul style={{ display: "flex", gap: "var(--s-2)", listStyle: "none" }}>
+            <ul style={{ display: "flex", gap: "var(--k40-s-2)", listStyle: "none" }}>
               {navLinks.map(({ href, label }) => (
                 <li key={href}>
                   <a href={href} className="nav-link">{label}</a>
@@ -71,19 +71,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* ── Footer ──────────────────────────────────────────────────── */}
         <footer style={{
-          background: "var(--k-text-primary)",
-          borderTop: "1px solid var(--k-border-heavy)",
-          marginTop: "var(--s-9)",
+          background: "var(--k40-fg-1)",
+          borderTop: "1px solid var(--k40-border-heavy)",
+          marginTop: "var(--k40-s-9)",
         }}>
           <div style={{
-            maxWidth: "var(--content-max)", margin: "0 auto",
-            padding: "var(--s-8) var(--content-pad) var(--s-7)",
+            maxWidth: "var(--k40-content-max)", margin: "0 auto",
+            padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-7)",
           }}>
             <div style={{
               display: "grid",
               gridTemplateColumns: "2fr 1fr 1fr",
-              gap: "var(--s-7)",
-              marginBottom: "var(--s-7)",
+              gap: "var(--k40-s-7)",
+              marginBottom: "var(--k40-s-7)",
             }}>
               {/* Brand */}
               <div>
@@ -92,10 +92,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   fontSize: "1.5rem",
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
-                  color: "var(--k-surface)",
-                  borderLeft: "4px solid var(--k-teal)",
-                  paddingLeft: "var(--s-4)",
-                  marginBottom: "var(--s-4)",
+                  color: "var(--k40-surface)",
+                  borderLeft: "4px solid var(--k40-accent-rail)",
+                  paddingLeft: "var(--k40-s-4)",
+                  marginBottom: "var(--k40-s-4)",
                 }}>
                   Joseph Grgic
                 </div>
@@ -120,11 +120,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   textTransform: "uppercase",
                   letterSpacing: "0.2em",
                   color: "rgba(255,255,255,0.35)",
-                  marginBottom: "var(--s-4)",
+                  marginBottom: "var(--k40-s-4)",
                 }}>
                   Pages
                 </p>
-                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "var(--s-3)" }}>
+                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "var(--k40-s-3)" }}>
                   {navLinks.map(({ href, label }) => (
                     <li key={href}>
                       <a href={href} className="footer-link" style={{ color: "rgba(255,255,255,0.55)" }}>
@@ -144,12 +144,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   textTransform: "uppercase",
                   letterSpacing: "0.2em",
                   color: "rgba(255,255,255,0.35)",
-                  marginBottom: "var(--s-4)",
+                  marginBottom: "var(--k40-s-4)",
                 }}>
                   Contact
                 </p>
                 <a href="mailto:jegrgic@gmail.com" className="footer-link"
-                  style={{ display: "block", marginBottom: "var(--s-2)", color: "rgba(255,255,255,0.55)" }}>
+                  style={{ display: "block", marginBottom: "var(--k40-s-2)", color: "rgba(255,255,255,0.55)" }}>
                   jegrgic@gmail.com
                 </a>
                 <p style={{
@@ -165,7 +165,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {/* Bottom bar */}
             <div style={{
               borderTop: "1px solid rgba(255,255,255,0.1)",
-              paddingTop: "var(--s-5)",
+              paddingTop: "var(--k40-s-5)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",

@@ -1,0 +1,264 @@
+/* ==========================================================================
+   Kronos v4.0 — TOKENS
+   Technical precision + expressive motion and color.
+   Accent: Steel Blue #2C5F8C. Complement: Warm Gold #7A5C2E.
+   Neutrals: slightly warm. Hard edges on UI, 4px radius on editorial.
+   Namespace: --k40-*
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+:root {
+  /* ------------------------------------------------------------------
+     NEUTRALS — slightly warm tint (~30° hue at 3% sat)
+     Reads as quality paper rather than cool monitor grey.
+     ------------------------------------------------------------------ */
+  --k40-n-50:  #FAFAF8;
+  --k40-n-100: #F2F1EE;
+  --k40-n-200: #E5E3DE;
+  --k40-n-300: #CCCAC3;
+  --k40-n-400: #A7A49C;
+  --k40-n-500: #807D75;
+  --k40-n-600: #5E5B54;
+  --k40-n-700: #46443D;
+  --k40-n-800: #302E28;
+  --k40-n-900: #1E1C17;
+  --k40-n-950: #111009;
+
+  /* ------------------------------------------------------------------
+     ACCENT — Steel Blue (H≈211°, S≈52%, mid at #2C5F8C)
+     500 = primary interactive. 700 = text-safe (12:1 on white, AAA).
+     ------------------------------------------------------------------ */
+  --k40-accent-50:  #EEF3F9;
+  --k40-accent-100: #D3E2EF;
+  --k40-accent-200: #A8C3DF;
+  --k40-accent-300: #7EA5CC;
+  --k40-accent-400: #5487B9;
+  --k40-accent-500: #2C5F8C;   /* steel blue — primary */
+  --k40-accent-600: #234B6F;
+  --k40-accent-700: #1A3855;   /* text-safe — 12:1 AAA on white */
+  --k40-accent-800: #122840;
+  --k40-accent-900: #0B192A;
+  --k40-accent-950: #060E18;
+
+  --k40-accent:         var(--k40-accent-700);
+  --k40-accent-text:    var(--k40-accent-700);
+  --k40-accent-rail:    var(--k40-accent-500);
+  --k40-accent-deco:    var(--k40-accent-300);
+  --k40-accent-bg:      var(--k40-accent-50);
+  --k40-accent-bg-2:    var(--k40-accent-100);
+  --k40-accent-surface: var(--k40-accent-700);
+  --k40-accent-light:   var(--k40-accent-300);
+
+  /* ------------------------------------------------------------------
+     COMPLEMENT — Warm Gold (H≈35°, editorial emphasis + featured moments)
+     Replaces warm rust. Used for highlights, featured tags, callouts.
+     500 = primary. 700 = text-safe (11:1 on white, AAA).
+     ------------------------------------------------------------------ */
+  --k40-comp-50:  #FBF5E8;
+  --k40-comp-100: #F5E4C0;
+  --k40-comp-200: #EBCA8A;
+  --k40-comp-300: #D4A85A;
+  --k40-comp-400: #B08240;
+  --k40-comp-500: #7A5C2E;   /* warm gold — primary */
+  --k40-comp-600: #614922;
+  --k40-comp-700: #4A3819;   /* text-safe — 11:1 AAA on white */
+  --k40-comp-800: #332612;
+  --k40-comp-900: #1F160A;
+  --k40-comp-950: #100B04;
+
+  --k40-comp:       var(--k40-comp-500);
+  --k40-comp-text:  var(--k40-comp-700);
+  --k40-comp-rail:  var(--k40-comp-400);
+  --k40-comp-bg:    var(--k40-comp-50);
+  --k40-comp-bg-2:  var(--k40-comp-100);
+  --k40-comp-deco:  var(--k40-comp-300);
+
+  /* ------------------------------------------------------------------
+     SURFACES
+     ------------------------------------------------------------------ */
+  --k40-bg:             var(--k40-n-50);         /* warm off-white page */
+  --k40-surface:        #FFFFFF;
+  --k40-surface-2:      var(--k40-n-100);
+  --k40-surface-tint:   #EEF3F9;                 /* steel-blue wash */
+  --k40-surface-warm:   var(--k40-comp-50);      /* warm gold wash for featured */
+  --k40-surface-loud:   var(--k40-accent-700);   /* full-color accent surface */
+  --k40-sidebar:        #111210;                 /* very deep warm-dark for sidebar */
+
+  /* ------------------------------------------------------------------
+     FOREGROUND ROLES
+     ------------------------------------------------------------------ */
+  --k40-fg-1:       var(--k40-n-900);
+  --k40-fg-2:       var(--k40-n-700);
+  --k40-fg-3:       var(--k40-n-600);
+  --k40-fg-4:       var(--k40-n-500);
+  --k40-fg-inverse: #FFFFFF;
+
+  --k40-fg-on-dark-1: #FFFFFF;
+  --k40-fg-on-dark-2: rgba(255,255,255,0.82);
+  --k40-fg-on-dark-3: rgba(255,255,255,0.50);
+
+  /* ------------------------------------------------------------------
+     BORDERS
+     ------------------------------------------------------------------ */
+  --k40-border-heavy:  var(--k40-n-900);
+  --k40-border-mid:    var(--k40-n-300);
+  --k40-border-light:  var(--k40-n-200);
+  --k40-border-hover:  var(--k40-n-600);
+  --k40-border-accent: var(--k40-accent-400);
+  --k40-border-warm:   var(--k40-comp-300);
+
+  /* ------------------------------------------------------------------
+     DISABLED
+     ------------------------------------------------------------------ */
+  --k40-disabled-fg:     var(--k40-n-400);
+  --k40-disabled-bg:     var(--k40-n-100);
+  --k40-disabled-border: var(--k40-n-300);
+
+  /* ------------------------------------------------------------------
+     SEMANTIC — unchanged; info stays grey-blue to avoid two-blues
+     ------------------------------------------------------------------ */
+  --k40-red:          #A8281C;
+  --k40-red-bg:       #FBEBE9;
+  --k40-red-border:   #E5A5A0;
+
+  --k40-green:        #1F5A40;
+  --k40-green-bg:     #E6F0EB;
+  --k40-green-border: #A7C9B7;
+
+  --k40-amber:        #8A5A00;
+  --k40-amber-bg:     #FBF1D9;
+  --k40-amber-border: #E0BE6E;
+
+  --k40-blue:         #3D556E;
+  --k40-blue-bg:      #ECEFF3;
+  --k40-blue-border:  #B4BFCC;
+
+  /* ------------------------------------------------------------------
+     TYPE — three families, expanded contrast scale
+     ------------------------------------------------------------------ */
+  --k40-font-display: 'Anton', 'Impact', 'Arial Black', sans-serif;
+  --k40-font-ui:      'IBM Plex Mono', 'Courier New', monospace;
+  --k40-font-body:    'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* UI / component scale */
+  --k40-text-2xs:  0.75rem;     /* 12px — labels, eyebrows */
+  --k40-text-xs:   0.8125rem;   /* 13px */
+  --k40-text-sm:   0.875rem;    /* 14px */
+  --k40-text-base: 1rem;        /* 16px — UI body */
+  --k40-text-md:   1.125rem;    /* 18px */
+  --k40-text-lg:   1.375rem;    /* 22px */
+  --k40-text-xl:   1.875rem;    /* 30px */
+  --k40-text-2xl:  2.75rem;     /* 44px */
+  --k40-text-3xl:  4rem;        /* 64px */
+  --k40-text-4xl:  5.5rem;      /* 88px — Anton workhorse */
+  --k40-text-5xl:  7.5rem;      /* 120px — hero */
+
+  /* Editorial / long-form scale — separate from UI scale */
+  --k40-text-editorial:     1.1875rem;  /* 19px — case study prose */
+  --k40-text-editorial-sm:  1rem;       /* 16px — captions, meta */
+  --k40-text-pull-quote:    1.75rem;    /* 28px — pull quote */
+
+  /* Tracking */
+  --k40-track-tight:   0.02em;
+  --k40-track-ui:      0.08em;
+  --k40-track-label:   0.10em;
+  --k40-track-display: 0.02em;
+
+  /* ------------------------------------------------------------------
+     SPACING — 8px grid
+     ------------------------------------------------------------------ */
+  --k40-s-1:   4px;
+  --k40-s-2:   8px;
+  --k40-s-3:  12px;
+  --k40-s-4:  16px;
+  --k40-s-5:  24px;
+  --k40-s-6:  32px;
+  --k40-s-7:  48px;
+  --k40-s-8:  64px;
+  --k40-s-9:  96px;
+  --k40-s-10: 128px;
+
+  --k40-sidebar-width: 252px;
+  --k40-content-max:   1140px;
+
+  /* ------------------------------------------------------------------
+     RADII
+     UI elements: 0 (hard edge — buttons, inputs, tags, tabs)
+     Editorial containers: 4px (cards, figures, pull quotes, callouts)
+     ------------------------------------------------------------------ */
+  --k40-radius-0:          0;
+  --k40-radius-editorial:  4px;
+  --k40-radius-pill:       999px;
+
+  /* ------------------------------------------------------------------
+     MOTION
+     ------------------------------------------------------------------ */
+  --k40-ease:            cubic-bezier(0.4, 0, 0.2, 1);
+  --k40-ease-out:        cubic-bezier(0, 0, 0.2, 1);
+  --k40-ease-spring:     cubic-bezier(0.34, 1.4, 0.64, 1);
+  --k40-ease-expressive: cubic-bezier(0.2, 0, 0, 1);
+
+  --k40-motion-micro:     60ms;
+  --k40-motion-quick:    100ms;
+  --k40-motion-base:     200ms;
+  --k40-motion-emphasis: 320ms;
+  --k40-motion-enter:    420ms;
+
+  /* ------------------------------------------------------------------
+     ELEVATION
+     ------------------------------------------------------------------ */
+  --k40-elev-1:
+    0 1px 0 var(--k40-border-mid),
+    0 4px 16px -2px rgba(18, 16, 10, 0.10),
+    0 1px 4px rgba(18, 16, 10, 0.06);
+  --k40-elev-2:
+    0 1px 0 var(--k40-border-mid),
+    0 20px 40px -8px rgba(18, 16, 10, 0.20),
+    0 6px 12px rgba(18, 16, 10, 0.08);
+  --k40-elev-3:
+    0 2px 0 var(--k40-border-mid),
+    0 40px 80px -16px rgba(18, 16, 10, 0.28),
+    0 12px 24px rgba(18, 16, 10, 0.12);
+
+  /* ------------------------------------------------------------------
+     DENSITY
+     ------------------------------------------------------------------ */
+  --k40-density-pad-y:  11px;
+  --k40-density-pad-x:  16px;
+  --k40-density-row-y:  13px;
+  --k40-density-gap:    var(--k40-s-3);
+  --k40-density-text:   var(--k40-text-sm);
+}
+
+[data-density="compact"] {
+  --k40-density-pad-y:  6px;
+  --k40-density-pad-x:  10px;
+  --k40-density-row-y:  6px;
+  --k40-density-gap:    8px;
+  --k40-density-text:   var(--k40-text-xs);
+}
+
+/* ------------------------------------------------------------------
+   FOCUS RING
+   ------------------------------------------------------------------ */
+:root {
+  --k40-focus-ring:
+    0 0 0 2px var(--k40-surface),
+    0 0 0 5px var(--k40-accent-rail);
+  --k40-focus-ring-inverse:
+    0 0 0 2px var(--k40-sidebar),
+    0 0 0 5px var(--k40-accent-400);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --k40-ease-spring:     linear;
+    --k40-ease-expressive: linear;
+    --k40-motion-micro:    0ms;
+    --k40-motion-quick:    0ms;
+    --k40-motion-base:     0ms;
+    --k40-motion-emphasis: 0ms;
+    --k40-motion-enter:    0ms;
+  }
+}

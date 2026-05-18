@@ -28,14 +28,14 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
   const { content } = matter(fs.readFileSync(filePath, "utf8"));
 
   return (
-    <div style={{ background: "var(--k-bg)", minHeight: "100vh" }}>
+    <div style={{ background: "var(--k40-bg)", minHeight: "100vh" }}>
 
       {/* Article header */}
       <header style={{
-        maxWidth: "var(--content-max)",
+        maxWidth: "var(--k40-content-max)",
         margin: "0 auto",
-        padding: "var(--s-8) var(--content-pad) var(--s-7)",
-        borderBottom: "1px solid var(--k-border-heavy)",
+        padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-7)",
+        borderBottom: "1px solid var(--k40-border-heavy)",
       }}>
         <a
           href="/writings"
@@ -45,12 +45,12 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             fontWeight: 700,
             letterSpacing: "0.2em",
             textTransform: "uppercase",
-            color: "var(--k-text-muted)",
+            color: "var(--k40-fg-4)",
             textDecoration: "none",
             display: "inline-flex",
             alignItems: "center",
-            gap: "var(--s-2)",
-            marginBottom: "var(--s-6)",
+            gap: "var(--k40-s-2)",
+            marginBottom: "var(--k40-s-6)",
           }}
         >
           ← Writings
@@ -62,8 +62,8 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
           fontWeight: 700,
           letterSpacing: "0.2em",
           textTransform: "uppercase",
-          color: "var(--k-teal)",
-          marginBottom: "var(--s-3)",
+          color: "var(--k40-accent-rail)",
+          marginBottom: "var(--k40-s-3)",
         }}>
           {article!.theme}
         </p>
@@ -74,9 +74,9 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
           fontWeight: 700,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: "var(--k-text-primary)",
+          color: "var(--k40-fg-1)",
           lineHeight: 1.2,
-          marginBottom: "var(--s-4)",
+          marginBottom: "var(--k40-s-4)",
           maxWidth: "720px",
         }}>
           {article!.title}
@@ -85,10 +85,10 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         <p style={{
           fontFamily: "'IBM Plex Sans', sans-serif",
           fontSize: "1rem",
-          color: "var(--k-text-secondary)",
+          color: "var(--k40-fg-3)",
           lineHeight: 1.7,
           maxWidth: "600px",
-          marginBottom: "var(--s-5)",
+          marginBottom: "var(--k40-s-5)",
         }}>
           {article!.description}
         </p>
@@ -96,7 +96,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         <span style={{
           fontFamily: "'IBM Plex Mono', monospace",
           fontSize: "0.6rem",
-          color: "var(--k-text-muted)",
+          color: "var(--k40-fg-4)",
           letterSpacing: "0.1em",
         }}>
           {article!.date}
@@ -107,7 +107,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
       <article style={{
         maxWidth: "680px",
         margin: "0 auto",
-        padding: "var(--s-8) var(--content-pad) var(--s-9)",
+        padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-9)",
       }}>
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
@@ -119,11 +119,11 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                 fontWeight: 700,
                 letterSpacing: "0.15em",
                 textTransform: "uppercase",
-                color: "var(--k-text-primary)",
-                marginTop: "var(--s-8)",
-                marginBottom: "var(--s-4)",
-                paddingBottom: "var(--s-3)",
-                borderBottom: "1px solid var(--k-border-light)",
+                color: "var(--k40-fg-1)",
+                marginTop: "var(--k40-s-8)",
+                marginBottom: "var(--k40-s-4)",
+                paddingBottom: "var(--k40-s-3)",
+                borderBottom: "1px solid var(--k40-border-light)",
               }}>{children}</h2>
             ),
             h3: ({ children }) => (
@@ -133,9 +133,9 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                 fontWeight: 700,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "var(--k-text-secondary)",
-                marginTop: "var(--s-6)",
-                marginBottom: "var(--s-3)",
+                color: "var(--k40-fg-3)",
+                marginTop: "var(--k40-s-6)",
+                marginBottom: "var(--k40-s-3)",
               }}>{children}</h3>
             ),
             p: ({ children }) => (
@@ -143,31 +143,31 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                 fontFamily: "'IBM Plex Sans', sans-serif",
                 fontSize: "1rem",
                 lineHeight: 1.8,
-                color: "var(--k-text-secondary)",
-                marginBottom: "var(--s-5)",
+                color: "var(--k40-fg-3)",
+                marginBottom: "var(--k40-s-5)",
               }}>{children}</p>
             ),
             blockquote: ({ children }) => (
               <blockquote style={{
-                borderLeft: "3px solid var(--k-teal)",
-                paddingLeft: "var(--s-5)",
-                margin: "var(--s-6) 0",
+                borderLeft: "3px solid var(--k40-accent-rail)",
+                paddingLeft: "var(--k40-s-5)",
+                margin: "var(--k40-s-6) 0",
                 fontFamily: "'IBM Plex Sans', sans-serif",
                 fontSize: "1.05rem",
                 fontStyle: "italic",
-                color: "var(--k-text-primary)",
+                color: "var(--k40-fg-1)",
                 lineHeight: 1.7,
               }}>{children}</blockquote>
             ),
             img: ({ src, alt }) => (
-              <figure style={{ margin: "var(--s-7) 0" }}>
+              <figure style={{ margin: "var(--k40-s-7) 0" }}>
                 <img
                   src={src}
                   alt={alt}
                   style={{
                     width: "100%",
                     display: "block",
-                    border: "1px solid var(--k-border-light)",
+                    border: "1px solid var(--k40-border-light)",
                   }}
                 />
                 {alt && (
@@ -175,8 +175,8 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                     fontFamily: "'IBM Plex Mono', monospace",
                     fontSize: "0.6rem",
                     letterSpacing: "0.1em",
-                    color: "var(--k-text-muted)",
-                    marginTop: "var(--s-2)",
+                    color: "var(--k40-fg-4)",
+                    marginTop: "var(--k40-s-2)",
                     textTransform: "uppercase",
                   }}>{alt}</figcaption>
                 )}
@@ -186,31 +186,31 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
               <a
                 href={href}
                 style={{
-                  color: "var(--k-text-primary)",
+                  color: "var(--k40-fg-1)",
                   textDecoration: "underline",
-                  textDecorationColor: "var(--k-border-mid)",
+                  textDecorationColor: "var(--k40-border-mid)",
                 }}
               >{children}</a>
             ),
             strong: ({ children }) => (
-              <strong style={{ fontWeight: 600, color: "var(--k-text-primary)" }}>{children}</strong>
+              <strong style={{ fontWeight: 600, color: "var(--k40-fg-1)" }}>{children}</strong>
             ),
             ul: ({ children }) => (
               <ul style={{
-                paddingLeft: "var(--s-5)",
-                marginBottom: "var(--s-5)",
+                paddingLeft: "var(--k40-s-5)",
+                marginBottom: "var(--k40-s-5)",
                 display: "flex",
                 flexDirection: "column",
-                gap: "var(--s-2)",
+                gap: "var(--k40-s-2)",
               }}>{children}</ul>
             ),
             ol: ({ children }) => (
               <ol style={{
-                paddingLeft: "var(--s-5)",
-                marginBottom: "var(--s-5)",
+                paddingLeft: "var(--k40-s-5)",
+                marginBottom: "var(--k40-s-5)",
                 display: "flex",
                 flexDirection: "column",
-                gap: "var(--s-2)",
+                gap: "var(--k40-s-2)",
               }}>{children}</ol>
             ),
             li: ({ children }) => (
@@ -218,14 +218,14 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
                 fontFamily: "'IBM Plex Sans', sans-serif",
                 fontSize: "1rem",
                 lineHeight: 1.7,
-                color: "var(--k-text-secondary)",
+                color: "var(--k40-fg-3)",
               }}>{children}</li>
             ),
             hr: () => (
               <hr style={{
                 border: "none",
-                borderTop: "1px solid var(--k-border-light)",
-                margin: "var(--s-7) 0",
+                borderTop: "1px solid var(--k40-border-light)",
+                margin: "var(--k40-s-7) 0",
               }} />
             ),
           }}

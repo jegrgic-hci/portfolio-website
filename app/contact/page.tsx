@@ -8,19 +8,19 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 700,
   letterSpacing: "0.2em",
   textTransform: "uppercase",
-  color: "var(--k-text-secondary)",
+  color: "var(--k40-fg-3)",
   display: "block",
-  marginBottom: "var(--s-2)",
+  marginBottom: "var(--k40-s-2)",
 };
 
 const inputStyle: React.CSSProperties = {
   fontFamily: "'IBM Plex Mono', monospace",
   fontSize: "0.8rem",
   letterSpacing: "0.04em",
-  color: "var(--k-text-primary)",
-  background: "var(--k-surface)",
-  border: "1px solid var(--k-border-mid)",
-  padding: "var(--s-3) var(--s-4)",
+  color: "var(--k40-fg-1)",
+  background: "var(--k40-surface)",
+  border: "1px solid var(--k40-border-mid)",
+  padding: "var(--k40-s-3) var(--k40-s-4)",
   width: "100%",
   outline: "none",
   transition: "border-color 150ms ease",
@@ -40,15 +40,15 @@ export default function Contact() {
 
       {/* Page header */}
       <section style={{
-        maxWidth: "var(--content-max)", margin: "0 auto",
-        padding: "var(--s-8) var(--content-pad) var(--s-7)",
-        borderBottom: "1px solid var(--k-border-heavy)",
+        maxWidth: "var(--k40-content-max)", margin: "0 auto",
+        padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-7)",
+        borderBottom: "1px solid var(--k40-border-heavy)",
       }}>
         <p style={{
           fontFamily: "'IBM Plex Mono', monospace",
           fontSize: "0.6rem", fontWeight: 700,
           letterSpacing: "0.2em", textTransform: "uppercase",
-          color: "var(--k-text-muted)", marginBottom: "var(--s-4)",
+          color: "var(--k40-fg-4)", marginBottom: "var(--k40-s-4)",
         }}>
           Contact
         </p>
@@ -58,15 +58,15 @@ export default function Contact() {
           fontWeight: 400,
           letterSpacing: "0.1em",
           textTransform: "uppercase",
-          color: "var(--k-text-primary)",
-          marginBottom: "var(--s-4)",
+          color: "var(--k40-fg-1)",
+          marginBottom: "var(--k40-s-4)",
         }}>
           Get in Touch
         </h1>
         <p style={{
           fontFamily: "'IBM Plex Sans', sans-serif",
           fontSize: "1rem",
-          color: "var(--k-text-secondary)",
+          color: "var(--k40-fg-3)",
           lineHeight: 1.7,
           maxWidth: "480px",
         }}>
@@ -77,16 +77,16 @@ export default function Contact() {
 
       {/* Content */}
       <div style={{
-        maxWidth: "var(--content-max)", margin: "0 auto",
-        padding: "var(--s-8) var(--content-pad) var(--s-9)",
+        maxWidth: "var(--k40-content-max)", margin: "0 auto",
+        padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-9)",
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
-        gap: "var(--s-8)",
+        gap: "var(--k40-s-8)",
         alignItems: "start",
       }}>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--s-5)" }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--k40-s-5)" }}>
           <div>
             <label htmlFor="name" style={labelStyle}>Name</label>
             <input
@@ -96,8 +96,8 @@ export default function Contact() {
               required
               style={inputStyle}
               placeholder="Your name"
-              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--k-border-heavy)"; }}
-              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--k-border-mid)"; }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--k40-border-heavy)"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--k40-border-mid)"; }}
             />
           </div>
 
@@ -110,8 +110,8 @@ export default function Contact() {
               required
               style={inputStyle}
               placeholder="your@email.com"
-              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--k-border-heavy)"; }}
-              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--k-border-mid)"; }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--k40-border-heavy)"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--k40-border-mid)"; }}
             />
           </div>
 
@@ -124,8 +124,8 @@ export default function Contact() {
               required
               style={{ ...inputStyle, resize: "vertical", fontFamily: "'IBM Plex Sans', sans-serif" }}
               placeholder="Tell me about your project..."
-              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--k-border-heavy)"; }}
-              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--k-border-mid)"; }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = "var(--k40-border-heavy)"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--k40-border-mid)"; }}
             />
           </div>
 
@@ -135,20 +135,20 @@ export default function Contact() {
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: "0.7rem", fontWeight: 700,
               letterSpacing: "0.15em", textTransform: "uppercase",
-              background: "var(--k-text-primary)", color: "var(--k-surface)",
-              border: "1px solid var(--k-text-primary)",
-              padding: "var(--s-3) var(--s-5)",
+              background: "var(--k40-fg-1)", color: "var(--k40-surface)",
+              border: "1px solid var(--k40-fg-1)",
+              padding: "var(--k40-s-3) var(--k40-s-5)",
               cursor: "pointer",
               transition: "background 150ms ease",
-              display: "flex", alignItems: "center", justifyContent: "center", gap: "var(--s-2)",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: "var(--k40-s-2)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--k-teal-dark)";
-              e.currentTarget.style.borderColor = "var(--k-teal-dark)";
+              e.currentTarget.style.background = "var(--k40-accent)";
+              e.currentTarget.style.borderColor = "var(--k40-accent)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "var(--k-text-primary)";
-              e.currentTarget.style.borderColor = "var(--k-text-primary)";
+              e.currentTarget.style.background = "var(--k40-fg-1)";
+              e.currentTarget.style.borderColor = "var(--k40-fg-1)";
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -161,10 +161,10 @@ export default function Contact() {
             <div style={{
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: "0.7rem", letterSpacing: "0.08em",
-              padding: "var(--s-4)",
+              padding: "var(--k40-s-4)",
               background: "rgba(45,106,79,0.08)",
-              border: "1px solid var(--k-green)",
-              color: "var(--k-green)",
+              border: "1px solid var(--k40-green)",
+              color: "var(--k40-green)",
             }}>
               Message sent — I&apos;ll get back to you soon.
             </div>
@@ -172,31 +172,31 @@ export default function Contact() {
         </form>
 
         {/* Info panel */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-6)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--k40-s-6)" }}>
           <div style={{
-            background: "var(--k-bg)",
-            border: "1px solid var(--k-border-light)",
-            padding: "var(--s-6)",
+            background: "var(--k40-bg)",
+            border: "1px solid var(--k40-border-light)",
+            padding: "var(--k40-s-6)",
           }}>
             <p style={{
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: "0.6rem", fontWeight: 700,
               letterSpacing: "0.2em", textTransform: "uppercase",
-              color: "var(--k-text-muted)",
-              marginBottom: "var(--s-5)",
-              paddingBottom: "var(--s-3)",
-              borderBottom: "1px solid var(--k-border-light)",
+              color: "var(--k40-fg-4)",
+              marginBottom: "var(--k40-s-5)",
+              paddingBottom: "var(--k40-s-3)",
+              borderBottom: "1px solid var(--k40-border-light)",
             }}>
               Other Ways to Connect
             </p>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-4)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--k40-s-4)" }}>
               <div>
                 <p style={{
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: "0.6rem", fontWeight: 700,
                   letterSpacing: "0.15em", textTransform: "uppercase",
-                  color: "var(--k-text-muted)", marginBottom: "var(--s-1)",
+                  color: "var(--k40-fg-4)", marginBottom: "var(--k40-s-1)",
                 }}>
                   Email
                 </p>
@@ -205,8 +205,8 @@ export default function Contact() {
                   style={{
                     fontFamily: "'IBM Plex Mono', monospace",
                     fontSize: "0.8rem",
-                    color: "var(--k-text-primary)",
-                    borderBottom: "1px solid var(--k-border-heavy)",
+                    color: "var(--k40-fg-1)",
+                    borderBottom: "1px solid var(--k40-border-heavy)",
                     paddingBottom: "1px",
                     textDecoration: "none",
                   }}
@@ -220,20 +220,20 @@ export default function Contact() {
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: "0.6rem", fontWeight: 700,
                   letterSpacing: "0.15em", textTransform: "uppercase",
-                  color: "var(--k-text-muted)", marginBottom: "var(--s-1)",
+                  color: "var(--k40-fg-4)", marginBottom: "var(--k40-s-1)",
                 }}>
                   Location
                 </p>
                 <p style={{
                   fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: "0.8rem", color: "var(--k-text-secondary)",
+                  fontSize: "0.8rem", color: "var(--k40-fg-3)",
                 }}>
                   Marseille, France
                 </p>
                 <p style={{
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: "0.7rem",
-                  color: "var(--k-text-muted)", marginTop: "var(--s-1)",
+                  color: "var(--k40-fg-4)", marginTop: "var(--k40-s-1)",
                 }}>
                   Open to remote &amp; international projects
                 </p>

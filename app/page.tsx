@@ -42,8 +42,8 @@ function Tag({ type }: { type: string }) {
       fontWeight: 700,
       textTransform: "uppercase",
       letterSpacing: "0.12em",
-      border: "1px solid var(--k-teal)",
-      color: "var(--k-teal-dark)",
+      border: "1px solid var(--k40-accent-rail)",
+      color: "var(--k40-accent)",
       background: "rgba(19,124,182,0.07)",
       padding: "2px 8px",
     }}>
@@ -68,10 +68,10 @@ function MethodBadge({ type, label }: { type: string; label?: string }) {
       fontWeight: 700,
       textTransform: "uppercase",
       letterSpacing: "0.12em",
-      border: "1px solid var(--k-border-mid)",
-      color: "var(--k-text-secondary)",
+      border: "1px solid var(--k40-border-mid)",
+      color: "var(--k40-fg-3)",
       padding: "2px 8px",
-      marginBottom: "var(--s-3)",
+      marginBottom: "var(--k40-s-3)",
     }}>
       {text}
     </span>
@@ -88,7 +88,7 @@ function CardLink({ label }: { label: string }) {
 
 function ProductCard({ study, featured }: { study: Project; featured?: boolean }) {
   const cardBase = {
-    background: "var(--k-surface)",
+    background: "var(--k40-surface)",
     textDecoration: "none",
     color: "inherit",
     display: featured ? "grid" : "block",
@@ -106,7 +106,7 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
       className="je-card"
       style={{
         ...cardBase,
-        ...(featured && { gridTemplateColumns: "1fr 1fr", overflow: "hidden", marginBottom: "var(--s-4)" }),
+        ...(featured && { gridTemplateColumns: "1fr 1fr", overflow: "hidden", marginBottom: "var(--k40-s-4)" }),
       }}
     >
       <div style={imageStyle}>
@@ -117,18 +117,18 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
           style={{ objectFit: "cover", objectPosition: "center top" }}
         />
       </div>
-      <div style={{ padding: "var(--s-5) var(--s-5) var(--s-5)" }}>
+      <div style={{ padding: "var(--k40-s-5) var(--k40-s-5) var(--k40-s-5)" }}>
         <p style={{
           fontFamily: "'IBM Plex Mono', monospace",
           fontSize: "0.6rem",
           fontWeight: 700,
           textTransform: "uppercase",
           letterSpacing: "0.15em",
-          color: "var(--k-text-secondary)",
-          marginBottom: "var(--s-2)",
+          color: "var(--k40-fg-3)",
+          marginBottom: "var(--k40-s-2)",
           display: "flex",
           alignItems: "center",
-          gap: "var(--s-2)",
+          gap: "var(--k40-s-2)",
         }}>
           {study.company} <Tag type={study.tag} />
         </p>
@@ -136,17 +136,17 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
           fontFamily: "'IBM Plex Sans', sans-serif",
           fontSize: "0.95rem",
           fontWeight: 600,
-          color: "var(--k-text-primary)",
+          color: "var(--k40-fg-1)",
           lineHeight: 1.35,
-          marginBottom: "var(--s-3)",
+          marginBottom: "var(--k40-s-3)",
         }}>
           {study.title}
         </h3>
         <p style={{
           fontSize: "0.8rem",
-          color: "var(--k-text-secondary)",
+          color: "var(--k40-fg-3)",
           lineHeight: 1.7,
-          marginBottom: "var(--s-4)",
+          marginBottom: "var(--k40-s-4)",
         }}>
           {study.description}
         </p>
@@ -154,10 +154,10 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
           <p style={{
             fontFamily: "'IBM Plex Mono', monospace",
             fontSize: "0.75rem",
-            color: "var(--k-text-primary)",
-            borderLeft: "3px solid var(--k-teal)",
-            paddingLeft: "var(--s-3)",
-            marginBottom: "var(--s-3)",
+            color: "var(--k40-fg-1)",
+            borderLeft: "3px solid var(--k40-accent-rail)",
+            paddingLeft: "var(--k40-s-3)",
+            marginBottom: "var(--k40-s-3)",
             lineHeight: 1.5,
           }}>
             {study.metrics}
@@ -174,11 +174,11 @@ function ResearchCard({ study }: { study: Project }) {
     <div
       id={study.id}
       className="je-research-card"
-      style={{ padding: "var(--s-5)", scrollMarginTop: "24px" }}
+      style={{ padding: "var(--k40-s-5)", scrollMarginTop: "24px" }}
     >
       <div style={{
         position: "relative", width: "100%", height: "120px",
-        overflow: "hidden", marginBottom: "var(--s-4)",
+        overflow: "hidden", marginBottom: "var(--k40-s-4)",
       }}>
         <Image
           src={study.images.hero}
@@ -195,8 +195,8 @@ function ResearchCard({ study }: { study: Project }) {
         fontFamily: "'IBM Plex Sans', sans-serif",
         fontSize: "0.875rem",
         fontWeight: 500,
-        color: "var(--k-text-primary)",
-        marginBottom: "var(--s-1)",
+        color: "var(--k40-fg-1)",
+        marginBottom: "var(--k40-s-1)",
         lineHeight: 1.35,
       }}>
         {study.title}
@@ -207,28 +207,28 @@ function ResearchCard({ study }: { study: Project }) {
         fontWeight: 700,
         textTransform: "uppercase",
         letterSpacing: "0.12em",
-        color: "var(--k-text-secondary)",
-        marginBottom: "var(--s-3)",
+        color: "var(--k40-fg-3)",
+        marginBottom: "var(--k40-s-3)",
       }}>
         {study.company}
       </p>
       <div style={{
         fontSize: "0.8rem",
-        color: "var(--k-text-secondary)",
+        color: "var(--k40-fg-3)",
         lineHeight: 1.65,
-        borderTop: "1px solid var(--k-border-light)",
-        paddingTop: "var(--s-3)",
-        marginTop: "var(--s-1)",
+        borderTop: "1px solid var(--k40-border-light)",
+        paddingTop: "var(--k40-s-3)",
+        marginTop: "var(--k40-s-1)",
       }}>
         {"description" in study && study.description}{" "}
         {"impact" in study && (
-          <strong style={{ color: "var(--k-text-primary)", fontWeight: 500 }}>
+          <strong style={{ color: "var(--k40-fg-1)", fontWeight: 500 }}>
             {(study as { impact?: string }).impact}
           </strong>
         )}
       </div>
       <a href={`/projects/${study.slug}`} className="je-research-link"
-        style={{ marginTop: "var(--s-4)" }}>
+        style={{ marginTop: "var(--k40-s-4)" }}>
         View research deck →
       </a>
     </div>
@@ -244,7 +244,7 @@ function SectionHeader({ title, sub, subHref }: { title: string; sub: string; su
           fontFamily: "'IBM Plex Mono', monospace",
           fontSize: "0.65rem",
           letterSpacing: "0.08em",
-          color: "var(--k-text-secondary)",
+          color: "var(--k40-fg-3)",
           textDecoration: "none",
           flexShrink: 0,
         }}>
@@ -255,7 +255,7 @@ function SectionHeader({ title, sub, subHref }: { title: string; sub: string; su
           fontFamily: "'IBM Plex Mono', monospace",
           fontSize: "0.65rem",
           letterSpacing: "0.08em",
-          color: "var(--k-text-muted)",
+          color: "var(--k40-fg-4)",
           flexShrink: 0,
         }}>
           {sub}
@@ -272,8 +272,8 @@ export default function Home() {
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section style={{
-        maxWidth: "var(--content-max)", margin: "0 auto",
-        padding: "var(--s-9) var(--content-pad) var(--s-8)",
+        maxWidth: "var(--k40-content-max)", margin: "0 auto",
+        padding: "var(--k40-s-9) var(--content-pad) var(--k40-s-8)",
       }}>
 
         {/* Meta label */}
@@ -283,8 +283,8 @@ export default function Home() {
           fontWeight: 700,
           letterSpacing: "0.2em",
           textTransform: "uppercase",
-          color: "var(--k-text-secondary)",
-          marginBottom: "var(--s-6)",
+          color: "var(--k40-fg-3)",
+          marginBottom: "var(--k40-s-6)",
         }}>
           Senior UX Designer &amp; Researcher &nbsp;&middot;&nbsp; M.S. Human Factors &nbsp;&middot;&nbsp; 14 years &nbsp;&middot;&nbsp; Marseille
         </p>
@@ -297,8 +297,8 @@ export default function Home() {
           lineHeight: 1.0,
           letterSpacing: "0.06em",
           textTransform: "uppercase",
-          color: "var(--k-text-primary)",
-          marginBottom: "var(--s-6)",
+          color: "var(--k40-fg-1)",
+          marginBottom: "var(--k40-s-6)",
           maxWidth: "820px",
         }}>
           Designing systems<br />people trust.
@@ -309,9 +309,9 @@ export default function Home() {
           fontFamily: "'IBM Plex Sans', sans-serif",
           fontSize: "1rem",
           lineHeight: 1.75,
-          color: "var(--k-text-secondary)",
+          color: "var(--k40-fg-3)",
           maxWidth: "520px",
-          marginBottom: "var(--s-7)",
+          marginBottom: "var(--k40-s-7)",
         }}>
           I apply human factors methodology to the full design cycle &mdash; research,
           architecture, and interaction design &mdash; for teams building complex digital
@@ -319,18 +319,18 @@ export default function Home() {
         </p>
 
         {/* CTAs */}
-        <div style={{ display: "flex", gap: "var(--s-3)", flexWrap: "wrap", marginBottom: "var(--s-8)" }}>
+        <div style={{ display: "flex", gap: "var(--k40-s-3)", flexWrap: "wrap", marginBottom: "var(--k40-s-8)" }}>
           <a
             href="mailto:jegrgic@gmail.com"
             className="hero-btn-cta"
             style={{
               fontFamily: "'IBM Plex Mono', monospace",
-              display: "inline-flex", alignItems: "center", gap: "var(--s-2)",
-              background: "var(--k-text-primary)", color: "var(--k-surface)",
+              display: "inline-flex", alignItems: "center", gap: "var(--k40-s-2)",
+              background: "var(--k40-fg-1)", color: "var(--k40-surface)",
               fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em",
               textTransform: "uppercase",
-              padding: "var(--s-3) var(--s-5)",
-              border: "1px solid var(--k-text-primary)",
+              padding: "var(--k40-s-3) var(--k40-s-5)",
+              border: "1px solid var(--k40-fg-1)",
               textDecoration: "none",
               transition: "background 150ms cubic-bezier(.4,0,.2,1), color 150ms cubic-bezier(.4,0,.2,1), border-color 150ms cubic-bezier(.4,0,.2,1)",
             }}
@@ -352,12 +352,12 @@ export default function Home() {
               className="hero-btn"
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
-                display: "inline-flex", alignItems: "center", gap: "var(--s-2)",
-                background: "transparent", color: "var(--k-text-primary)",
+                display: "inline-flex", alignItems: "center", gap: "var(--k40-s-2)",
+                background: "transparent", color: "var(--k40-fg-1)",
                 fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                padding: "var(--s-3) var(--s-5)",
-                border: "1px solid var(--k-border-heavy)",
+                padding: "var(--k40-s-3) var(--k40-s-5)",
+                border: "1px solid var(--k40-border-heavy)",
                 textDecoration: "none",
                 transition: "background 150ms cubic-bezier(.4,0,.2,1), color 150ms cubic-bezier(.4,0,.2,1), border-color 150ms cubic-bezier(.4,0,.2,1)",
               }}
@@ -376,11 +376,11 @@ export default function Home() {
             fontFamily: "'IBM Plex Mono', monospace",
             fontSize: "0.6rem", fontWeight: 700,
             letterSpacing: "0.2em", textTransform: "uppercase",
-            color: "var(--k-text-muted)", marginBottom: "var(--s-3)",
+            color: "var(--k40-fg-4)", marginBottom: "var(--k40-s-3)",
           }}>
             Jump to case study
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--s-2)" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--k40-s-2)" }}>
             {chipLinks.map((chip) => (
               <a
                 key={chip.href}
@@ -391,10 +391,10 @@ export default function Home() {
                   display: "inline-block",
                   fontSize: "0.65rem", fontWeight: 500,
                   letterSpacing: "0.08em",
-                  color: "var(--k-text-secondary)",
-                  background: "var(--k-bg)",
-                  border: "1px solid var(--k-border-mid)",
-                  padding: "var(--s-2) var(--s-4)",
+                  color: "var(--k40-fg-3)",
+                  background: "var(--k40-bg)",
+                  border: "1px solid var(--k40-border-mid)",
+                  padding: "var(--k40-s-2) var(--k40-s-4)",
                   textDecoration: "none",
                   transition: "background 150ms cubic-bezier(.4,0,.2,1), color 150ms cubic-bezier(.4,0,.2,1), border-color 150ms cubic-bezier(.4,0,.2,1)",
                 }}
@@ -408,45 +408,45 @@ export default function Home() {
       </section>
 
       {/* ── CONTENT WRAPPER ──────────────────────────────────────────────── */}
-      <div style={{ maxWidth: "var(--content-max)", margin: "0 auto", padding: "0 var(--content-pad)" }}>
+      <div style={{ maxWidth: "var(--k40-content-max)", margin: "0 auto", padding: "0 var(--content-pad)" }}>
 
         {/* ── PRODUCT DESIGN ── */}
-        <section style={{ padding: "var(--s-8) 0", borderTop: "1px solid var(--k-border-light)" }} id="work">
+        <section style={{ padding: "var(--k40-s-8) 0", borderTop: "1px solid var(--k40-border-light)" }} id="work">
           <SectionHeader
             title="Product Design & Strategy"
             sub="Service blueprinting · Iterative prototyping"
           />
           <ProductCard study={productDesign[0]} featured />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-4)" }} className="je-grid-2">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--k40-s-4)" }} className="je-grid-2">
             {productDesign.slice(1).map((s) => <ProductCard key={s.id} study={s} />)}
           </div>
         </section>
 
         {/* ── UX RESEARCH ── */}
-        <section style={{ padding: "var(--s-8) 0", borderTop: "1px solid var(--k-border-light)" }}>
+        <section style={{ padding: "var(--k40-s-8) 0", borderTop: "1px solid var(--k40-border-light)" }}>
           <SectionHeader
             title="UX Research & Behavioral Insights"
             sub="Moderated testing · Cognitive walkthroughs · Benchmarking"
           />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--s-4)" }} className="je-research-grid">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--k40-s-4)" }} className="je-research-grid">
             {uxResearch.map((s) => <ResearchCard key={s.id} study={s} />)}
           </div>
         </section>
 
         {/* ── INFORMATION ARCHITECTURE ── */}
-        <section style={{ padding: "var(--s-8) 0", borderTop: "1px solid var(--k-border-light)" }}>
+        <section style={{ padding: "var(--k40-s-8) 0", borderTop: "1px solid var(--k40-border-light)" }}>
           <SectionHeader
             title="Information Architecture & Complex Tooling"
             sub="Expert-user systems · Cognitive load reduction"
           />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-4)" }} className="je-grid-2">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--k40-s-4)" }} className="je-grid-2">
             {iaTooling.map((s) => <ProductCard key={s.id} study={s} />)}
           </div>
         </section>
 
         {/* ── WRITINGS ── */}
         <section
-          style={{ padding: "var(--s-8) 0", borderTop: "1px solid var(--k-border-light)", scrollMarginTop: "24px" }}
+          style={{ padding: "var(--k40-s-8) 0", borderTop: "1px solid var(--k40-border-light)", scrollMarginTop: "24px" }}
           id="writings"
         >
           <SectionHeader
@@ -455,7 +455,7 @@ export default function Home() {
             subHref="/writings"
           />
           <div
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--s-6)" }}
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--k40-s-6)" }}
             className="je-writings-grid"
           >
             {writingThemes.map((theme) => (
@@ -464,9 +464,9 @@ export default function Home() {
                   fontFamily: "'IBM Plex Mono', monospace",
                   fontSize: "0.6rem", fontWeight: 700,
                   textTransform: "uppercase", letterSpacing: "0.18em",
-                  color: "var(--k-text-muted)",
-                  marginBottom: "var(--s-3)", paddingBottom: "var(--s-3)",
-                  borderBottom: "1px solid var(--k-border-heavy)",
+                  color: "var(--k40-fg-4)",
+                  marginBottom: "var(--k40-s-3)", paddingBottom: "var(--k40-s-3)",
+                  borderBottom: "1px solid var(--k40-border-heavy)",
                 }}>
                   {theme}
                 </p>
@@ -476,16 +476,16 @@ export default function Home() {
                     href={article.href}
                     className="je-writing-row"
                     style={{
-                      display: "flex", gap: "var(--s-3)",
-                      padding: "var(--s-4) var(--s-2)", margin: "0 calc(-1 * var(--s-2))",
-                      borderBottom: "1px solid var(--k-border-light)",
+                      display: "flex", gap: "var(--k40-s-3)",
+                      padding: "var(--k40-s-4) var(--k40-s-2)", margin: "0 calc(-1 * var(--k40-s-2))",
+                      borderBottom: "1px solid var(--k40-border-light)",
                       textDecoration: "none", color: "inherit",
                       transition: "background 150ms ease",
                     }}
                   >
                     <span style={{
                       fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: "0.6rem", color: "var(--k-text-muted)",
+                      fontSize: "0.6rem", color: "var(--k40-fg-4)",
                       whiteSpace: "nowrap", paddingTop: "2px", minWidth: "52px",
                     }}>
                       {article.date}
@@ -494,14 +494,14 @@ export default function Home() {
                       <p style={{
                         fontFamily: "'IBM Plex Sans', sans-serif",
                         fontSize: "0.825rem", fontWeight: 500,
-                        color: "var(--k-text-primary)", lineHeight: 1.4, marginBottom: "var(--s-1)",
+                        color: "var(--k40-fg-1)", lineHeight: 1.4, marginBottom: "var(--k40-s-1)",
                       }}>
                         {article.title}
                       </p>
                       <p style={{
                         fontFamily: "'IBM Plex Sans', sans-serif",
                         fontSize: "0.775rem",
-                        color: "var(--k-text-secondary)", lineHeight: 1.6,
+                        color: "var(--k40-fg-3)", lineHeight: 1.6,
                       }}>
                         {article.description}
                       </p>

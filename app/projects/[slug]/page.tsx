@@ -31,29 +31,29 @@ const sectionLabelStyle: React.CSSProperties = {
   fontFamily: "'IBM Plex Mono', monospace",
   fontSize: "0.6rem", fontWeight: 700,
   textTransform: "uppercase", letterSpacing: "0.2em",
-  color: "var(--k-text-muted)",
-  marginBottom: "var(--s-5)", paddingBottom: "var(--s-3)",
-  borderBottom: "1px solid var(--k-border-heavy)",
+  color: "var(--k40-fg-4)",
+  marginBottom: "var(--k40-s-5)", paddingBottom: "var(--k40-s-3)",
+  borderBottom: "1px solid var(--k40-border-heavy)",
 };
 
 const calloutStyle: React.CSSProperties = {
-  background: "var(--k-bg)",
-  border: "1px solid var(--k-border-light)",
-  borderLeft: "4px solid var(--k-teal)",
-  padding: "var(--s-6)",
-  marginBottom: "var(--s-8)",
+  background: "var(--k40-bg)",
+  border: "1px solid var(--k40-border-light)",
+  borderLeft: "4px solid var(--k40-accent-rail)",
+  padding: "var(--k40-s-6)",
+  marginBottom: "var(--k40-s-8)",
 };
 
 const bodyTextStyle: React.CSSProperties = {
   fontFamily: "'IBM Plex Sans', sans-serif",
   fontSize: "0.9rem", lineHeight: 1.75,
-  color: "var(--k-text-secondary)",
+  color: "var(--k40-fg-3)",
   margin: 0,
 };
 
 const listStyle: React.CSSProperties = {
-  margin: 0, paddingLeft: "var(--s-5)",
-  display: "flex", flexDirection: "column" as const, gap: "var(--s-3)",
+  margin: 0, paddingLeft: "var(--k40-s-5)",
+  display: "flex", flexDirection: "column" as const, gap: "var(--k40-s-3)",
 };
 
 export default function ProjectPage({ params }: ProjectPageProps) {
@@ -61,8 +61,8 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
   if (!project) {
     return (
-      <div style={{ padding: "var(--s-8)", textAlign: "center" }}>
-        <p style={{ fontFamily: "'IBM Plex Mono', monospace", color: "var(--k-text-muted)" }}>
+      <div style={{ padding: "var(--k40-s-8)", textAlign: "center" }}>
+        <p style={{ fontFamily: "'IBM Plex Mono', monospace", color: "var(--k40-fg-4)" }}>
           Project &quot;{params.slug}&quot; not found.
         </p>
       </div>
@@ -74,17 +74,17 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   /* ── Shared page header (used for both paths) ─────────────────── */
   const pageHeader = (
     <section style={{
-      maxWidth: "var(--content-max)", margin: "0 auto",
-      padding: "var(--s-8) var(--content-pad) var(--s-7)",
-      borderBottom: "1px solid var(--k-border-heavy)",
+      maxWidth: "var(--k40-content-max)", margin: "0 auto",
+      padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-7)",
+      borderBottom: "1px solid var(--k40-border-heavy)",
     }}>
       <Link href="/work" style={{
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: "0.6rem", fontWeight: 700,
         letterSpacing: "0.15em", textTransform: "uppercase",
-        color: "var(--k-text-muted)", textDecoration: "none",
-        display: "inline-flex", alignItems: "center", gap: "var(--s-2)",
-        marginBottom: "var(--s-5)",
+        color: "var(--k40-fg-4)", textDecoration: "none",
+        display: "inline-flex", alignItems: "center", gap: "var(--k40-s-2)",
+        marginBottom: "var(--k40-s-5)",
       }}>
         ← Work
       </Link>
@@ -92,7 +92,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: "0.6rem", fontWeight: 700,
         letterSpacing: "0.2em", textTransform: "uppercase",
-        color: "var(--k-text-muted)", marginBottom: "var(--s-3)",
+        color: "var(--k40-fg-4)", marginBottom: "var(--k40-s-3)",
       }}>
         {project.company}
       </p>
@@ -101,30 +101,30 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         fontSize: "clamp(28px, 4vw, 52px)",
         fontWeight: 400,
         letterSpacing: "0.08em", textTransform: "uppercase",
-        color: "var(--k-text-primary)",
-        marginBottom: "var(--s-4)",
+        color: "var(--k40-fg-1)",
+        marginBottom: "var(--k40-s-4)",
       }}>
         {project.title}
       </h1>
       <p style={{
         fontFamily: "'IBM Plex Sans', sans-serif",
         fontSize: "1rem", lineHeight: 1.65,
-        color: "var(--k-text-secondary)",
-        maxWidth: "560px", marginBottom: "var(--s-5)",
+        color: "var(--k40-fg-3)",
+        maxWidth: "560px", marginBottom: "var(--k40-s-5)",
       }}>
         {project.description}
       </p>
       {project.tags && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--s-2)" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--k40-s-2)" }}>
           {project.tags.map((tag, i) => (
             <span key={i} style={{
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: "0.6rem", fontWeight: 700,
               letterSpacing: "0.1em", textTransform: "uppercase",
-              color: "var(--k-text-secondary)",
-              border: "1px solid var(--k-border-mid)",
-              background: "var(--k-bg)",
-              padding: "var(--s-1) var(--s-3)",
+              color: "var(--k40-fg-3)",
+              border: "1px solid var(--k40-border-mid)",
+              background: "var(--k40-bg)",
+              padding: "var(--k40-s-1) var(--k40-s-3)",
             }}>
               {tag}
             </span>
@@ -188,14 +188,14 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       {/* Meta strip — role / duration / tools / process */}
       {(customProject.role || customProject.duration || customProject.tools || customProject.process) && (
         <div style={{
-          background: "var(--k-text-primary)",
-          padding: "var(--s-7) var(--content-pad)",
+          background: "var(--k40-fg-1)",
+          padding: "var(--k40-s-7) var(--content-pad)",
         }}>
           <div style={{
-            maxWidth: "var(--content-max)", margin: "0 auto",
+            maxWidth: "var(--k40-content-max)", margin: "0 auto",
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: "var(--s-7)",
+            gap: "var(--k40-s-7)",
           }}>
             {[
               { label: "Role", value: customProject.role },
@@ -209,7 +209,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   fontSize: "0.55rem", fontWeight: 700,
                   letterSpacing: "0.2em", textTransform: "uppercase",
                   color: "rgba(255,255,255,0.45)",
-                  marginBottom: "var(--s-2)",
+                  marginBottom: "var(--k40-s-2)",
                 }}>
                   {label}
                 </p>
@@ -239,13 +239,13 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
       {/* Main content */}
       <div style={{
-        maxWidth: "var(--content-max)", margin: "0 auto",
-        padding: "var(--s-8) var(--content-pad) var(--s-9)",
+        maxWidth: "var(--k40-content-max)", margin: "0 auto",
+        padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-9)",
       }}>
 
         {/* Summary */}
         {customProject.summary && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Summary</p>
             <p style={{ ...bodyTextStyle, fontSize: "1rem", lineHeight: 1.8 }}>
               {customProject.summary}
@@ -257,20 +257,20 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         {project.metrics && (
           <div style={{
             ...calloutStyle,
-            borderLeft: `4px solid var(--k-teal)`,
+            borderLeft: `4px solid var(--k40-accent-rail)`,
           }}>
             <p style={{
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: "0.6rem", fontWeight: 700,
               letterSpacing: "0.15em", textTransform: "uppercase",
-              color: "var(--k-text-muted)", marginBottom: "var(--s-3)",
+              color: "var(--k40-fg-4)", marginBottom: "var(--k40-s-3)",
             }}>
               Key Results
             </p>
             <p style={{
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: "0.85rem", lineHeight: 1.7,
-              color: "var(--k-text-primary)", margin: 0,
+              color: "var(--k40-fg-1)", margin: 0,
             }}>
               {project.metrics}
             </p>
@@ -279,7 +279,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Key Outcomes */}
         {customProject.keyOutcomes && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Key Outcomes</p>
             <ul style={listStyle}>
               {customProject.keyOutcomes.map((item: string, i: number) => (
@@ -291,7 +291,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Business Challenge */}
         {customProject.businessChallenges && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Business Challenge</p>
             <ul style={listStyle}>
               {customProject.businessChallenges.map((item: string, i: number) => (
@@ -306,8 +306,8 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           <div style={{
             display: "grid",
             gridTemplateColumns: customProject.userPainPoints && customProject.uxGoal ? "1fr 1fr" : "1fr",
-            gap: "var(--s-6)",
-            marginBottom: "var(--s-9)",
+            gap: "var(--k40-s-6)",
+            marginBottom: "var(--k40-s-9)",
           }}>
             {customProject.userPainPoints && (
               <div style={calloutStyle}>
@@ -330,9 +330,9 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Research Methods */}
         {customProject.methodsUsed && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Research Methods</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-5)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--k40-s-5)" }}>
               {Object.entries(customProject.methodsUsed).map(([key, value]: [string, any], i: number) => {
                 const labels: Record<string, string> = {
                   competitiveAudit: "Competitive Audit",
@@ -340,11 +340,11 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   technicalGuidelines: "Technical Guidelines",
                 };
                 return (
-                  <div key={i} style={{ display: "flex", gap: "var(--s-5)", alignItems: "flex-start" }}>
+                  <div key={i} style={{ display: "flex", gap: "var(--k40-s-5)", alignItems: "flex-start" }}>
                     <span style={{
                       fontFamily: "'IBM Plex Mono', monospace",
                       fontSize: "0.6rem", fontWeight: 700,
-                      color: "var(--k-teal)",
+                      color: "var(--k40-accent-rail)",
                       paddingTop: "3px", flexShrink: 0,
                       textTransform: "uppercase", letterSpacing: "0.12em",
                       minWidth: "160px",
@@ -361,7 +361,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Scope Refinement */}
         {customProject.scopeRefinement && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Scope Refinement</p>
             <ul style={listStyle}>
               {customProject.scopeRefinement.map((item: string, i: number) => (
@@ -375,17 +375,17 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         {customProject.keyInsight && (
           <div style={{
             ...calloutStyle,
-            background: `color-mix(in srgb, var(--k-teal) 6%, var(--k-bg))`,
+            background: `color-mix(in srgb, var(--k40-accent-rail) 6%, var(--k40-bg))`,
           }}>
             <p style={{
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: "0.6rem", fontWeight: 700,
               letterSpacing: "0.15em", textTransform: "uppercase",
-              color: "var(--k-teal)", marginBottom: "var(--s-3)",
+              color: "var(--k40-accent-rail)", marginBottom: "var(--k40-s-3)",
             }}>
               Key Insight
             </p>
-            <p style={{ ...bodyTextStyle, color: "var(--k-text-primary)" }}>
+            <p style={{ ...bodyTextStyle, color: "var(--k40-fg-1)" }}>
               {customProject.keyInsight}
             </p>
           </div>
@@ -393,16 +393,16 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Featured images */}
         {project.images.featured && project.images.featured.length > 0 && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Designs</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-4)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--k40-s-4)" }}>
               {project.images.featured.map((src, i) => (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   key={i}
                   src={src}
                   alt={`${project.title} — design ${i + 1}`}
-                  style={{ width: "100%", height: "auto", display: "block", border: "1px solid var(--k-border-light)" }}
+                  style={{ width: "100%", height: "auto", display: "block", border: "1px solid var(--k40-border-light)" }}
                 />
               ))}
             </div>
@@ -411,7 +411,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Iterations */}
         {customProject.iterations && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Design Iterations</p>
             <ul style={listStyle}>
               {customProject.iterations.map((item: string, i: number) => (
@@ -423,7 +423,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Technical Collaboration */}
         {customProject.technicalCollaboration && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Technical Collaboration</p>
             <p style={bodyTextStyle}>{customProject.technicalCollaboration}</p>
           </section>
@@ -431,7 +431,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Quantitative Results */}
         {customProject.quantitativeResults && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Quantitative Results</p>
             <ul style={listStyle}>
               {customProject.quantitativeResults.map((item: string, i: number) => (
@@ -443,7 +443,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Strategic Impact */}
         {customProject.strategicImpact && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Strategic Impact</p>
             <ul style={listStyle}>
               {customProject.strategicImpact.map((item: string, i: number) => (
@@ -455,7 +455,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Leadership */}
         {customProject.leadership && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Leadership &amp; Mentorship</p>
             <ul style={listStyle}>
               {customProject.leadership.map((item: string, i: number) => (
@@ -467,7 +467,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Key Takeaways */}
         {customProject.keyTakeaways && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Key Takeaways</p>
             <ul style={listStyle}>
               {customProject.keyTakeaways.map((item: string, i: number) => (
@@ -479,7 +479,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Future Roadmap */}
         {customProject.futureRoadmap && (
-          <section style={{ marginBottom: "var(--s-9)" }}>
+          <section style={{ marginBottom: "var(--k40-s-9)" }}>
             <p style={sectionLabelStyle}>Future Roadmap</p>
             <ul style={listStyle}>
               {customProject.futureRoadmap.map((item: string, i: number) => (
@@ -493,32 +493,32 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         {project.impact && (
           <div style={{
             ...calloutStyle,
-            background: `color-mix(in srgb, var(--k-teal) 6%, var(--k-bg))`,
+            background: `color-mix(in srgb, var(--k40-accent-rail) 6%, var(--k40-bg))`,
           }}>
             <p style={{
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: "0.6rem", fontWeight: 700,
               letterSpacing: "0.15em", textTransform: "uppercase",
-              color: "var(--k-teal)", marginBottom: "var(--s-3)",
+              color: "var(--k40-accent-rail)", marginBottom: "var(--k40-s-3)",
             }}>
               Overall Impact
             </p>
-            <p style={{ ...bodyTextStyle, color: "var(--k-text-primary)" }}>
+            <p style={{ ...bodyTextStyle, color: "var(--k40-fg-1)" }}>
               {project.impact}
             </p>
           </div>
         )}
 
         {/* Back link */}
-        <div style={{ borderTop: "1px solid var(--k-border-light)", paddingTop: "var(--s-7)" }}>
+        <div style={{ borderTop: "1px solid var(--k40-border-light)", paddingTop: "var(--k40-s-7)" }}>
           <Link href="/work" style={{
             fontFamily: "'IBM Plex Mono', monospace",
             fontSize: "0.7rem", fontWeight: 700,
             letterSpacing: "0.12em", textTransform: "uppercase",
-            color: "var(--k-text-primary)",
+            color: "var(--k40-fg-1)",
             textDecoration: "none",
-            border: "1px solid var(--k-border-heavy)",
-            padding: "var(--s-3) var(--s-5)",
+            border: "1px solid var(--k40-border-heavy)",
+            padding: "var(--k40-s-3) var(--k40-s-5)",
             display: "inline-block",
           }}>
             ← Back to Work

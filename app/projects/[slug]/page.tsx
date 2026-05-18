@@ -27,34 +27,8 @@ export async function generateMetadata(
   };
 }
 
-const sectionLabelStyle: React.CSSProperties = {
-  fontFamily: "'IBM Plex Mono', monospace",
-  fontSize: "0.6rem", fontWeight: 700,
-  textTransform: "uppercase", letterSpacing: "0.2em",
-  color: "var(--k40-fg-4)",
-  marginBottom: "var(--k40-s-5)", paddingBottom: "var(--k40-s-3)",
-  borderBottom: "1px solid var(--k40-border-heavy)",
-};
-
-const calloutStyle: React.CSSProperties = {
-  background: "var(--k40-bg)",
-  border: "1px solid var(--k40-border-light)",
-  borderLeft: "4px solid var(--k40-accent-rail)",
-  padding: "var(--k40-s-6)",
-  marginBottom: "var(--k40-s-8)",
-};
-
-const bodyTextStyle: React.CSSProperties = {
-  fontFamily: "'IBM Plex Sans', sans-serif",
-  fontSize: "0.9rem", lineHeight: 1.75,
-  color: "var(--k40-fg-3)",
-  margin: 0,
-};
-
-const listStyle: React.CSSProperties = {
-  margin: 0, paddingLeft: "var(--k40-s-5)",
-  display: "flex", flexDirection: "column" as const, gap: "var(--k40-s-3)",
-};
+const sectionLabel = { marginBottom: "var(--k40-s-5)", paddingBottom: "var(--k40-s-3)", borderBottom: "1px solid var(--k40-border-heavy)" };
+const listStyle: React.CSSProperties = { margin: 0, paddingLeft: "var(--k40-s-5)", display: "flex", flexDirection: "column", gap: "var(--k40-s-3)" };
 
 export default function ProjectPage({ params }: ProjectPageProps) {
   const project = projects.find((p) => p.slug === params.slug);
@@ -62,42 +36,26 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   if (!project) {
     return (
       <div style={{ padding: "var(--k40-s-8)", textAlign: "center" }}>
-        <p style={{ fontFamily: "'IBM Plex Mono', monospace", color: "var(--k40-fg-4)" }}>
-          Project &quot;{params.slug}&quot; not found.
-        </p>
+        <p className="k40-eyebrow">Project &quot;{params.slug}&quot; not found.</p>
       </div>
     );
   }
 
   const customProject = project as any;
 
-  /* ── Shared page header (used for both paths) ─────────────────── */
+  /* ── Shared page header ───────────────────────────────────────── */
   const pageHeader = (
     <section style={{
       maxWidth: "var(--k40-content-max)", margin: "0 auto",
       padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-7)",
       borderBottom: "1px solid var(--k40-border-heavy)",
     }}>
-      <Link href="/work" style={{
-        fontFamily: "'IBM Plex Mono', monospace",
-        fontSize: "0.6rem", fontWeight: 700,
-        letterSpacing: "0.15em", textTransform: "uppercase",
-        color: "var(--k40-fg-4)", textDecoration: "none",
-        display: "inline-flex", alignItems: "center", gap: "var(--k40-s-2)",
-        marginBottom: "var(--k40-s-5)",
-      }}>
+      <Link href="/work" className="k40-btn k40-btn-ghost" style={{ marginBottom: "var(--k40-s-5)", display: "inline-flex", alignItems: "center", gap: "var(--k40-s-2)" }}>
         ← Work
       </Link>
-      <p style={{
-        fontFamily: "'IBM Plex Mono', monospace",
-        fontSize: "0.6rem", fontWeight: 700,
-        letterSpacing: "0.2em", textTransform: "uppercase",
-        color: "var(--k40-fg-4)", marginBottom: "var(--k40-s-3)",
-      }}>
-        {project.company}
-      </p>
+      <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-3)" }}>{project.company}</p>
       <h1 style={{
-        fontFamily: "Impact, 'Arial Black', sans-serif",
+        fontFamily: "var(--k40-font-display)",
         fontSize: "clamp(28px, 4vw, 52px)",
         fontWeight: 400,
         letterSpacing: "0.08em", textTransform: "uppercase",
@@ -106,35 +64,20 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       }}>
         {project.title}
       </h1>
-      <p style={{
-        fontFamily: "'IBM Plex Sans', sans-serif",
-        fontSize: "1rem", lineHeight: 1.65,
-        color: "var(--k40-fg-3)",
-        maxWidth: "560px", marginBottom: "var(--k40-s-5)",
-      }}>
+      <p className="k40-body" style={{ maxWidth: "560px", marginBottom: "var(--k40-s-5)" }}>
         {project.description}
       </p>
       {project.tags && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--k40-s-2)" }}>
           {project.tags.map((tag, i) => (
-            <span key={i} style={{
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: "0.6rem", fontWeight: 700,
-              letterSpacing: "0.1em", textTransform: "uppercase",
-              color: "var(--k40-fg-3)",
-              border: "1px solid var(--k40-border-mid)",
-              background: "var(--k40-bg)",
-              padding: "var(--k40-s-1) var(--k40-s-3)",
-            }}>
-              {tag}
-            </span>
+            <span key={i} className="k40-tag">{tag}</span>
           ))}
         </div>
       )}
     </section>
   );
 
-  /* ── iframeUrl path: full-page iframe for interactive React apps ──── */
+  /* ── iframeUrl path ───────────────────────────────────────────── */
   if ((project as any).contentType === 'iframe' && project.contentUrl) {
     return (
       <iframe
@@ -145,7 +88,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     );
   }
 
-  /* ── contentUrl path: injected HTML with Kronos overrides ────────── */
+  /* ── contentUrl path: injected HTML ──────────────────────────── */
   if (project.contentUrl) {
     const htmlPath = path.join(
       process.cwd(),
@@ -155,19 +98,11 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
     try {
       const htmlContent = fs.readFileSync(htmlPath, "utf-8");
-
-      // Extract <style> blocks from <head> so CSS is preserved
       const styleMatches = htmlContent.match(/<style[^>]*>[\s\S]*?<\/style>/gi) ?? [];
       const headStyles = styleMatches.join("\n");
-
-      // Extract only the <body> content to avoid injecting a full HTML document into a div
       const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
       const bodyContent = bodyMatch ? bodyMatch[1] : htmlContent;
-
-      const kronosOverride = `<style>
-        #footer { display: none !important; }
-        #site-nav { display: none !important; }
-      </style>`;
+      const kronosOverride = `<style>#footer { display: none !important; } #site-nav { display: none !important; }</style>`;
 
       return (
         <div suppressHydrationWarning>
@@ -179,18 +114,15 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     }
   }
 
-  /* ── React layout path ─────────────────────────────────────────── */
+  /* ── React layout path ───────────────────────────────────────── */
   return (
-    <div style={{}}>
+    <div>
 
       {pageHeader}
 
       {/* Meta strip — role / duration / tools / process */}
       {(customProject.role || customProject.duration || customProject.tools || customProject.process) && (
-        <div style={{
-          background: "var(--k40-fg-1)",
-          padding: "var(--k40-s-7) var(--content-pad)",
-        }}>
+        <div style={{ background: "var(--k40-fg-1)", padding: "var(--k40-s-7) var(--content-pad)" }}>
           <div style={{
             maxWidth: "var(--k40-content-max)", margin: "0 auto",
             display: "grid",
@@ -204,21 +136,8 @@ export default function ProjectPage({ params }: ProjectPageProps) {
               { label: "Process", value: Array.isArray(customProject.process) ? customProject.process.join(" · ") : customProject.process },
             ].filter((m) => m.value).map(({ label, value }) => (
               <div key={label}>
-                <p style={{
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: "0.55rem", fontWeight: 700,
-                  letterSpacing: "0.2em", textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.45)",
-                  marginBottom: "var(--k40-s-2)",
-                }}>
-                  {label}
-                </p>
-                <p style={{
-                  fontFamily: "'IBM Plex Sans', sans-serif",
-                  fontSize: "0.85rem", lineHeight: 1.5,
-                  color: "rgba(255,255,255,0.88)",
-                  margin: 0,
-                }}>
+                <p className="k40-eyebrow" style={{ color: "var(--k40-fg-on-dark-3)", marginBottom: "var(--k40-s-2)" }}>{label}</p>
+                <p style={{ fontFamily: "var(--k40-font-body)", fontSize: "var(--k40-text-sm)", lineHeight: 1.5, color: "var(--k40-fg-on-dark-2)", margin: 0 }}>
                   {value}
                 </p>
               </div>
@@ -230,11 +149,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       {/* Hero image */}
       {project.images.hero && (
         /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src={project.images.hero}
-          alt={project.title}
-          style={{ width: "100%", height: "auto", display: "block" }}
-        />
+        <img src={project.images.hero} alt={project.title} style={{ width: "100%", height: "auto", display: "block" }} />
       )}
 
       {/* Main content */}
@@ -243,65 +158,42 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-9)",
       }}>
 
-        {/* Summary */}
         {customProject.summary && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Summary</p>
-            <p style={{ ...bodyTextStyle, fontSize: "1rem", lineHeight: 1.8 }}>
-              {customProject.summary}
-            </p>
+            <p className="k40-eyebrow" style={sectionLabel}>Summary</p>
+            <p className="k40-body" style={{ maxWidth: "none", fontSize: "1rem", lineHeight: 1.8 }}>{customProject.summary}</p>
           </section>
         )}
 
-        {/* Metrics */}
         {project.metrics && (
-          <div style={{
-            ...calloutStyle,
-            borderLeft: `4px solid var(--k40-accent-rail)`,
-          }}>
-            <p style={{
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: "0.6rem", fontWeight: 700,
-              letterSpacing: "0.15em", textTransform: "uppercase",
-              color: "var(--k40-fg-4)", marginBottom: "var(--k40-s-3)",
-            }}>
-              Key Results
-            </p>
-            <p style={{
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: "0.85rem", lineHeight: 1.7,
-              color: "var(--k40-fg-1)", margin: 0,
-            }}>
-              {project.metrics}
-            </p>
+          <div className="k40-callout is-finding" style={{ marginBottom: "var(--k40-s-8)" }}>
+            <span className="k40-callout-label">Key Results</span>
+            <p className="k40-callout-body" style={{ color: "var(--k40-fg-1)", fontFamily: "var(--k40-font-ui)" }}>{project.metrics}</p>
           </div>
         )}
 
-        {/* Key Outcomes */}
         {customProject.keyOutcomes && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Key Outcomes</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Key Outcomes</p>
             <ul style={listStyle}>
               {customProject.keyOutcomes.map((item: string, i: number) => (
-                <li key={i} style={bodyTextStyle}>{item}</li>
+                <li key={i} className="k40-body" style={{ maxWidth: "none" }}>{item}</li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* Business Challenge */}
         {customProject.businessChallenges && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Business Challenge</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Business Challenge</p>
             <ul style={listStyle}>
               {customProject.businessChallenges.map((item: string, i: number) => (
-                <li key={i} style={bodyTextStyle}>{item}</li>
+                <li key={i} className="k40-body" style={{ maxWidth: "none" }}>{item}</li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* User Pain Points + UX Goal — 2 col */}
         {(customProject.userPainPoints || customProject.uxGoal) && (
           <div style={{
             display: "grid",
@@ -310,28 +202,27 @@ export default function ProjectPage({ params }: ProjectPageProps) {
             marginBottom: "var(--k40-s-9)",
           }}>
             {customProject.userPainPoints && (
-              <div style={calloutStyle}>
-                <p style={sectionLabelStyle}>User Pain Points</p>
-                <ul style={listStyle}>
+              <div className="k40-callout">
+                <span className="k40-callout-label">User Pain Points</span>
+                <ul style={{ ...listStyle, paddingLeft: "var(--k40-s-4)" }}>
                   {customProject.userPainPoints.map((item: string, i: number) => (
-                    <li key={i} style={bodyTextStyle}>{item}</li>
+                    <li key={i} className="k40-callout-body">{item}</li>
                   ))}
                 </ul>
               </div>
             )}
             {customProject.uxGoal && (
-              <div style={calloutStyle}>
-                <p style={sectionLabelStyle}>UX Goal</p>
-                <p style={bodyTextStyle}>{customProject.uxGoal}</p>
+              <div className="k40-callout">
+                <span className="k40-callout-label">UX Goal</span>
+                <p className="k40-callout-body">{customProject.uxGoal}</p>
               </div>
             )}
           </div>
         )}
 
-        {/* Research Methods */}
         {customProject.methodsUsed && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Research Methods</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Research Methods</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--k40-s-5)" }}>
               {Object.entries(customProject.methodsUsed).map(([key, value]: [string, any], i: number) => {
                 const labels: Record<string, string> = {
@@ -341,17 +232,10 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 };
                 return (
                   <div key={i} style={{ display: "flex", gap: "var(--k40-s-5)", alignItems: "flex-start" }}>
-                    <span style={{
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: "0.6rem", fontWeight: 700,
-                      color: "var(--k40-accent-rail)",
-                      paddingTop: "3px", flexShrink: 0,
-                      textTransform: "uppercase", letterSpacing: "0.12em",
-                      minWidth: "160px",
-                    }}>
+                    <span className="k40-eyebrow is-accent" style={{ paddingTop: "3px", flexShrink: 0, minWidth: "160px" }}>
                       {labels[key] || key}
                     </span>
-                    <p style={bodyTextStyle}>{value}</p>
+                    <p className="k40-body" style={{ maxWidth: "none" }}>{value}</p>
                   </div>
                 );
               })}
@@ -359,42 +243,27 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           </section>
         )}
 
-        {/* Scope Refinement */}
         {customProject.scopeRefinement && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Scope Refinement</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Scope Refinement</p>
             <ul style={listStyle}>
               {customProject.scopeRefinement.map((item: string, i: number) => (
-                <li key={i} style={bodyTextStyle}>{item}</li>
+                <li key={i} className="k40-body" style={{ maxWidth: "none" }}>{item}</li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* Key Insight callout */}
         {customProject.keyInsight && (
-          <div style={{
-            ...calloutStyle,
-            background: `color-mix(in srgb, var(--k40-accent-rail) 6%, var(--k40-bg))`,
-          }}>
-            <p style={{
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: "0.6rem", fontWeight: 700,
-              letterSpacing: "0.15em", textTransform: "uppercase",
-              color: "var(--k40-accent-rail)", marginBottom: "var(--k40-s-3)",
-            }}>
-              Key Insight
-            </p>
-            <p style={{ ...bodyTextStyle, color: "var(--k40-fg-1)" }}>
-              {customProject.keyInsight}
-            </p>
+          <div className="k40-callout is-insight" style={{ marginBottom: "var(--k40-s-8)" }}>
+            <span className="k40-callout-label">Key Insight</span>
+            <p className="k40-callout-body">{customProject.keyInsight}</p>
           </div>
         )}
 
-        {/* Featured images */}
         {project.images.featured && project.images.featured.length > 0 && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Designs</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Designs</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--k40-s-4)" }}>
               {project.images.featured.map((src, i) => (
                 /* eslint-disable-next-line @next/next/no-img-element */
@@ -409,118 +278,89 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           </section>
         )}
 
-        {/* Iterations */}
         {customProject.iterations && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Design Iterations</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Design Iterations</p>
             <ul style={listStyle}>
               {customProject.iterations.map((item: string, i: number) => (
-                <li key={i} style={bodyTextStyle}>{item}</li>
+                <li key={i} className="k40-body" style={{ maxWidth: "none" }}>{item}</li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* Technical Collaboration */}
         {customProject.technicalCollaboration && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Technical Collaboration</p>
-            <p style={bodyTextStyle}>{customProject.technicalCollaboration}</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Technical Collaboration</p>
+            <p className="k40-body" style={{ maxWidth: "none" }}>{customProject.technicalCollaboration}</p>
           </section>
         )}
 
-        {/* Quantitative Results */}
         {customProject.quantitativeResults && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Quantitative Results</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Quantitative Results</p>
             <ul style={listStyle}>
               {customProject.quantitativeResults.map((item: string, i: number) => (
-                <li key={i} style={bodyTextStyle}>{item}</li>
+                <li key={i} className="k40-body" style={{ maxWidth: "none" }}>{item}</li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* Strategic Impact */}
         {customProject.strategicImpact && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Strategic Impact</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Strategic Impact</p>
             <ul style={listStyle}>
               {customProject.strategicImpact.map((item: string, i: number) => (
-                <li key={i} style={bodyTextStyle}>{item}</li>
+                <li key={i} className="k40-body" style={{ maxWidth: "none" }}>{item}</li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* Leadership */}
         {customProject.leadership && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Leadership &amp; Mentorship</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Leadership &amp; Mentorship</p>
             <ul style={listStyle}>
               {customProject.leadership.map((item: string, i: number) => (
-                <li key={i} style={bodyTextStyle}>{item}</li>
+                <li key={i} className="k40-body" style={{ maxWidth: "none" }}>{item}</li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* Key Takeaways */}
         {customProject.keyTakeaways && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Key Takeaways</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Key Takeaways</p>
             <ul style={listStyle}>
               {customProject.keyTakeaways.map((item: string, i: number) => (
-                <li key={i} style={bodyTextStyle}>{item}</li>
+                <li key={i} className="k40-body" style={{ maxWidth: "none" }}>{item}</li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* Future Roadmap */}
         {customProject.futureRoadmap && (
           <section style={{ marginBottom: "var(--k40-s-9)" }}>
-            <p style={sectionLabelStyle}>Future Roadmap</p>
+            <p className="k40-eyebrow" style={sectionLabel}>Future Roadmap</p>
             <ul style={listStyle}>
               {customProject.futureRoadmap.map((item: string, i: number) => (
-                <li key={i} style={bodyTextStyle}>{item}</li>
+                <li key={i} className="k40-body" style={{ maxWidth: "none" }}>{item}</li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* Overall Impact */}
         {project.impact && (
-          <div style={{
-            ...calloutStyle,
-            background: `color-mix(in srgb, var(--k40-accent-rail) 6%, var(--k40-bg))`,
-          }}>
-            <p style={{
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: "0.6rem", fontWeight: 700,
-              letterSpacing: "0.15em", textTransform: "uppercase",
-              color: "var(--k40-accent-rail)", marginBottom: "var(--k40-s-3)",
-            }}>
-              Overall Impact
-            </p>
-            <p style={{ ...bodyTextStyle, color: "var(--k40-fg-1)" }}>
-              {project.impact}
-            </p>
+          <div className="k40-callout is-finding" style={{ marginBottom: "var(--k40-s-8)" }}>
+            <span className="k40-callout-label">Overall Impact</span>
+            <p className="k40-callout-body">{project.impact}</p>
           </div>
         )}
 
         {/* Back link */}
         <div style={{ borderTop: "1px solid var(--k40-border-light)", paddingTop: "var(--k40-s-7)" }}>
-          <Link href="/work" style={{
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontSize: "0.7rem", fontWeight: 700,
-            letterSpacing: "0.12em", textTransform: "uppercase",
-            color: "var(--k40-fg-1)",
-            textDecoration: "none",
-            border: "1px solid var(--k40-border-heavy)",
-            padding: "var(--k40-s-3) var(--k40-s-5)",
-            display: "inline-block",
-          }}>
+          <Link href="/work" className="k40-btn k40-btn-secondary">
             ← Back to Work
           </Link>
         </div>

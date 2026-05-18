@@ -12,32 +12,9 @@ export default function Writings() {
         padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-7)",
         borderBottom: "1px solid var(--k40-border-heavy)",
       }}>
-        <p style={{
-          fontFamily: "'IBM Plex Mono', monospace",
-          fontSize: "0.6rem", fontWeight: 700,
-          letterSpacing: "0.2em", textTransform: "uppercase",
-          color: "var(--k40-fg-4)", marginBottom: "var(--k40-s-4)",
-        }}>
-          Writings
-        </p>
-        <h1 style={{
-          fontFamily: "Impact, 'Arial Black', sans-serif",
-          fontSize: "clamp(36px, 5vw, 64px)",
-          fontWeight: 400,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: "var(--k40-fg-1)",
-          marginBottom: "var(--k40-s-4)",
-        }}>
-          AI, Design &amp; Human Factors
-        </h1>
-        <p style={{
-          fontFamily: "'IBM Plex Sans', sans-serif",
-          fontSize: "1rem",
-          color: "var(--k40-fg-3)",
-          lineHeight: 1.7,
-          maxWidth: "520px",
-        }}>
+        <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-4)" }}>Writings</p>
+        <h1 className="k40-display" style={{ marginBottom: "var(--k40-s-4)" }}>AI, Design &amp; Human Factors</h1>
+        <p className="k40-body" style={{ maxWidth: "520px" }}>
           Thoughts on trust, cognition, and the ethics of designing systems that shape human behaviour.
         </p>
       </section>
@@ -47,18 +24,12 @@ export default function Writings() {
         maxWidth: "var(--k40-content-max)", margin: "0 auto",
         padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-9)",
       }}>
-        <div
-          style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--k40-s-7)" }}
-          className="je-writings-grid"
-        >
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--k40-s-7)" }} className="je-writings-grid">
           {themes.map((theme) => (
             <div key={theme}>
-              <p style={{
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: "0.6rem", fontWeight: 700,
-                textTransform: "uppercase", letterSpacing: "0.18em",
-                color: "var(--k40-fg-4)",
-                marginBottom: "var(--k40-s-3)", paddingBottom: "var(--k40-s-3)",
+              <p className="k40-eyebrow" style={{
+                marginBottom: "var(--k40-s-3)",
+                paddingBottom: "var(--k40-s-3)",
                 borderBottom: "1px solid var(--k40-border-heavy)",
               }}>
                 {theme}
@@ -73,28 +44,23 @@ export default function Writings() {
                     padding: "var(--k40-s-4) var(--k40-s-2)", margin: "0 calc(-1 * var(--k40-s-2))",
                     borderBottom: "1px solid var(--k40-border-light)",
                     textDecoration: "none", color: "inherit",
-                    transition: "background 150ms ease",
+                    transition: "background var(--k40-motion-quick) var(--k40-ease)",
                   }}
                 >
-                  <span style={{
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: "0.6rem", color: "var(--k40-fg-4)",
-                    whiteSpace: "nowrap", paddingTop: "2px", minWidth: "52px",
-                  }}>
+                  <span className="k40-eyebrow" style={{ color: "var(--k40-fg-4)", whiteSpace: "nowrap", paddingTop: "2px", minWidth: "52px" }}>
                     {article.date}
                   </span>
                   <div>
                     <p style={{
-                      fontFamily: "'IBM Plex Sans', sans-serif",
-                      fontSize: "0.825rem", fontWeight: 500,
-                      color: "var(--k40-fg-1)", lineHeight: 1.4,
-                      marginBottom: "var(--k40-s-1)",
+                      fontFamily: "var(--k40-font-body)",
+                      fontSize: "var(--k40-text-sm)", fontWeight: 500,
+                      color: "var(--k40-fg-1)", lineHeight: 1.4, marginBottom: "var(--k40-s-1)",
                     }}>
                       {article.title}
                     </p>
                     <p style={{
-                      fontFamily: "'IBM Plex Sans', sans-serif",
-                      fontSize: "0.775rem",
+                      fontFamily: "var(--k40-font-body)",
+                      fontSize: "var(--k40-text-xs)",
                       color: "var(--k40-fg-3)", lineHeight: 1.6,
                     }}>
                       {article.description}

@@ -150,22 +150,27 @@ select:focus {
   color: var(--k40-surface);
 }
 
-/* ── Hero interactions ──────────────────────────────────────────────────── */
-.hero-btn:hover {
-  background: var(--k40-fg-1) !important;
-  border-color: var(--k40-fg-1) !important;
-  color: var(--k40-surface) !important;
+/* ── Hero chips — quick-nav anchors ─────────────────────────────────────── */
+.hero-chip {
+  font-family: var(--k40-font-ui);
+  font-size: var(--k40-text-2xs);
+  font-weight: 500;
+  letter-spacing: var(--k40-track-ui);
+  color: var(--k40-fg-3);
+  background: var(--k40-bg);
+  border: 1px solid var(--k40-border-mid);
+  padding: var(--k40-s-2) var(--k40-s-4);
+  text-decoration: none;
+  display: inline-block;
+  transition:
+    background     var(--k40-motion-quick) var(--k40-ease),
+    color          var(--k40-motion-quick) var(--k40-ease),
+    border-color   var(--k40-motion-quick) var(--k40-ease);
 }
-
-.hero-btn-cta:hover {
-  background: var(--k40-accent) !important;
-  border-color: var(--k40-accent) !important;
-}
-
 .hero-chip:hover {
-  background: var(--k40-fg-1) !important;
-  border-color: var(--k40-fg-1) !important;
-  color: var(--k40-surface) !important;
+  background: var(--k40-fg-1);
+  border-color: var(--k40-fg-1);
+  color: var(--k40-surface);
 }
 
 /* ── Writing rows ───────────────────────────────────────────────────────── */

@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             justifyContent: "space-between", alignItems: "center",
           }}>
             <a href="/" style={{
-              fontFamily: "'Anton', Impact, 'Arial Black', sans-serif",
+              fontFamily: "var(--k40-font-display)",
               fontSize: "1.1rem",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
@@ -85,14 +85,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               gap: "var(--k40-s-7)",
               marginBottom: "var(--k40-s-7)",
             }}>
+
               {/* Brand */}
               <div>
                 <div style={{
-                  fontFamily: "'Anton', Impact, 'Arial Black', sans-serif",
+                  fontFamily: "var(--k40-font-display)",
                   fontSize: "1.5rem",
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
-                  color: "var(--k40-surface)",
+                  color: "var(--k40-fg-inverse)",
                   borderLeft: "4px solid var(--k40-accent-rail)",
                   paddingLeft: "var(--k40-s-4)",
                   marginBottom: "var(--k40-s-4)",
@@ -100,9 +101,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   Joseph Grgic
                 </div>
                 <p style={{
-                  fontFamily: "'IBM Plex Sans', sans-serif",
-                  fontSize: "0.85rem",
-                  color: "rgba(255,255,255,0.5)",
+                  fontFamily: "var(--k40-font-body)",
+                  fontSize: "var(--k40-text-sm)",
+                  color: "var(--k40-fg-on-dark-2)",
                   lineHeight: 1.7,
                   maxWidth: "300px",
                 }}>
@@ -113,23 +114,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
               {/* Pages */}
               <div>
-                <p style={{
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: "0.6rem",
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.2em",
-                  color: "rgba(255,255,255,0.35)",
-                  marginBottom: "var(--k40-s-4)",
-                }}>
-                  Pages
-                </p>
+                <p className="k40-eyebrow" style={{ color: "var(--k40-fg-on-dark-3)", marginBottom: "var(--k40-s-4)" }}>Pages</p>
                 <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "var(--k40-s-3)" }}>
                   {navLinks.map(({ href, label }) => (
                     <li key={href}>
-                      <a href={href} className="footer-link" style={{ color: "rgba(255,255,255,0.55)" }}>
-                        {label}
-                      </a>
+                      <a href={href} className="footer-link" style={{ color: "var(--k40-fg-on-dark-2)" }}>{label}</a>
                     </li>
                   ))}
                 </ul>
@@ -137,28 +126,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
               {/* Contact */}
               <div>
-                <p style={{
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: "0.6rem",
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.2em",
-                  color: "rgba(255,255,255,0.35)",
-                  marginBottom: "var(--k40-s-4)",
-                }}>
-                  Contact
-                </p>
+                <p className="k40-eyebrow" style={{ color: "var(--k40-fg-on-dark-3)", marginBottom: "var(--k40-s-4)" }}>Contact</p>
                 <a href="mailto:jegrgic@gmail.com" className="footer-link"
-                  style={{ display: "block", marginBottom: "var(--k40-s-2)", color: "rgba(255,255,255,0.55)" }}>
+                  style={{ display: "block", marginBottom: "var(--k40-s-2)", color: "var(--k40-fg-on-dark-2)" }}>
                   jegrgic@gmail.com
                 </a>
-                <p style={{
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: "0.7rem",
-                  color: "rgba(255,255,255,0.35)",
-                }}>
-                  Marseille, France
-                </p>
+                <p className="k40-eyebrow" style={{ color: "var(--k40-fg-on-dark-3)" }}>Marseille, France</p>
               </div>
             </div>
 
@@ -170,22 +143,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               justifyContent: "space-between",
               alignItems: "center",
             }}>
-              <p style={{
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: "0.6rem",
-                letterSpacing: "0.08em",
-                color: "rgba(255,255,255,0.25)",
-                textTransform: "uppercase",
-              }}>
+              <p className="k40-eyebrow" style={{ color: "var(--k40-fg-on-dark-3)" }}>
                 &copy; {new Date().getFullYear()} Joseph Grgic
               </p>
-              <p style={{
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: "0.6rem",
-                letterSpacing: "0.08em",
-                color: "rgba(255,255,255,0.25)",
-                textTransform: "uppercase",
-              }}>
+              <p className="k40-eyebrow" style={{ color: "var(--k40-fg-on-dark-3)" }}>
                 UX Research &amp; Design
               </p>
             </div>

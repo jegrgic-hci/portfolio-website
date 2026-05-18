@@ -294,7 +294,7 @@ export default function Home() {
                       <p style={{
                         fontFamily: "var(--k40-font-body)",
                         fontSize: "var(--k40-text-xs)",
-                        color: "var(--k40-fg-3)", lineHeight: 1.6,
+                        color: "var(--k40-fg-3)", lineHeight: 1.6, margin: 0,
                       }}>
                         {article.description}
                       </p>

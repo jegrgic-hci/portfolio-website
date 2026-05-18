@@ -4,252 +4,112 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meta SFI — Email Capture UX Research | Joseph Grgic</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    /* ── Brand vars ── */
     :root {
-      --navy:       #1C2B33;
-      --slate:      #67788A;
-      --slate-mid:  #8fa0ae;
-      --slate-light:#CED7E0;
-      --slate-bg:   rgba(206,215,224,0.22);
-      --white:      #ffffff;
-      --off-white:  #f8f9fa;
-      --text-body:  #2c3e4a;
-      --text-muted: rgba(28,43,51,0.55);
-      --border:     #e4e8eb;
-      --radius:     10px;
-      --nav-h:      56px;
+      --brand-primary: #1C2B33;
+      --brand-accent:  #67788A;
     }
 
-    html { scroll-behavior: smooth; }
+    /* ── Section shell ── */
+    .cs-section    { padding: var(--k40-s-8) var(--content-pad); max-width: var(--k40-content-max); margin: 0 auto; }
+    .cs-full       { background: var(--k40-surface-2); border-top: 1px solid var(--k40-border-light); border-bottom: 1px solid var(--k40-border-light); padding: var(--k40-s-8) var(--content-pad); }
+    .cs-full-inner { max-width: var(--k40-content-max); margin: 0 auto; }
+    .cs-label      { display: block; margin-bottom: var(--k40-s-5); padding-bottom: var(--k40-s-3); border-bottom: 1px solid var(--k40-border-heavy); }
 
-    body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background: var(--white);
-      color: var(--navy);
-      -webkit-font-smoothing: antialiased;
+    /* ── Hero ── */
+    #hero {
+      padding: var(--k40-s-9) var(--content-pad) var(--k40-s-8);
+      max-width: var(--k40-content-max);
+      margin: 0 auto;
     }
-
-    /* ─── STICKY NAV ─── */
-    #site-nav {
-      position: sticky;
-      top: 0;
-      z-index: 200;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      height: var(--nav-h);
+    .hero-eyebrow {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      gap: 24px;
+      gap: var(--k40-s-3);
+      margin-bottom: var(--k40-s-6);
     }
-
-    .nav-brand {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--navy);
-      white-space: nowrap;
-      text-decoration: none;
-      flex-shrink: 0;
-    }
-    .nav-brand span { color: var(--slate); font-weight: 400; }
-
-    .nav-links {
-      display: flex;
-      gap: 2px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .nav-links::-webkit-scrollbar { display: none; }
-
-    .nav-link {
-      font-size: 12px;
+    .hero-date { font-size: var(--k40-text-xs); color: var(--k40-fg-3); }
+    .hero-title {
+      font-size: clamp(28px, 4vw, 52px);
       font-weight: 500;
-      color: var(--slate);
-      text-decoration: none;
-      padding: 6px 12px;
-      border-radius: 20px;
-      white-space: nowrap;
-      transition: background 0.2s, color 0.2s;
+      line-height: 1.15;
+      color: var(--k40-fg-1);
+      max-width: 820px;
+      letter-spacing: -0.02em;
+      margin: 0 0 var(--k40-s-6);
     }
-    .nav-link:hover { background: var(--slate-bg); color: var(--navy); }
-    .nav-link.active { background: var(--navy); color: var(--white); }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--k40-s-6);
+      margin-bottom: var(--k40-s-6);
+    }
+    .hero-meta-group { display: flex; flex-direction: column; gap: var(--k40-s-1); }
+    .hero-meta-value {
+      font-size: var(--k40-text-sm);
+      font-weight: 500;
+      color: var(--k40-fg-1);
+    }
+    .hero-meta-value.multi { display: flex; flex-direction: column; gap: 2px; }
+    .hero-meta-value .role { color: var(--k40-fg-3); font-weight: 400; }
+    .hero-disclaimer {
+      font-size: var(--k40-text-2xs);
+      color: var(--k40-fg-3);
+      text-transform: uppercase;
+      letter-spacing: var(--k40-track-ui);
+      line-height: 1.6;
+      max-width: 560px;
+      padding-top: var(--k40-s-5);
+      border-top: 1px solid var(--k40-border-light);
+    }
 
-    /* progress line */
+    /* ── Read progress bar ── */
     #read-progress {
       position: fixed;
       top: 0; left: 0;
       height: 2px;
-      background: var(--slate);
+      background: var(--brand-accent);
       z-index: 300;
       width: 0%;
       transition: width 0.1s linear;
     }
 
-    /* ─── HERO ─── */
-    #hero {
-      padding: 96px 40px 80px;
-      max-width: 1100px;
-      margin: 0 auto;
+    /* ── Section divider ── */
+    hr.section-hr {
+      border: none;
+      border-top: 1px solid var(--k40-border-light);
+      margin: 0 var(--content-pad);
     }
 
-    .hero-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 32px;
-    }
-    .hero-tag {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--slate);
-      background: var(--slate-bg);
-      padding: 4px 12px;
-      border-radius: 20px;
-    }
-    .hero-date {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .hero-title {
-      font-size: clamp(28px, 4vw, 52px);
-      font-weight: 500;
-      line-height: 1.15;
-      color: var(--navy);
-      max-width: 820px;
-      letter-spacing: -0.02em;
-      margin-bottom: 32px;
-    }
-
-    .hero-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 32px;
-      margin-bottom: 32px;
-    }
-    .hero-meta-group { display: flex; flex-direction: column; gap: 4px; }
-    .hero-meta-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--slate-mid);
-    }
-    .hero-meta-value {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--navy);
-    }
-    .hero-meta-value.multi { display: flex; flex-direction: column; gap: 2px; }
-    .hero-meta-value .role { color: var(--slate); font-weight: 400; }
-
-    .hero-disclaimer {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      line-height: 1.6;
-      max-width: 560px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-    }
-
-    /* ─── SECTIONS ─── */
-    .section {
-      padding: 80px 40px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .section + .section { padding-top: 0; }
-
-    .section-full {
-      padding: 80px 40px;
-      background: var(--slate-bg);
-    }
-    .section-full .section-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--slate);
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-      max-width: 60px;
-    }
-
-    .section-title {
-      font-size: clamp(22px, 3vw, 36px);
-      font-weight: 500;
-      color: var(--navy);
-      letter-spacing: -0.02em;
-      margin-bottom: 40px;
-    }
-
-    /* ─── TLDR ─── */
+    /* ── TL;DR grid ── */
     .tldr-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 2px;
-      background: var(--border);
-      border-radius: var(--radius);
+      background: var(--k40-border-light);
+      border-radius: var(--k40-radius-editorial);
       overflow: hidden;
     }
-    @media (max-width: 800px) {
-      .tldr-grid { grid-template-columns: 1fr; }
-    }
-
+    @media (max-width: 800px) { .tldr-grid { grid-template-columns: 1fr; } }
     .tldr-card {
-      background: var(--white);
-      padding: 32px 28px;
+      background: var(--k40-surface);
+      padding: var(--k40-s-6) 28px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-    }
-    .tldr-card-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--slate);
-    }
-    .tldr-card-body {
-      font-size: 15px;
-      line-height: 1.7;
-      color: var(--text-body);
+      gap: var(--k40-s-4);
     }
     .tldr-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: var(--k40-s-3);
       list-style: none;
+      padding: 0; margin: 0;
     }
     .tldr-list li {
-      font-size: 15px;
+      font-size: var(--k40-text-base);
       line-height: 1.6;
-      color: var(--text-body);
+      color: var(--k40-fg-2);
       padding-left: 18px;
       position: relative;
     }
@@ -257,478 +117,193 @@
       content: '—';
       position: absolute;
       left: 0;
-      color: var(--slate-mid);
-      font-size: 13px;
+      color: var(--k40-fg-4);
+      font-size: var(--k40-text-xs);
     }
 
-    /* ─── STATS ─── */
-    .stats-row {
-      display: flex;
-      gap: 64px;
-      flex-wrap: wrap;
-    }
-    .stat-block { display: flex; flex-direction: column; gap: 6px; }
+    /* ── Stats ── */
+    .stats-row { display: flex; gap: var(--k40-s-8); flex-wrap: wrap; }
+    .stat-block { display: flex; flex-direction: column; gap: var(--k40-s-2); }
     .stat-num {
       font-size: clamp(48px, 7vw, 80px);
       font-weight: 500;
-      color: var(--navy);
+      color: var(--k40-fg-1);
       letter-spacing: -0.04em;
       line-height: 1;
       font-variant-numeric: tabular-nums;
     }
-    .stat-label {
-      font-size: 15px;
-      color: var(--text-muted);
-    }
-    .stat-context {
-      font-size: 13px;
-      color: var(--slate-mid);
-      max-width: 220px;
-      line-height: 1.5;
-    }
 
-    /* ─── BACKGROUND ─── */
-    .info-rows {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
+    /* ── Background / info rows ── */
+    .info-rows { display: flex; flex-direction: column; }
     .info-row {
       display: grid;
       grid-template-columns: 160px 1fr;
-      gap: 24px 40px;
-      padding: 28px 0;
-      border-bottom: 1px solid var(--border);
+      gap: var(--k40-s-5) var(--k40-s-7);
+      padding: var(--k40-s-5) 0;
+      border-bottom: 1px solid var(--k40-border-light);
       align-items: start;
     }
-    .info-row:first-child { border-top: 1px solid var(--border); }
-    @media (max-width: 700px) {
-      .info-row { grid-template-columns: 1fr; gap: 8px; }
-    }
-    .info-row-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--slate);
-      padding-top: 2px;
-    }
-    .info-row-body {
-      font-size: 15px;
-      line-height: 1.75;
-      color: var(--text-body);
-    }
-    .info-row-body strong { font-weight: 600; color: var(--navy); }
+    .info-row:first-child { border-top: 1px solid var(--k40-border-light); }
+    @media (max-width: 700px) { .info-row { grid-template-columns: 1fr; gap: var(--k40-s-2); } }
 
-    /* ─── OBJECTIVES ─── */
+    /* ── Objectives ── */
     .obj-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: var(--k40-s-4);
     }
-    @media (max-width: 800px) {
-      .obj-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 800px) { .obj-grid { grid-template-columns: 1fr; } }
     .obj-card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px 24px;
+      border: 1px solid var(--k40-border-light);
+      border-radius: var(--k40-radius-editorial);
+      padding: var(--k40-s-5);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: var(--k40-s-2);
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .obj-card:hover {
-      border-color: var(--slate-light);
-      box-shadow: 0 4px 16px rgba(28,43,51,0.06);
-    }
-    .obj-card-num {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--slate-mid);
-    }
-    .obj-card-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--navy);
-    }
-    .obj-card-body {
-      font-size: 14px;
-      line-height: 1.65;
-      color: var(--text-body);
-    }
+    .obj-card:hover { border-color: var(--k40-border-mid); }
 
-    /* ─── FINDINGS ─── */
+    /* ── Findings ── */
     .findings-list {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+      gap: var(--k40-s-5);
     }
-    @media (max-width: 900px) {
-      .findings-list { grid-template-columns: 1fr; }
-    }
-
+    @media (max-width: 900px) { .findings-list { grid-template-columns: 1fr; } }
     .finding-item {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px 28px;
+      border: 1px solid var(--k40-border-light);
+      border-radius: var(--k40-radius-editorial);
+      padding: var(--k40-s-6) var(--k40-s-5);
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      background: var(--white);
-      transition: border-color 0.2s, box-shadow 0.2s;
+      gap: var(--k40-s-4);
+      background: var(--k40-surface);
+      transition: border-color 0.2s;
     }
-    .finding-item:hover {
-      border-color: var(--slate-light);
-      box-shadow: 0 4px 16px rgba(28,43,51,0.06);
-    }
+    .finding-item:hover { border-color: var(--k40-border-mid); }
 
-    .finding-num {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--slate-mid);
-    }
-    .finding-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--navy);
-    }
-
-    .finding-body-inner {
-      font-size: 15px;
-      line-height: 1.75;
-      color: var(--text-body);
-    }
-
-    /* ─── NEXT STEPS ─── */
-    .nextsteps-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-    @media (max-width: 700px) {
-      .nextsteps-grid { gap: 16px; }
-    }
+    /* ── Recommendations / next steps ── */
+    .nextsteps-grid { display: flex; flex-direction: column; gap: var(--k40-s-5); }
     .nextstep-card {
-      background: var(--navy);
-      border-radius: var(--radius);
-      padding: 36px 32px;
+      background: var(--brand-primary);
+      border-radius: var(--k40-radius-editorial);
+      padding: var(--k40-s-7) var(--k40-s-6);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: var(--k40-s-5);
     }
-    .nextstep-card:first-child {
-      padding: 48px 40px;
-      gap: 20px;
-      background: var(--navy);
-      border-radius: var(--radius);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .nextstep-card-content {
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      justify-content: center;
-    }
-
+    .nextstep-card-content { display: flex; flex-direction: column; gap: var(--k40-s-5); }
     .nextstep-card-image {
-      border-radius: var(--radius);
-      background-color: var(--off-white);
-      padding: 32px;
+      border-radius: var(--k40-radius-editorial);
+      background: var(--k40-n-100);
+      padding: var(--k40-s-6);
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 500px;
+      min-height: 400px;
       position: relative;
     }
-
     .nextstep-card-image .image-label {
       position: absolute;
-      top: 24px;
-      left: 24px;
-      z-index: 10;
-      margin: 0;
-      background: var(--white);
-      padding: 6px 12px;
-      border-radius: 4px;
+      top: var(--k40-s-5);
+      left: var(--k40-s-5);
+      background: var(--k40-surface);
+      padding: 6px var(--k40-s-3);
+      border-radius: var(--k40-radius-editorial);
     }
-
-    .nextstep-card-image img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-    .nextstep-card-num {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-    }
-    .nextstep-card:first-child .nextstep-card-num {
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-    }
-    .nextstep-card-title {
-      font-size: 18px;
+    .nextstep-card-image img { max-width: 100%; height: auto; display: block; }
+    /* Dark-surface text for primary nextstep card */
+    .on-dark-eyebrow { color: var(--k40-fg-on-dark-3); }
+    .on-dark-h3 {
+      font-size: clamp(22px, 3vw, 32px);
       font-weight: 600;
-      color: var(--white);
-    }
-    .nextstep-card:first-child .nextstep-card-title {
-      font-size: clamp(24px, 3vw, 32px);
       line-height: 1.3;
-      font-weight: 600;
+      color: var(--k40-fg-on-dark-1);
+      margin: 0;
     }
-    .nextstep-card-body {
-      font-size: 14px;
-      line-height: 1.7;
-      color: rgba(255,255,255,0.7);
+    .on-dark-body {
+      font-size: var(--k40-text-sm);
+      line-height: 1.75;
+      color: var(--k40-fg-on-dark-2);
+      margin: 0;
     }
-    .nextstep-card:first-child .nextstep-card-body {
-      font-size: 16px;
-      line-height: 1.8;
-      color: rgba(255,255,255,0.8);
+    .nextstep-card.supporting {
+      background: var(--k40-surface);
+      border: 1px solid var(--k40-border-light);
+      padding: var(--k40-s-6) var(--k40-s-5);
     }
 
-    /* Two-column layout for secondary actions */
-    .nextsteps-secondary {
+    /* ── Image grid ── */
+    .image-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 8px;
+      gap: var(--k40-s-6);
+      margin-top: var(--k40-s-7);
     }
-    @media (max-width: 700px) {
-      .nextsteps-secondary { grid-template-columns: 1fr; }
+    @media (max-width: 800px) { .image-container { grid-template-columns: 1fr; gap: var(--k40-s-5); } }
+    .image-block { display: flex; flex-direction: column; gap: var(--k40-s-4); }
+    .image-wrapper {
+      border: 1px solid var(--k40-border-light);
+      border-radius: var(--k40-radius-editorial);
+      overflow: hidden;
+      background: var(--k40-n-100);
     }
+    .image-wrapper img { width: 100%; height: auto; display: block; }
 
-    /* Supporting action card styling */
-    .nextstep-card.supporting {
-      background: var(--white);
-      border: 1px solid var(--border);
-      padding: 32px 28px;
-      color: var(--text-body);
-    }
-    .nextstep-card.supporting .nextstep-card-num {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--slate-mid);
-    }
-    .nextstep-card.supporting .nextstep-card-title {
-      color: var(--navy);
-      font-size: 18px;
-    }
-    .nextstep-card.supporting .nextstep-card-body {
-      color: var(--text-body);
-      font-size: 14px;
-    }
-
-    /* ─── APPENDIX ─── */
-    #appendix {
-      padding: 64px 40px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
+    /* ── Appendix ── */
     .appendix-toggle-btn {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--k40-s-3);
       background: none;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px 24px;
+      border: 1px solid var(--k40-border-light);
+      border-radius: var(--k40-radius-editorial);
+      padding: var(--k40-s-4) var(--k40-s-5);
       cursor: pointer;
       width: 100%;
       text-align: left;
       font-family: inherit;
       transition: border-color 0.2s, background 0.2s;
     }
-    .appendix-toggle-btn:hover { border-color: var(--slate-light); background: var(--slate-bg); }
-    .appendix-toggle-btn span {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--navy);
-      flex: 1;
-    }
-    .appendix-toggle-btn small {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .appendix-arrow {
-      transition: transform 0.3s;
-      flex-shrink: 0;
-    }
+    .appendix-toggle-btn:hover { border-color: var(--k40-border-mid); background: var(--k40-surface-2); }
+    .appendix-toggle-btn span { font-size: var(--k40-text-sm); font-weight: 600; color: var(--k40-fg-1); flex: 1; }
+    .appendix-toggle-btn small { font-size: var(--k40-text-xs); color: var(--k40-fg-3); }
+    .appendix-arrow { transition: transform 0.3s; flex-shrink: 0; }
     .appendix-toggle-btn.open .appendix-arrow { transform: rotate(180deg); }
+    .appendix-content { max-height: 0; overflow: hidden; transition: max-height 0.5s var(--k40-ease); }
+    .appendix-inner { padding-top: var(--k40-s-7); display: flex; flex-direction: column; gap: var(--k40-s-7); }
 
-    .appendix-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1);
-    }
-
-    .appendix-inner {
-      padding-top: 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 48px;
-    }
-
-    .appendix-section-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 16px;
-    }
-    .appendix-section-sub {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-
-    .scope-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .scope-chip {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--navy);
-      background: var(--slate-bg);
-      border: 1px solid var(--border);
-      padding: 6px 16px;
-      border-radius: 24px;
-    }
-
-    .q-block { display: flex; flex-direction: column; gap: 6px; }
-    .q-group {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--slate);
-      margin-top: 20px;
-      margin-bottom: 8px;
-    }
+    /* ── Research protocol ── */
+    .scope-chips { display: flex; flex-wrap: wrap; gap: var(--k40-s-2); margin-top: var(--k40-s-3); }
+    .q-block { display: flex; flex-direction: column; gap: var(--k40-s-2); }
+    .q-group { margin-top: var(--k40-s-5); margin-bottom: var(--k40-s-2); }
     .q-item {
-      font-size: 14px;
+      font-size: var(--k40-text-sm);
       line-height: 1.65;
-      color: var(--text-body);
+      color: var(--k40-fg-2);
       padding-left: 20px;
       position: relative;
     }
-    .q-item::before { content: '→'; position: absolute; left: 0; color: var(--slate-mid); font-size: 12px; top: 2px; }
-
-    .methods-grid {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 16px;
-    }
+    .q-item::before { content: '→'; position: absolute; left: 0; color: var(--k40-fg-4); font-size: var(--k40-text-xs); top: 2px; }
+    .methods-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--k40-s-4); }
     @media (max-width: 700px) { .methods-grid { grid-template-columns: 1fr; } }
     .method-card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px 20px;
+      border: 1px solid var(--k40-border-light);
+      border-radius: var(--k40-radius-editorial);
+      padding: var(--k40-s-5) var(--k40-s-4);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: var(--k40-s-2);
     }
-    .method-card-title { font-size: 15px; font-weight: 600; color: var(--navy); }
-    .method-card-body { font-size: 13px; line-height: 1.65; color: var(--text-body); flex: 1; }
-    .method-card-tag {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--slate);
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-    }
+    .method-card-footer { margin-top: auto; padding-top: var(--k40-s-3); border-top: 1px solid var(--k40-border-light); }
 
-    /* ─── FOOTER ─── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .footer-copy { font-size: 13px; color: var(--text-muted); }
-    .footer-back {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--navy);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: color 0.2s;
-    }
-    .footer-back:hover { color: var(--slate); }
-
-    /* ─── SCROLL ANIMATIONS ─── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.55s ease, transform 0.55s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    /* ── Reveal animations ── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
     .reveal-delay-1 { transition-delay: 0.1s; }
     .reveal-delay-2 { transition-delay: 0.2s; }
     .reveal-delay-3 { transition-delay: 0.3s; }
-
-    /* ─── IMAGES ─── */
-    .image-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      margin-top: 56px;
-    }
-    @media (max-width: 800px) {
-      .image-container { grid-template-columns: 1fr; gap: 24px; }
-    }
-    .image-block {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .image-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--slate);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .image-wrapper {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--off-white);
-    }
-    .image-wrapper img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* ─── DIVIDER ─── */
-    hr.section-hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 0 40px;
-    }
   </style>
 </head>
 <body>
@@ -737,36 +312,36 @@
 
 <!-- NAV -->
 <nav id="site-nav">
-  <a class="nav-brand" href="#">Joseph Grgic <span>/ Meta SFI</span></a>
-  <div class="nav-links">
-    <a class="nav-link active" href="#overview">Overview</a>
-    <a class="nav-link" href="#outcomes">Outcomes</a>
-    <a class="nav-link" href="#background">Background</a>
-    <a class="nav-link" href="#goals">Research Goals</a>
-    <a class="nav-link" href="#findings">Findings</a>
-    <a class="nav-link" href="#next-steps">Next Steps</a>
-    <a class="nav-link" href="#appendix">Appendix</a>
+  <a class="k40-eyebrow" href="#" style="text-decoration:none;color:var(--k40-fg-1);">Joseph Grgic <span style="color:var(--k40-fg-3);font-weight:400;">/ Meta SFI</span></a>
+  <div class="nav-links" style="display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;">
+    <a href="#overview"   class="k40-eyebrow" style="text-decoration:none;padding:var(--k40-s-2) var(--k40-s-3);white-space:nowrap;">Overview</a>
+    <a href="#outcomes"   class="k40-eyebrow" style="text-decoration:none;padding:var(--k40-s-2) var(--k40-s-3);white-space:nowrap;">Outcomes</a>
+    <a href="#background" class="k40-eyebrow" style="text-decoration:none;padding:var(--k40-s-2) var(--k40-s-3);white-space:nowrap;">Background</a>
+    <a href="#goals"      class="k40-eyebrow" style="text-decoration:none;padding:var(--k40-s-2) var(--k40-s-3);white-space:nowrap;">Research Goals</a>
+    <a href="#findings"   class="k40-eyebrow" style="text-decoration:none;padding:var(--k40-s-2) var(--k40-s-3);white-space:nowrap;">Findings</a>
+    <a href="#next-steps" class="k40-eyebrow" style="text-decoration:none;padding:var(--k40-s-2) var(--k40-s-3);white-space:nowrap;">Next Steps</a>
+    <a href="#appendix"   class="k40-eyebrow" style="text-decoration:none;padding:var(--k40-s-2) var(--k40-s-3);white-space:nowrap;">Appendix</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <header id="hero">
   <div class="hero-eyebrow">
-    <span class="hero-tag">UX Research</span>
+    <span class="k40-tag">UX Research</span>
     <span class="hero-date">April 2023</span>
   </div>
   <h1 class="hero-title reveal">Email capture with seller funded incentives — seller experience in SMA</h1>
   <div class="hero-meta reveal reveal-delay-1">
     <div class="hero-meta-group">
-      <div class="hero-meta-label">Company</div>
+      <div class="k40-eyebrow">Company</div>
       <div class="hero-meta-value">Meta</div>
     </div>
     <div class="hero-meta-group">
-      <div class="hero-meta-label">My Role</div>
+      <div class="k40-eyebrow">My Role</div>
       <div class="hero-meta-value">UX Researcher</div>
     </div>
     <div class="hero-meta-group">
-      <div class="hero-meta-label">Team</div>
+      <div class="k40-eyebrow">Team</div>
       <div class="hero-meta-value multi">
         <span>Joseph Grgic <span class="role">· UX Research</span></span>
         <span>Erick <span class="role">· Product Design</span></span>
@@ -780,16 +355,16 @@
 <hr class="section-hr">
 
 <!-- OVERVIEW / TL;DR -->
-<section class="section" id="overview">
-  <div class="section-label">TL;DR</div>
-  <h2 class="section-title reveal">Summary</h2>
+<section class="cs-section" id="overview">
+  <span class="k40-eyebrow cs-label">TL;DR</span>
+  <h2 class="k40-h2 reveal" style="margin-bottom:var(--k40-s-7);">Summary</h2>
   <div class="tldr-grid reveal reveal-delay-1">
     <div class="tldr-card">
-      <div class="tldr-card-label">Key Finding</div>
-      <div class="tldr-card-body">While most participants easily understood how to enable the SFI email capture feature, they <strong>lacked confidence</strong> due to the absence of a settings confirmation or preview screen. Sellers were hesitant to enable the feature without the ability to customize or see the customer experience beforehand.</div>
+      <span class="k40-eyebrow">Key Finding</span>
+      <p class="k40-body" style="max-width:none;">While most participants easily understood how to enable the SFI email capture feature, they <strong>lacked confidence</strong> due to the absence of a settings confirmation or preview screen. Sellers were hesitant to enable the feature without the ability to customize or see the customer experience beforehand.</p>
     </div>
     <div class="tldr-card">
-      <div class="tldr-card-label">Key Insights</div>
+      <span class="k40-eyebrow">Key Insights</span>
       <ul class="tldr-list">
         <li>Sellers need customization options for discount messaging to align with their brand and legal requirements.</li>
         <li>A preview screen and multi-step enablement process would build seller confidence and improve adoption.</li>
@@ -797,7 +372,7 @@
       </ul>
     </div>
     <div class="tldr-card">
-      <div class="tldr-card-label">Recommendations</div>
+      <span class="k40-eyebrow">Recommendations</span>
       <ul class="tldr-list">
         <li>Introduce a multi-step flow with settings and a preview before enabling the feature.</li>
         <li>Provide customization controls for discount amounts, messaging, and branding.</li>
@@ -810,21 +385,21 @@
 <hr class="section-hr">
 
 <!-- OUTCOMES -->
-<div class="section-full" id="outcomes">
-  <div class="section-inner">
-    <div class="section-label">Impact</div>
-    <h2 class="section-title reveal">Outcomes</h2>
-    <p style="font-size:16px;color:var(--text-body);line-height:1.7;max-width:640px;margin-bottom:56px;" class="reveal reveal-delay-1">These changes are expected to increase adoption and satisfaction, driving incremental GMV growth and reducing seller churn across the Shops Ads ecosystem.</p>
+<div class="cs-full" id="outcomes">
+  <div class="cs-full-inner">
+    <span class="k40-eyebrow cs-label">Impact</span>
+    <h2 class="k40-h2 reveal" style="margin-bottom:var(--k40-s-5);">Outcomes</h2>
+    <p class="k40-body reveal reveal-delay-1" style="margin-bottom:var(--k40-s-7);">These changes are expected to increase adoption and satisfaction, driving incremental GMV growth and reducing seller churn across the Shops Ads ecosystem.</p>
     <div class="stats-row">
       <div class="stat-block reveal reveal-delay-1">
         <div class="stat-num" data-target="0.63" data-prefix="+" data-suffix="%" data-decimals="2">+0.63%</div>
-        <div class="stat-label">GMV growth</div>
-        <div class="stat-context">Incremental increase in Shops Ads GMV in H1 '23</div>
+        <p class="k40-helper">GMV growth</p>
+        <p class="k40-helper">Incremental increase in Shops Ads GMV in H1 '23</p>
       </div>
       <div class="stat-block reveal reveal-delay-2">
         <div class="stat-num" data-target="16" data-suffix="%" data-decimals="0">16%</div>
-        <div class="stat-label">Net churn rate</div>
-        <div class="stat-context">Reduction in seller churn with improved adoption</div>
+        <p class="k40-helper">Net churn rate</p>
+        <p class="k40-helper">Reduction in seller churn with improved adoption</p>
       </div>
     </div>
   </div>
@@ -833,25 +408,25 @@
 <hr class="section-hr">
 
 <!-- BACKGROUND -->
-<section class="section" id="background">
-  <div class="section-label">01 — Background</div>
-  <h2 class="section-title reveal">Context &amp; Project Objective</h2>
+<section class="cs-section" id="background">
+  <span class="k40-eyebrow cs-label">01 — Background</span>
+  <h2 class="k40-h2 reveal" style="margin-bottom:var(--k40-s-7);">Context &amp; Project Objective</h2>
   <div class="info-rows">
     <div class="info-row reveal">
-      <div class="info-row-label">Context</div>
-      <div class="info-row-body">Within SMA, there was no method for sellers to enable and configure Seller Funded Incentives (SFI) due to contractual and technical blockers of email capture between Shopify and SMA. As of February 2023, an agreement was reached to allow set-up and configuration of SFI email capture within SMA. This new feature is expected to increase seller adoption of incentives, improve Meta's price parity, and drive <strong>+0.63% incremental Shops Ads GMV</strong>.</div>
+      <span class="k40-eyebrow" style="padding-top:var(--k40-s-1);">Context</span>
+      <p class="k40-body" style="max-width:none;">Within SMA, there was no method for sellers to enable and configure Seller Funded Incentives (SFI) due to contractual and technical blockers of email capture between Shopify and SMA. As of February 2023, an agreement was reached to allow set-up and configuration of SFI email capture within SMA. This new feature is expected to increase seller adoption of incentives, improve Meta's price parity, and drive <strong>+0.63% incremental Shops Ads GMV</strong>.</p>
     </div>
     <div class="info-row reveal reveal-delay-1">
-      <div class="info-row-label">Project Objective</div>
-      <div class="info-row-body">Help sellers become aware of and adopt email opt-in with an incentive within SMA — enabling them to collect more customer email addresses, re-engage with buyers, and drive lifetime value.</div>
+      <span class="k40-eyebrow" style="padding-top:var(--k40-s-1);">Project Objective</span>
+      <p class="k40-body" style="max-width:none;">Help sellers become aware of and adopt email opt-in with an incentive within SMA — enabling them to collect more customer email addresses, re-engage with buyers, and drive lifetime value.</p>
     </div>
     <div class="info-row reveal reveal-delay-2">
-      <div class="info-row-label">Business Goal</div>
-      <div class="info-row-body">Drive adoption of 1-click email capture SFI to improve promotional parity and protect Shops Ads performance as Meta reduces reliance on MFI. <strong>H1 goal:</strong> adoption with 1,700 TAM sellers (20% of Shops Ads revenue). <strong>H2 goal:</strong> expand to sellers representing 50% of Shops Ads revenue.</div>
+      <span class="k40-eyebrow" style="padding-top:var(--k40-s-1);">Business Goal</span>
+      <p class="k40-body" style="max-width:none;">Drive adoption of 1-click email capture SFI to improve promotional parity and protect Shops Ads performance as Meta reduces reliance on MFI. <strong>H1 goal:</strong> adoption with 1,700 TAM sellers (20% of Shops Ads revenue). <strong>H2 goal:</strong> expand to sellers representing 50% of Shops Ads revenue.</p>
     </div>
     <div class="info-row reveal reveal-delay-3">
-      <div class="info-row-label">Research Goals</div>
-      <div class="info-row-body">Understand key pathways for adoption and which surfaces to prioritize. Ensure the end-to-end flow is frictionless and sets clear seller expectations. Identify unmet needs most critical to sellers for product prioritization.</div>
+      <span class="k40-eyebrow" style="padding-top:var(--k40-s-1);">Research Goals</span>
+      <p class="k40-body" style="max-width:none;">Understand key pathways for adoption and which surfaces to prioritize. Ensure the end-to-end flow is frictionless and sets clear seller expectations. Identify unmet needs most critical to sellers for product prioritization.</p>
     </div>
   </div>
 </section>
@@ -859,37 +434,37 @@
 <hr class="section-hr">
 
 <!-- RESEARCH GOALS -->
-<section class="section" id="goals">
-  <div class="section-label">02 — Research Goals &amp; Objectives</div>
-  <h2 class="section-title reveal">Research Goal: Maximize SFI Email Capture Adoption</h2>
-  <p style="font-size:15px;color:var(--text-body);line-height:1.7;max-width:680px;margin-bottom:40px;" class="reveal reveal-delay-1">The objective was to collect seller feedback on the design, content, and functionality of the SFI email capture feature to discover potential areas of improvement to maximize seller adoption on launch.</p>
+<section class="cs-section" id="goals">
+  <span class="k40-eyebrow cs-label">02 — Research Goals &amp; Objectives</span>
+  <h2 class="k40-h2 reveal" style="margin-bottom:var(--k40-s-5);">Research Goal: Maximize SFI Email Capture Adoption</h2>
+  <p class="k40-body reveal reveal-delay-1" style="margin-bottom:var(--k40-s-7);">The objective was to collect seller feedback on the design, content, and functionality of the SFI email capture feature to discover potential areas of improvement to maximize seller adoption on launch.</p>
   <div class="obj-grid">
     <div class="obj-card reveal reveal-delay-1">
-      <div class="obj-card-num">Objective 01</div>
-      <div class="obj-card-title">Ease of Use</div>
-      <div class="obj-card-body">Identify usability issues that might block or hinder seller adoption. Can sellers discover SFI email opt-in? Can they change the discount amount before and after enabling? Can they enable pre-select checkout opt-in?</div>
+      <span class="k40-eyebrow is-accent">Objective 01</span>
+      <h3 class="k40-h3">Ease of Use</h3>
+      <p class="k40-body">Identify usability issues that might block or hinder seller adoption. Can sellers discover SFI email opt-in? Can they change the discount amount before and after enabling? Can they enable pre-select checkout opt-in?</p>
     </div>
     <div class="obj-card reveal reveal-delay-2">
-      <div class="obj-card-num">Objective 02</div>
-      <div class="obj-card-title">Understanding</div>
-      <div class="obj-card-body">Determine how well sellers interpret and comprehend the feature, its language, how it works, what it impacts, and all functionality options available — including where discounts apply (checkout vs. storefront).</div>
+      <span class="k40-eyebrow is-accent">Objective 02</span>
+      <h3 class="k40-h3">Understanding</h3>
+      <p class="k40-body">Determine how well sellers interpret and comprehend the feature, its language, how it works, what it impacts, and all functionality options available — including where discounts apply (checkout vs. storefront).</p>
     </div>
     <div class="obj-card reveal reveal-delay-3">
-      <div class="obj-card-num">Objective 03</div>
-      <div class="obj-card-title">Satisfaction</div>
-      <div class="obj-card-body">Understand how well the SFI email opt-in feature meets sellers' needs. Does it meet their email capture needs? Is anything missing? Would they feel confident enabling it?</div>
+      <span class="k40-eyebrow is-accent">Objective 03</span>
+      <h3 class="k40-h3">Satisfaction</h3>
+      <p class="k40-body">Understand how well the SFI email opt-in feature meets sellers' needs. Does it meet their email capture needs? Is anything missing? Would they feel confident enabling it?</p>
     </div>
   </div>
 
   <div class="image-container">
     <div class="image-block reveal reveal-delay-1">
-      <div class="image-label">Condition 01 — 1-Click Flow</div>
+      <span class="k40-eyebrow">Condition 01 — 1-Click Flow</span>
       <div class="image-wrapper">
         <img src="/projects/meta-sfi/images/1click flow.png" alt="1-Click Opt-in Flow - Condition 1">
       </div>
     </div>
     <div class="image-block reveal reveal-delay-2">
-      <div class="image-label">Condition 02 — Setup Flow</div>
+      <span class="k40-eyebrow">Condition 02 — Setup Flow</span>
       <div class="image-wrapper">
         <img src="/projects/meta-sfi/images/setup flow.png" alt="Settings/Multi-step Opt-in Flow - Condition 2">
       </div>
@@ -900,39 +475,39 @@
 <hr class="section-hr">
 
 <!-- FINDINGS -->
-<section class="section" id="findings">
-  <div class="section-label">03 — Findings</div>
-  <h2 class="section-title reveal">What we learned</h2>
+<section class="cs-section" id="findings">
+  <span class="k40-eyebrow cs-label">03 — Findings</span>
+  <h2 class="k40-h2 reveal" style="margin-bottom:var(--k40-s-7);">What we learned</h2>
   <div class="findings-list">
 
     <div class="finding-item reveal reveal-delay-1">
-      <div class="finding-num">Finding 01</div>
-      <div class="finding-title">Understanding &amp; Usability</div>
-      <div class="finding-body-inner">Most participants understood how to enable the feature via the "Turn On" link but <strong>hesitated to proceed</strong> due to a lack of confidence in the functionality. Sellers expected to be directed to a settings page or pop-up upon enabling the feature, where they could confirm, customize, and preview the customer experience before anything went live on their shop.</div>
+      <span class="k40-eyebrow is-accent">Finding 01</span>
+      <h3 class="k40-h3">Understanding &amp; Usability</h3>
+      <p class="k40-body" style="max-width:none;">Most participants understood how to enable the feature via the "Turn On" link but <strong>hesitated to proceed</strong> due to a lack of confidence in the functionality. Sellers expected to be directed to a settings page or pop-up upon enabling the feature, where they could confirm, customize, and preview the customer experience before anything went live on their shop.</p>
     </div>
 
     <div class="finding-item reveal reveal-delay-2">
-      <div class="finding-num">Finding 02</div>
-      <div class="finding-title">Customization Needs</div>
-      <div class="finding-body-inner">Sellers expressed a strong desire for customization of discount messaging to align with their brand strategy and legal policies. For example, some sellers needed to frame email collection as offering value beyond discounts (e.g., exclusive notifications). Many felt the feature <strong>lacked flexibility</strong> for adjusting discount amounts or modifying opt-in messaging before enabling.</div>
+      <span class="k40-eyebrow is-accent">Finding 02</span>
+      <h3 class="k40-h3">Customization Needs</h3>
+      <p class="k40-body" style="max-width:none;">Sellers expressed a strong desire for customization of discount messaging to align with their brand strategy and legal policies. For example, some sellers needed to frame email collection as offering value beyond discounts (e.g., exclusive notifications). Many felt the feature <strong>lacked flexibility</strong> for adjusting discount amounts or modifying opt-in messaging before enabling.</p>
     </div>
 
     <div class="finding-item reveal reveal-delay-1">
-      <div class="finding-num">Finding 03</div>
-      <div class="finding-title">Content Clarity</div>
-      <div class="finding-body-inner">While the feature description on the SMA home page was generally clear, some sellers were unsure where the discount originated or how it would apply (e.g., checkout vs. storefront/PDP). <strong>Misunderstandings arose</strong> about whether the discount was linked to Shopify or third-party email platforms like Klaviyo.</div>
+      <span class="k40-eyebrow is-accent">Finding 03</span>
+      <h3 class="k40-h3">Content Clarity</h3>
+      <p class="k40-body" style="max-width:none;">While the feature description on the SMA home page was generally clear, some sellers were unsure where the discount originated or how it would apply (e.g., checkout vs. storefront/PDP). <strong>Misunderstandings arose</strong> about whether the discount was linked to Shopify or third-party email platforms like Klaviyo.</p>
     </div>
 
     <div class="finding-item reveal reveal-delay-2">
-      <div class="finding-num">Finding 04</div>
-      <div class="finding-title">Expectations for Feedback &amp; Control</div>
-      <div class="finding-body-inner">Sellers expected more control over the activation process, including options for modifying discount amounts, customizing email messaging, and previewing the customer experience before enabling. <strong>Many expected a toggle</strong> or clearer UI elements rather than a plain "Turn On" text link to enable/disable the feature.</div>
+      <span class="k40-eyebrow is-accent">Finding 04</span>
+      <h3 class="k40-h3">Expectations for Feedback &amp; Control</h3>
+      <p class="k40-body" style="max-width:none;">Sellers expected more control over the activation process, including options for modifying discount amounts, customizing email messaging, and previewing the customer experience before enabling. <strong>Many expected a toggle</strong> or clearer UI elements rather than a plain "Turn On" text link to enable/disable the feature.</p>
     </div>
 
     <div class="finding-item reveal reveal-delay-1">
-      <div class="finding-num">Finding 05</div>
-      <div class="finding-title">Concerns with 1-Click Enablement</div>
-      <div class="finding-body-inner">The 1-click enablement process was seen as <strong>too rigid</strong>, which discouraged adoption. Sellers wanted a multi-step process for greater transparency and control — they didn't want a feature affecting their customer experience to go live without first reviewing what it would look like.</div>
+      <span class="k40-eyebrow is-accent">Finding 05</span>
+      <h3 class="k40-h3">Concerns with 1-Click Enablement</h3>
+      <p class="k40-body" style="max-width:none;">The 1-click enablement process was seen as <strong>too rigid</strong>, which discouraged adoption. Sellers wanted a multi-step process for greater transparency and control — they didn't want a feature affecting their customer experience to go live without first reviewing what it would look like.</p>
     </div>
 
   </div>
@@ -941,30 +516,30 @@
 <hr class="section-hr">
 
 <!-- NEXT STEPS -->
-<section class="section" id="next-steps">
-  <div class="section-label">04 — Next Steps</div>
-  <h2 class="section-title reveal">Recommendations</h2>
+<section class="cs-section" id="next-steps">
+  <span class="k40-eyebrow cs-label">04 — Next Steps</span>
+  <h2 class="k40-h2 reveal" style="margin-bottom:var(--k40-s-7);">Recommendations</h2>
   <div class="nextsteps-grid">
-    <!-- Recommendation Text Box -->
+    <!-- Primary recommendation (dark card) -->
     <div class="nextstep-card reveal reveal-delay-1">
       <div class="nextstep-card-content">
-        <div class="nextstep-card-num">Key Recommendation</div>
-        <div class="nextstep-card-title">Rethink the 1-Click Option</div>
-        <div class="nextstep-card-body">All participants understood the feature, however sellers expected to configure and customize how email collection would appear on their shop surfaces. <strong>To facilitate adoption, create a multi-step enablement process that gives sellers control and feedback on discount amount, location, language, and branding</strong> — before anything goes live.</div>
+        <span class="k40-eyebrow on-dark-eyebrow">Key Recommendation</span>
+        <h3 class="on-dark-h3">Rethink the 1-Click Option</h3>
+        <p class="on-dark-body">All participants understood the feature, however sellers expected to configure and customize how email collection would appear on their shop surfaces. <strong style="color:var(--k40-fg-on-dark-1);">To facilitate adoption, create a multi-step enablement process that gives sellers control and feedback on discount amount, location, language, and branding</strong> — before anything goes live.</p>
       </div>
     </div>
 
-    <!-- Recommendation Image -->
+    <!-- Recommendation image -->
     <div class="nextstep-card-image reveal reveal-delay-2">
-      <div class="image-label">Preferred Flow</div>
+      <span class="k40-eyebrow image-label">Preferred Flow</span>
       <img src="/projects/meta-sfi/images/Recommendation.png" alt="Recommended Multi-step Flow with Configurations and Confirmation States">
     </div>
 
-    <!-- Supporting Action -->
+    <!-- Supporting action (light card) -->
     <div class="nextstep-card supporting reveal reveal-delay-3">
-      <div class="nextstep-card-num">Supporting Action</div>
-      <div class="nextstep-card-title">Alpha Launch Survey</div>
-      <div class="nextstep-card-body">The Alpha Launch survey includes a question about how well the feature meets sellers' needs. If this result is also low, it provides further evidence that sellers want more control and feedback on how the feature will be enabled — reinforcing the case for a redesigned multi-step flow before wider rollout.</div>
+      <span class="k40-eyebrow">Supporting Action</span>
+      <h3 class="k40-h3">Alpha Launch Survey</h3>
+      <p class="k40-body" style="max-width:none;">The Alpha Launch survey includes a question about how well the feature meets sellers' needs. If this result is also low, it provides further evidence that sellers want more control and feedback on how the feature will be enabled — reinforcing the case for a redesigned multi-step flow before wider rollout.</p>
     </div>
   </div>
 </section>
@@ -972,135 +547,139 @@
 <hr class="section-hr">
 
 <!-- APPENDIX -->
-<section id="appendix">
-  <div style="max-width:1100px;margin:0 auto;padding:64px 0;">
-    <div class="section-label" style="margin-bottom:20px;">Appendix</div>
-    <button class="appendix-toggle-btn" id="appendix-btn" onclick="toggleAppendix()">
-      <span>Research Protocol &amp; Materials</span>
-      <small>Research scope, interview guides, data collection methods</small>
-      <svg class="appendix-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="6 9 12 15 18 9"></polyline>
-      </svg>
-    </button>
+<section class="cs-section" id="appendix">
+  <span class="k40-eyebrow cs-label" style="margin-bottom:var(--k40-s-5);">Appendix</span>
+  <button class="appendix-toggle-btn" id="appendix-btn" onclick="toggleAppendix()">
+    <span>Research Protocol &amp; Materials</span>
+    <small>Research scope, interview guides, data collection methods</small>
+    <svg class="appendix-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </button>
 
-    <div class="appendix-content" id="appendix-content">
-      <div class="appendix-inner">
+  <div class="appendix-content" id="appendix-content">
+    <div class="appendix-inner">
 
-        <!-- Research Scope -->
-        <div>
-          <div class="appendix-section-title">Research Scope</div>
-          <div class="appendix-section-sub">Note: this scope was intentionally broad and adjusted depending on the best research collection opportunity given project timing.</div>
-          <div class="scope-chips">
-            <span class="scope-chip">Background questions</span>
-            <span class="scope-chip">1-click opt-in flow</span>
-            <span class="scope-chip">Settings opt-in flow</span>
-            <span class="scope-chip">Follow-up questions</span>
-          </div>
+      <!-- Research Scope -->
+      <div>
+        <h3 class="k40-h3" style="margin-bottom:var(--k40-s-2);">Research Scope</h3>
+        <p class="k40-helper" style="margin-bottom:var(--k40-s-3);">Note: this scope was intentionally broad and adjusted depending on the best research collection opportunity given project timing.</p>
+        <div class="scope-chips">
+          <span class="k40-tag">Background questions</span>
+          <span class="k40-tag">1-click opt-in flow</span>
+          <span class="k40-tag">Settings opt-in flow</span>
+          <span class="k40-tag">Follow-up questions</span>
         </div>
-
-        <!-- Background Qs -->
-        <div>
-          <div class="appendix-section-title">Background Questions</div>
-          <div class="appendix-section-sub">General questions to understand how sellers currently capture email from buyers.</div>
-          <div class="q-block">
-            <div class="q-item">What is the value of email capture for your shop/business?</div>
-            <div class="q-item">What methods do you use to capture buyer emails? What is or isn't successful?</div>
-            <div class="q-item">What are some of your concerns or issues with email capture?</div>
-            <div class="q-item">How critical is it to capture buyer emails for your business? Why/why not?</div>
-          </div>
-        </div>
-
-        <!-- 1-click flow Qs -->
-        <div>
-          <div class="appendix-section-title">1-Click Opt-in Flow</div>
-          <div class="appendix-section-sub">What questions specific to this flow will impact the design and launch of this feature?</div>
-          <div class="q-block">
-            <div class="q-group">First Screen</div>
-            <div class="q-item">Where would you go to enable this feature?</div>
-            <div class="q-item">Is it clear what this feature does?</div>
-            <div class="q-item">Based on what you read, how likely would you be to enable it? Why/why not?</div>
-            <div class="q-item">Do you understand where this discount is coming from?</div>
-            <div class="q-item">What would you do if you wanted to change the discount amount?</div>
-            <div class="q-item">What would you expect to happen if you "turned on" this feature here?</div>
-            <div class="q-group">Second Screen (hypothetically turned on)</div>
-            <div class="q-item">Does this align with your expectations? Why/why not?</div>
-            <div class="q-item">If you were to undo or make a change, what would you do?</div>
-            <div class="q-group">Follow-up</div>
-            <div class="q-item">Based on this flow, how easy would you say this was?</div>
-            <div class="q-item">How satisfied are you that this feature meets your needs?</div>
-            <div class="q-item">If this feature were live today, would you want to be notified? Why/why not?</div>
-          </div>
-        </div>
-
-        <!-- Settings flow Qs -->
-        <div>
-          <div class="appendix-section-title">Settings / Multi-step Opt-in Flow</div>
-          <div class="q-block">
-            <div class="q-group">First Screen</div>
-            <div class="q-item">What would you do if you wanted to change the discount?</div>
-            <div class="q-item">What else do you think you could modify for email capture?</div>
-            <div class="q-group">Second Screen (hypothetically turned on)</div>
-            <div class="q-item">Does this align with your expectations? Why/why not?</div>
-            <div class="q-item">Can you tell me all the things you can modify for email capture?</div>
-            <div class="q-item">Thoughts on this functionality — good or bad? Why?</div>
-            <div class="q-item">Is there anything missing that would help in enabling this feature?</div>
-          </div>
-        </div>
-
-        <!-- Follow-up Qs -->
-        <div>
-          <div class="appendix-section-title">Follow-up Questions</div>
-          <div class="q-block">
-            <div class="q-item">Based on what you have seen, what are your thoughts on this feature?</div>
-            <div class="q-item">What do you like or dislike about it?</div>
-            <div class="q-item">Does this feature meet your needs as a seller?</div>
-            <div class="q-item">What would you like to see that's currently missing? Why?</div>
-            <div class="q-item">If this feature were live today, how likely would you be to enable it? Why?</div>
-          </div>
-        </div>
-
-        <!-- Data Collection Methods -->
-        <div>
-          <div class="appendix-section-title">Research &amp; Data Collection Methods</div>
-          <div class="appendix-section-sub">Due to time constraints, three collection approaches were explored.</div>
-          <div class="methods-grid">
-            <div class="method-card">
-              <div class="method-card-title">Shopify Rolling Research Program</div>
-              <div class="method-card-body">A mid-April round of rolling research submitted for selection. If chosen, we could run concept and usability tests with up to 6 sellers — covering content, designs, and overall feature impression.</div>
-              <div class="method-card-tag">6 participants · 20-min sessions</div>
-            </div>
-            <div class="method-card">
-              <div class="method-card-title">Alpha Launch Survey</div>
-              <div class="method-card-body">A brief survey during the April 2023 Alpha Launch measuring perceived ease of use and satisfaction. Two questions calculate a Single Usability Metric (SUM), with high validity and correlation to SUS scoring.</div>
-              <div class="method-card-tag">2 SUM questions + recruitment opt-in</div>
-            </div>
-            <div class="method-card">
-              <div class="method-card-title">UXR Usability Test &amp; Interview</div>
-              <div class="method-card-body">Moderated usability test (qual + quant) combined with deeper questions on email capture to fully understand seller goals, practices, and how our feature compares to their current methods.</div>
-              <div class="method-card-tag">Most depth · highest time investment</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Collection Goals -->
-        <div>
-          <div class="appendix-section-title">Data Collection Goals</div>
-          <div style="font-size:14px;line-height:1.8;color:var(--text-body);max-width:760px;display:flex;flex-direction:column;gap:16px;">
-            <p>Behavioral metrics provide valuable insight into feature performance, but only answer <em>'what'</em> users are doing. Compared to predefined success metrics, this may be sufficient data collection.</p>
-            <p>However, for a new feature — without existing benchmarks to judge success — qualitative research is essential to understand <em>'why'</em> users behave in a particular way.</p>
-            <p>Both forms of data collection help develop a fuller understanding of how users interact with the feature and how it can be improved to meet their needs.</p>
-          </div>
-        </div>
-
       </div>
+
+      <!-- Background Qs -->
+      <div>
+        <h3 class="k40-h3" style="margin-bottom:var(--k40-s-2);">Background Questions</h3>
+        <p class="k40-helper" style="margin-bottom:var(--k40-s-4);">General questions to understand how sellers currently capture email from buyers.</p>
+        <div class="q-block">
+          <div class="q-item">What is the value of email capture for your shop/business?</div>
+          <div class="q-item">What methods do you use to capture buyer emails? What is or isn't successful?</div>
+          <div class="q-item">What are some of your concerns or issues with email capture?</div>
+          <div class="q-item">How critical is it to capture buyer emails for your business? Why/why not?</div>
+        </div>
+      </div>
+
+      <!-- 1-click flow Qs -->
+      <div>
+        <h3 class="k40-h3" style="margin-bottom:var(--k40-s-2);">1-Click Opt-in Flow</h3>
+        <p class="k40-helper" style="margin-bottom:var(--k40-s-4);">What questions specific to this flow will impact the design and launch of this feature?</p>
+        <div class="q-block">
+          <span class="k40-eyebrow q-group">First Screen</span>
+          <div class="q-item">Where would you go to enable this feature?</div>
+          <div class="q-item">Is it clear what this feature does?</div>
+          <div class="q-item">Based on what you read, how likely would you be to enable it? Why/why not?</div>
+          <div class="q-item">Do you understand where this discount is coming from?</div>
+          <div class="q-item">What would you do if you wanted to change the discount amount?</div>
+          <div class="q-item">What would you expect to happen if you "turned on" this feature here?</div>
+          <span class="k40-eyebrow q-group">Second Screen (hypothetically turned on)</span>
+          <div class="q-item">Does this align with your expectations? Why/why not?</div>
+          <div class="q-item">If you were to undo or make a change, what would you do?</div>
+          <span class="k40-eyebrow q-group">Follow-up</span>
+          <div class="q-item">Based on this flow, how easy would you say this was?</div>
+          <div class="q-item">How satisfied are you that this feature meets your needs?</div>
+          <div class="q-item">If this feature were live today, would you want to be notified? Why/why not?</div>
+        </div>
+      </div>
+
+      <!-- Settings flow Qs -->
+      <div>
+        <h3 class="k40-h3" style="margin-bottom:var(--k40-s-4);">Settings / Multi-step Opt-in Flow</h3>
+        <div class="q-block">
+          <span class="k40-eyebrow q-group">First Screen</span>
+          <div class="q-item">What would you do if you wanted to change the discount?</div>
+          <div class="q-item">What else do you think you could modify for email capture?</div>
+          <span class="k40-eyebrow q-group">Second Screen (hypothetically turned on)</span>
+          <div class="q-item">Does this align with your expectations? Why/why not?</div>
+          <div class="q-item">Can you tell me all the things you can modify for email capture?</div>
+          <div class="q-item">Thoughts on this functionality — good or bad? Why?</div>
+          <div class="q-item">Is there anything missing that would help in enabling this feature?</div>
+        </div>
+      </div>
+
+      <!-- Follow-up Qs -->
+      <div>
+        <h3 class="k40-h3" style="margin-bottom:var(--k40-s-4);">Follow-up Questions</h3>
+        <div class="q-block">
+          <div class="q-item">Based on what you have seen, what are your thoughts on this feature?</div>
+          <div class="q-item">What do you like or dislike about it?</div>
+          <div class="q-item">Does this feature meet your needs as a seller?</div>
+          <div class="q-item">What would you like to see that's currently missing? Why?</div>
+          <div class="q-item">If this feature were live today, how likely would you be to enable it? Why?</div>
+        </div>
+      </div>
+
+      <!-- Data Collection Methods -->
+      <div>
+        <h3 class="k40-h3" style="margin-bottom:var(--k40-s-2);">Research &amp; Data Collection Methods</h3>
+        <p class="k40-helper" style="margin-bottom:var(--k40-s-5);">Due to time constraints, three collection approaches were explored.</p>
+        <div class="methods-grid">
+          <div class="method-card">
+            <h3 class="k40-h3">Shopify Rolling Research Program</h3>
+            <p class="k40-body">A mid-April round of rolling research submitted for selection. If chosen, we could run concept and usability tests with up to 6 sellers — covering content, designs, and overall feature impression.</p>
+            <div class="method-card-footer">
+              <span class="k40-tag">6 participants · 20-min sessions</span>
+            </div>
+          </div>
+          <div class="method-card">
+            <h3 class="k40-h3">Alpha Launch Survey</h3>
+            <p class="k40-body">A brief survey during the April 2023 Alpha Launch measuring perceived ease of use and satisfaction. Two questions calculate a Single Usability Metric (SUM), with high validity and correlation to SUS scoring.</p>
+            <div class="method-card-footer">
+              <span class="k40-tag">2 SUM questions + recruitment opt-in</span>
+            </div>
+          </div>
+          <div class="method-card">
+            <h3 class="k40-h3">UXR Usability Test &amp; Interview</h3>
+            <p class="k40-body">Moderated usability test (qual + quant) combined with deeper questions on email capture to fully understand seller goals, practices, and how our feature compares to their current methods.</p>
+            <div class="method-card-footer">
+              <span class="k40-tag">Most depth · highest time investment</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collection Goals -->
+      <div>
+        <h3 class="k40-h3" style="margin-bottom:var(--k40-s-5);">Data Collection Goals</h3>
+        <div style="display:flex;flex-direction:column;gap:var(--k40-s-4);max-width:760px;">
+          <p class="k40-body">Behavioral metrics provide valuable insight into feature performance, but only answer <em>'what'</em> users are doing. Compared to predefined success metrics, this may be sufficient data collection.</p>
+          <p class="k40-body">However, for a new feature — without existing benchmarks to judge success — qualitative research is essential to understand <em>'why'</em> users behave in a particular way.</p>
+          <p class="k40-body">Both forms of data collection help develop a fuller understanding of how users interact with the feature and how it can be improved to meet their needs.</p>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <span class="footer-copy">© Joseph Grgic — UX Research Portfolio</span>
-  <a class="footer-back" href="/">
+<footer id="footer">
+  <span class="k40-helper">© Joseph Grgic — UX Research Portfolio</span>
+  <a class="k40-btn k40-btn-ghost" href="/">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
     Back to portfolio
   </a>
@@ -1112,7 +691,6 @@
     const btn = document.getElementById('appendix-btn');
     const content = document.getElementById('appendix-content');
     const isOpen = btn.classList.contains('open');
-
     if (isOpen) {
       btn.classList.remove('open');
       content.style.maxHeight = null;
@@ -1131,7 +709,6 @@
       }
     });
   }, { threshold: 0.12 });
-
   document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
   /* ── STAT COUNTER ANIMATION ── */
@@ -1142,17 +719,14 @@
     const decimals = parseInt(el.dataset.decimals || '0');
     const duration = 1200;
     const start = performance.now();
-
     function step(now) {
       const progress = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      const value = eased * target;
-      el.textContent = prefix + value.toFixed(decimals) + suffix;
+      el.textContent = prefix + (eased * target).toFixed(decimals) + suffix;
       if (progress < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
   }
-
   const statObserver = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting && e.target.dataset.target) {
@@ -1161,23 +735,20 @@
       }
     });
   }, { threshold: 0.5 });
-
   document.querySelectorAll('.stat-num[data-target]').forEach(el => statObserver.observe(el));
 
-  /* ── SCROLL SPY (nav highlight) ── */
-  const sections = document.querySelectorAll('section[id], header[id], div.section-full[id]');
-  const navLinks = document.querySelectorAll('.nav-link');
-
+  /* ── SCROLL SPY ── */
+  const sections = document.querySelectorAll('section[id], header[id], div.cs-full[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
   const spyObserver = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        navLinks.forEach(l => l.classList.remove('active'));
-        const active = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
-        if (active) active.classList.add('active');
+        navLinks.forEach(l => l.style.color = 'var(--k40-fg-3)');
+        const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (active) active.style.color = 'var(--k40-fg-1)';
       }
     });
   }, { rootMargin: '-40% 0px -55% 0px' });
-
   sections.forEach(s => spyObserver.observe(s));
 
   /* ── READ PROGRESS BAR ── */

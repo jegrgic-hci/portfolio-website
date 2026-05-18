@@ -5,278 +5,128 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hedwig Notification Framework | Google Ads</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --accent:       #4184F3;
-      --accent-light: #E8F0FE;
-      --white:        var(--k-surface, #fff);
-      --off-white:    var(--k-bg, #f7f7f5);
-      --navy:         var(--k-text-primary, #0f1117);
-      --slate:        var(--k-text-secondary, #444);
-      --muted:        var(--k-text-muted, #888);
-      --border:       var(--k-border-light, #e5e5e2);
-      --border-mid:   var(--k-border-mid, #d3d1c7);
-      --border-heavy: var(--k-border-heavy, #b0ada0);
-
-      --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
-      --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+      --brand-primary: #4184F3;
+      --brand-accent:  #E8F0FE;
     }
 
-    body {
-      font-family: 'IBM Plex Sans', -apple-system, sans-serif;
-      background: var(--white);
-      color: var(--navy);
-      -webkit-font-smoothing: antialiased;
-    }
+    /* ── Section layout shells ─────────────────────────────────────── */
+    .cs-section    { padding: var(--k40-s-8) var(--content-pad); max-width: var(--k40-content-max); margin: 0 auto; }
+    .cs-full       { background: var(--k40-surface-2); border-top: 1px solid var(--k40-border-light); border-bottom: 1px solid var(--k40-border-light); padding: var(--k40-s-8) var(--content-pad); }
+    .cs-full-inner { max-width: var(--k40-content-max); margin: 0 auto; }
+    .cs-label      { display: block; margin-bottom: var(--k40-s-5); padding-bottom: var(--k40-s-3); border-bottom: 1px solid var(--k40-border-heavy); }
 
-    /* ── Layout shells ─────────────────────────────────────────── */
-    .section {
-      padding: var(--s-8) var(--s-7);
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .section + .section { padding-top: 0; }
-
-    .section-full {
-      padding: var(--s-8) var(--s-7);
-      background: var(--off-white);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .section-full .section-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    /* ── Labels & headings ─────────────────────────────────────── */
-    .section-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: var(--s-5);
-      padding-bottom: var(--s-3);
-      border-bottom: 1px solid var(--border-heavy);
-    }
-    .section-title {
-      font-size: clamp(22px, 3vw, 36px);
-      font-weight: 500;
-      color: var(--navy);
-      letter-spacing: -0.02em;
-      margin-bottom: var(--s-7);
-    }
-    .subsection-title {
-      font-family: 'IBM Plex Mono', monospace;
+    /* ── Subsection accent label ───────────────────────────────────── */
+    .cs-subsection {
+      font-family: var(--k40-font-ui);
       font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: var(--s-4);
-      padding-bottom: var(--s-2);
-      border-bottom: 2px solid var(--accent);
+      color: var(--brand-primary);
+      margin-bottom: var(--k40-s-4);
+      padding-bottom: var(--k40-s-2);
+      border-bottom: 2px solid var(--brand-primary);
       display: inline-block;
     }
-    h3.block-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: var(--s-3);
-    }
-    p.body-text {
-      font-size: 0.9rem;
-      line-height: 1.75;
-      color: var(--slate);
-    }
-    p.body-text + p.body-text { margin-top: var(--s-4); }
 
-    /* ── TL;DR grid ─────────────────────────────────────────────── */
+    /* ── TL;DR grid ─────────────────────────────────────────────────── */
     .tldr-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 2px;
-      background: var(--border);
+      background: var(--k40-border-light);
       overflow: hidden;
     }
     @media (max-width: 700px) { .tldr-grid { grid-template-columns: 1fr; } }
     .tldr-card {
-      background: var(--white);
-      padding: var(--s-6) var(--s-5);
+      background: var(--k40-surface);
+      padding: var(--k40-s-6) var(--k40-s-5);
       display: flex;
       flex-direction: column;
-      gap: var(--s-4);
-    }
-    .tldr-card-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .tldr-card-body {
-      font-size: 0.875rem;
-      line-height: 1.7;
-      color: var(--slate);
+      gap: var(--k40-s-4);
     }
 
-    /* ── Stats row ──────────────────────────────────────────────── */
+    /* ── Stats row ──────────────────────────────────────────────────── */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: var(--s-4);
+      gap: var(--k40-s-4);
     }
     @media (max-width: 800px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
     .stat-card {
-      border: 1px solid var(--border);
-      padding: var(--s-5) var(--s-5);
-      background: var(--white);
+      border: 1px solid var(--k40-border-light);
+      padding: var(--k40-s-5);
+      background: var(--k40-surface);
       display: flex;
       flex-direction: column;
-      gap: var(--s-2);
+      gap: var(--k40-s-2);
     }
     .stat-num {
       font-size: clamp(28px, 4vw, 40px);
       font-weight: 500;
-      color: var(--accent);
+      color: var(--brand-primary);
       letter-spacing: -0.03em;
       line-height: 1;
       font-variant-numeric: tabular-nums;
     }
-    .stat-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      color: var(--muted);
-      line-height: 1.4;
-    }
 
-    /* ── List styles ────────────────────────────────────────────── */
-    .dash-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--s-3);
-      list-style: none;
-      padding: 0;
-    }
-    .dash-list li {
-      font-size: 0.875rem;
-      line-height: 1.65;
-      color: var(--slate);
-      padding-left: var(--s-5);
-      position: relative;
-    }
-    .dash-list li::before {
-      content: '—';
-      position: absolute;
-      left: 0;
-      color: var(--muted);
-      font-size: 0.8rem;
-    }
-
-    /* ── 2 / 3 column grid cards ───────────────────────────────── */
+    /* ── Card grids ─────────────────────────────────────────────────── */
     .card-grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: var(--s-4);
+      gap: var(--k40-s-4);
     }
     .card-grid-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: var(--s-4);
+      gap: var(--k40-s-4);
     }
     @media (max-width: 800px) {
       .card-grid-2, .card-grid-3 { grid-template-columns: 1fr; }
     }
     .content-card {
-      border: 1px solid var(--border);
-      padding: var(--s-5);
-      background: var(--white);
+      border: 1px solid var(--k40-border-light);
+      padding: var(--k40-s-5);
+      background: var(--k40-surface);
       display: flex;
       flex-direction: column;
-      gap: var(--s-3);
+      gap: var(--k40-s-3);
     }
-    .content-card.accent-top { border-top: 3px solid var(--accent); }
-    .card-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .card-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--navy);
-    }
-    .card-body {
-      font-size: 0.875rem;
-      line-height: 1.65;
-      color: var(--slate);
-    }
+    .content-card.accent-top { border-top: 3px solid var(--brand-primary); }
 
-    /* ── Callout / highlight block ──────────────────────────────── */
-    .callout {
-      background: var(--accent-light);
-      border-left: 4px solid var(--accent);
-      padding: var(--s-5) var(--s-6);
-      margin: var(--s-6) 0;
-    }
-    .callout p {
-      font-size: 0.9rem;
-      line-height: 1.7;
-      color: var(--slate);
-    }
-    .callout strong { color: var(--navy); font-weight: 600; }
-
-    /* ── Info rows (label + value) ──────────────────────────────── */
+    /* ── Info rows (label + value) ──────────────────────────────────── */
     .info-rows { display: flex; flex-direction: column; }
     .info-row {
       display: grid;
       grid-template-columns: 180px 1fr;
-      gap: var(--s-4) var(--s-7);
-      padding: var(--s-5) 0;
-      border-bottom: 1px solid var(--border);
+      gap: var(--k40-s-4) var(--k40-s-7);
+      padding: var(--k40-s-5) 0;
+      border-bottom: 1px solid var(--k40-border-light);
       align-items: start;
     }
-    .info-row:first-child { border-top: 1px solid var(--border); }
-    @media (max-width: 600px) { .info-row { grid-template-columns: 1fr; gap: var(--s-2); } }
-    .info-row-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding-top: 2px;
-    }
-    .info-row-body {
-      font-size: 0.875rem;
-      line-height: 1.7;
-      color: var(--slate);
-    }
+    .info-row:first-child { border-top: 1px solid var(--k40-border-light); }
+    @media (max-width: 600px) { .info-row { grid-template-columns: 1fr; gap: var(--k40-s-2); } }
 
-    /* ── Image layouts ──────────────────────────────────────────── */
+    /* ── Image layouts ──────────────────────────────────────────────── */
+    .img-wrap { display: flex; flex-direction: column; }
     .img-full {
       width: 100%;
       max-height: 560px;
       object-fit: contain;
       display: block;
-      border: 1px solid var(--border);
-      background: var(--off-white);
+      border: 1px solid var(--k40-border-light);
+      background: var(--k40-surface-2);
     }
     .img-grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: var(--s-3);
+      gap: var(--k40-s-3);
     }
     .img-grid-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: var(--s-3);
+      gap: var(--k40-s-3);
     }
     @media (max-width: 700px) {
       .img-grid-2, .img-grid-3 { grid-template-columns: 1fr; }
@@ -287,36 +137,28 @@
       max-height: 400px;
       object-fit: contain;
       display: block;
-      border: 1px solid var(--border);
-      background: var(--off-white);
+      border: 1px solid var(--k40-border-light);
+      background: var(--k40-surface-2);
     }
-    .img-caption {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--muted);
-      margin-top: var(--s-2);
-      text-align: center;
-    }
-    .img-wrap { display: flex; flex-direction: column; }
 
-    /* ── Spacers ────────────────────────────────────────────────── */
-    .mt-6 { margin-top: var(--s-6); }
-    .mt-7 { margin-top: var(--s-7); }
-    .mt-8 { margin-top: var(--s-8); }
-
-    /* ── Priority badge ─────────────────────────────────────────── */
+    /* ── Priority badges ────────────────────────────────────────────── */
     .priority-badge {
       display: inline-block;
-      font-family: 'IBM Plex Mono', monospace;
+      font-family: var(--k40-font-ui);
       font-size: 0.6rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       padding: 2px 8px;
-      margin-bottom: var(--s-2);
+      margin-bottom: var(--k40-s-2);
     }
-    .priority-badge.p0 { background: #FEE2E2; color: #991B1B; }
-    .priority-badge.p1 { background: #FEF3C7; color: #92400E; }
-    .priority-badge.p2 { background: var(--accent-light); color: #1D4ED8; }
+    .priority-badge.p0 { background: var(--k40-red-bg);   color: var(--k40-red); }
+    .priority-badge.p1 { background: var(--k40-amber-bg); color: var(--k40-amber); }
+    .priority-badge.p2 { background: var(--brand-accent);  color: #1D4ED8; }
+
+    /* ── Spacers ────────────────────────────────────────────────────── */
+    .mt-6 { margin-top: var(--k40-s-6); }
+    .mt-7 { margin-top: var(--k40-s-7); }
+    .mt-8 { margin-top: var(--k40-s-8); }
   </style>
 </head>
 <body>
@@ -324,21 +166,21 @@
   <!-- ══════════════════════════════════════════════════════════════
        TL;DR
   ══════════════════════════════════════════════════════════════ -->
-  <div class="section-full">
-    <div class="section-inner">
-      <p class="section-label">Overview</p>
+  <div class="cs-full">
+    <div class="cs-full-inner">
+      <p class="k40-eyebrow cs-label">Overview</p>
       <div class="tldr-grid">
         <div class="tldr-card">
-          <span class="tldr-card-label">Challenge</span>
-          <p class="tldr-card-body">Notification fatigue was eroding advertiser trust in Google Ads. P0 alerts were too intrusive and vague, while lower-priority content crowded critical signals — leaving advertisers unable to quickly distinguish what required immediate action.</p>
+          <span class="k40-eyebrow">Challenge</span>
+          <p class="k40-body">Notification fatigue was eroding advertiser trust in Google Ads. P0 alerts were too intrusive and vague, while lower-priority content crowded critical signals — leaving advertisers unable to quickly distinguish what required immediate action.</p>
         </div>
         <div class="tldr-card">
-          <span class="tldr-card-label">Approach</span>
-          <p class="tldr-card-body">Led a 2-day rapid cross-functional workshop to design and stress-test a tiered Hedwig notification framework. Followed by iterative designs and qualitative research with 7 experienced Google Ads advertisers to validate the framework.</p>
+          <span class="k40-eyebrow">Approach</span>
+          <p class="k40-body">Led a 2-day rapid cross-functional workshop to design and stress-test a tiered Hedwig notification framework. Followed by iterative designs and qualitative research with 7 experienced Google Ads advertisers to validate the framework.</p>
         </div>
         <div class="tldr-card">
-          <span class="tldr-card-label">Outcome</span>
-          <p class="tldr-card-body">Established a priority-based notification architecture with clear visual hierarchy rules for P0–P2 alerts, actionable inline patterns, and a validated content IA — ready for implementation with a defined design system.</p>
+          <span class="k40-eyebrow">Outcome</span>
+          <p class="k40-body">Established a priority-based notification architecture with clear visual hierarchy rules for P0–P2 alerts, actionable inline patterns, and a validated content IA — ready for implementation with a defined design system.</p>
         </div>
       </div>
     </div>
@@ -347,23 +189,23 @@
   <!-- ══════════════════════════════════════════════════════════════
        STATS
   ══════════════════════════════════════════════════════════════ -->
-  <div class="section">
+  <div class="cs-section">
     <div class="stats-row">
       <div class="stat-card">
         <span class="stat-num">7</span>
-        <span class="stat-label">Advertiser participants (LCS &amp; GSM)</span>
+        <span class="k40-helper">Advertiser participants (LCS &amp; GSM)</span>
       </div>
       <div class="stat-card">
         <span class="stat-num">3–15</span>
-        <span class="stat-label">Years Google Ads experience</span>
+        <span class="k40-helper">Years Google Ads experience</span>
       </div>
       <div class="stat-card">
         <span class="stat-num">$3k–$1M</span>
-        <span class="stat-label">Monthly ad spend range</span>
+        <span class="k40-helper">Monthly ad spend range</span>
       </div>
       <div class="stat-card">
         <span class="stat-num">45 min</span>
-        <span class="stat-label">Individual contextual interview sessions</span>
+        <span class="k40-helper">Individual contextual interview sessions</span>
       </div>
     </div>
   </div>
@@ -371,50 +213,50 @@
   <!-- ══════════════════════════════════════════════════════════════
        WORKSHOP
   ══════════════════════════════════════════════════════════════ -->
-  <div class="section-full">
-    <div class="section-inner">
-      <p class="section-label">Workshop</p>
-      <h2 class="section-title">Introduction</h2>
+  <div class="cs-full">
+    <div class="cs-full-inner">
+      <p class="k40-eyebrow cs-label">Workshop</p>
+      <h2 class="k40-h2" style="margin-bottom: var(--k40-s-7);">Introduction</h2>
 
-      <p class="body-text">Notifications are pivotal touchpoints in user experience, yet they walk a delicate line: they must demand attention without overwhelming, convey urgency without anxiety, and empower action without friction. Poorly designed alerts risk user frustration, system overload, or missed critical actions — especially for high-priority (P0) scenarios like security breaches or payment failures.</p>
-      <p class="body-text">This workshop tackled these challenges head-on, focusing on crafting a notification system that balances clarity, urgency, and user control. By aligning cross-functional teams around visual hierarchy, actionable patterns, and priority-based logic, the goal was to ensure alerts enhance — not disrupt — the advertiser journey.</p>
+      <p class="k40-body">Notifications are pivotal touchpoints in user experience, yet they walk a delicate line: they must demand attention without overwhelming, convey urgency without anxiety, and empower action without friction. Poorly designed alerts risk user frustration, system overload, or missed critical actions — especially for high-priority (P0) scenarios like security breaches or payment failures.</p>
+      <p class="k40-body" style="margin-top: var(--k40-s-4);">This workshop tackled these challenges head-on, focusing on crafting a notification system that balances clarity, urgency, and user control. By aligning cross-functional teams around visual hierarchy, actionable patterns, and priority-based logic, the goal was to ensure alerts enhance — not disrupt — the advertiser journey.</p>
 
       <div class="mt-8">
-        <p class="subsection-title">Goals</p>
+        <p class="cs-subsection">Goals</p>
         <div class="card-grid-3 mt-6">
           <div class="content-card accent-top">
-            <span class="card-label">Prioritize urgency</span>
-            <p class="card-body">Establish clear visual and functional rules for P0 alerts to ensure immediate recognition and action.</p>
+            <span class="k40-eyebrow">Prioritize urgency</span>
+            <p class="k40-body">Establish clear visual and functional rules for P0 alerts to ensure immediate recognition and action.</p>
           </div>
           <div class="content-card accent-top">
-            <span class="card-label">Streamline actions</span>
-            <p class="card-body">Simplify in-alert decisions (confirm/cancel) to reduce cognitive load and time-to-resolution.</p>
+            <span class="k40-eyebrow">Streamline actions</span>
+            <p class="k40-body">Simplify in-alert decisions (confirm/cancel) to reduce cognitive load and time-to-resolution.</p>
           </div>
           <div class="content-card accent-top">
-            <span class="card-label">Scale intelligently</span>
-            <p class="card-body">Differentiate components (color, placement, interactions) across priority tiers P0–P2 while maintaining system consistency.</p>
+            <span class="k40-eyebrow">Scale intelligently</span>
+            <p class="k40-body">Differentiate components (color, placement, interactions) across priority tiers P0–P2 while maintaining system consistency.</p>
           </div>
         </div>
       </div>
 
       <div class="mt-8">
-        <p class="subsection-title">User Needs</p>
+        <p class="cs-subsection">User Needs</p>
         <div class="info-rows mt-6">
           <div class="info-row">
-            <span class="info-row-label">Clarity</span>
-            <p class="info-row-body">Users must instantly recognize priority levels — "Is this urgent?" should never be a question that requires analysis.</p>
+            <span class="k40-eyebrow">Clarity</span>
+            <p class="k40-body">Users must instantly recognize priority levels — "Is this urgent?" should never be a question that requires analysis.</p>
           </div>
           <div class="info-row">
-            <span class="info-row-label">Control</span>
-            <p class="info-row-body">Options to act (confirm/cancel) or defer within the alert, minimizing workflow disruption.</p>
+            <span class="k40-eyebrow">Control</span>
+            <p class="k40-body">Options to act (confirm/cancel) or defer within the alert, minimizing workflow disruption.</p>
           </div>
           <div class="info-row">
-            <span class="info-row-label">Context</span>
-            <p class="info-row-body">Alerts should surface only relevant, actionable information tied to where the advertiser is within Google Ads.</p>
+            <span class="k40-eyebrow">Context</span>
+            <p class="k40-body">Alerts should surface only relevant, actionable information tied to where the advertiser is within Google Ads.</p>
           </div>
           <div class="info-row">
-            <span class="info-row-label">Calm</span>
-            <p class="info-row-body">Avoid anxiety from overused urgency — "Why is everything red?" is a failure state.</p>
+            <span class="k40-eyebrow">Calm</span>
+            <p class="k40-body">Avoid anxiety from overused urgency — "Why is everything red?" is a failure state.</p>
           </div>
         </div>
       </div>
@@ -424,106 +266,106 @@
   <!-- ══════════════════════════════════════════════════════════════
        KEY SCENARIOS
   ══════════════════════════════════════════════════════════════ -->
-  <div class="section">
-    <p class="section-label">Workshop Focus</p>
-    <h2 class="section-title">Key Scenarios</h2>
+  <div class="cs-section">
+    <p class="k40-eyebrow cs-label">Workshop Focus</p>
+    <h2 class="k40-h2" style="margin-bottom: var(--k40-s-7);">Key Scenarios</h2>
 
     <div class="card-grid-3">
 
       <div class="content-card">
         <span class="priority-badge p0">P0 Alerts</span>
-        <h3 class="block-title">Campaign has no budget / Campaign inactive</h3>
-        <p class="card-body">Need: Immediate, unambiguous error highlighting with one-click resolution. Risk: Abandonment if actions are not clear or steps are too many.</p>
+        <h3 class="k40-h3">Campaign has no budget / Campaign inactive</h3>
+        <p class="k40-body">Need: Immediate, unambiguous error highlighting with one-click resolution. Risk: Abandonment if actions are not clear or steps are too many.</p>
       </div>
 
       <div class="content-card">
         <span class="priority-badge p2">Inline Actions</span>
-        <h3 class="block-title">Apply keywords / Increase budget</h3>
-        <p class="card-body">Need: Ability to implement a recommendation directly if the cost of inaction is surfaced. Requires clear budget impact and cross-campaign visibility.</p>
+        <h3 class="k40-h3">Apply keywords / Increase budget</h3>
+        <p class="k40-body">Need: Ability to implement a recommendation directly if the cost of inaction is surfaced. Requires clear budget impact and cross-campaign visibility.</p>
       </div>
 
       <div class="content-card">
         <span class="priority-badge p1">Priority Differentiation</span>
-        <h3 class="block-title">P2 Recommendation vs. P0 Critical Alert</h3>
-        <p class="card-body">Need: P2 uses subtle cues (icon); P0 demands prominent, persistent display. Non-urgent prompts must be dismissible without blocking workflow.</p>
+        <h3 class="k40-h3">P2 Recommendation vs. P0 Critical Alert</h3>
+        <p class="k40-body">Need: P2 uses subtle cues (icon); P0 demands prominent, persistent display. Non-urgent prompts must be dismissible without blocking workflow.</p>
       </div>
 
     </div>
 
-    <div class="callout mt-7">
-      <p><strong>Workshop Focus:</strong> Validate these scenarios cross-functionally, stress-testing how design choices address conflicting needs — urgency vs. calm, prominence vs. non-disruptive. Reference existing user pain points: "P0 alerts are intrusive and vague."</p>
+    <div class="k40-callout mt-7">
+      <p class="k40-callout-body"><strong>Workshop Focus:</strong> Validate these scenarios cross-functionally, stress-testing how design choices address conflicting needs — urgency vs. calm, prominence vs. non-disruptive. Reference existing user pain points: "P0 alerts are intrusive and vague."</p>
     </div>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════
        DESIGN EXPLORATIONS
   ══════════════════════════════════════════════════════════════ -->
-  <div class="section-full">
-    <div class="section-inner">
-      <p class="section-label">Design Explorations</p>
-      <h2 class="section-title">Rapid Iterations Using Material Design System</h2>
+  <div class="cs-full">
+    <div class="cs-full-inner">
+      <p class="k40-eyebrow cs-label">Design Explorations</p>
+      <h2 class="k40-h2" style="margin-bottom: var(--k40-s-7);">Rapid Iterations Using Material Design System</h2>
 
-      <p class="body-text">Four core design principles guided all iterations: match location to urgency (P0 always prominent, P1/P2 in the Right-Hand Rail), reserve alerts for action not education, apply tiered visual hierarchy across priority levels, and limit inline actions to one-click decisions to reduce cognitive load.</p>
+      <p class="k40-body">Four core design principles guided all iterations: match location to urgency (P0 always prominent, P1/P2 in the Right-Hand Rail), reserve alerts for action not education, apply tiered visual hierarchy across priority levels, and limit inline actions to one-click decisions to reduce cognitive load.</p>
 
       <!-- RHR Framework -->
       <div class="mt-8">
-        <p class="subsection-title">RHR Framework — Design Variants</p>
-        <p class="body-text mt-6">The Right-Hand Rail (RHR) framework was designed to surface P1/P2 notifications, account recommendations, education content, and contextual content within a persistent panel — without disrupting key tasks in an already complex UI. By anchoring lower-priority content to the rail, advertisers can stay focused on their primary workflow while still having timely information readily accessible. Two variants were developed: a segmented view for clearer priority grouping and a continuous scroll view.</p>
+        <p class="cs-subsection">RHR Framework — Design Variants</p>
+        <p class="k40-body mt-6">The Right-Hand Rail (RHR) framework was designed to surface P1/P2 notifications, account recommendations, education content, and contextual content within a persistent panel — without disrupting key tasks in an already complex UI. By anchoring lower-priority content to the rail, advertisers can stay focused on their primary workflow while still having timely information readily accessible. Two variants were developed: a segmented view for clearer priority grouping and a continuous scroll view.</p>
         <div class="img-grid-2 mt-6">
           <div class="img-wrap">
             <img src="/projects/google-hedwig/images/rhr_visual_hierarch_v1.png" alt="RHR visual hierarchy v1" class="img-full" style="border:none;" />
-            <p class="img-caption">V1 — Segmented notification panel</p>
+            <p class="k40-helper" style="margin-top: var(--k40-s-2); text-align: center;">V1 — Segmented notification panel</p>
           </div>
           <div class="img-wrap">
             <img src="/projects/google-hedwig/images/rhr_visual_hierarch_v2.png" alt="RHR visual hierarchy v2" class="img-full" style="border:none;" />
-            <p class="img-caption">V2 — Continuous notification panel</p>
+            <p class="k40-helper" style="margin-top: var(--k40-s-2); text-align: center;">V2 — Continuous notification panel</p>
           </div>
         </div>
       </div>
 
       <!-- P0 Critical Alerts -->
       <div class="mt-8">
-        <p class="subsection-title">P0 Critical Alerts</p>
-        <p class="body-text mt-6">P0 alerts are always prominent but must not block UI functionality. Two design directions were explored: a persistent top bar and an inline card within the RHR.</p>
+        <p class="cs-subsection">P0 Critical Alerts</p>
+        <p class="k40-body mt-6">P0 alerts are always prominent but must not block UI functionality. Two design directions were explored: a persistent top bar and an inline card within the RHR.</p>
         <div class="img-grid-2 mt-6">
           <div class="img-wrap">
             <img src="/projects/google-hedwig/images/p0_critical_topbar.png" alt="P0 critical top bar" class="img-full" style="border:none;" />
-            <p class="img-caption">P0 — Persistent top bar</p>
+            <p class="k40-helper" style="margin-top: var(--k40-s-2); text-align: center;">P0 — Persistent top bar</p>
           </div>
           <div class="img-wrap">
             <img src="/projects/google-hedwig/images/p0_critical_card.png" alt="P0 critical card" class="img-full" style="border:none;" />
-            <p class="img-caption">P0 — Critical card in RHR</p>
+            <p class="k40-helper" style="margin-top: var(--k40-s-2); text-align: center;">P0 — Critical card in RHR</p>
           </div>
         </div>
       </div>
 
       <!-- P1 Designs -->
       <div class="mt-8">
-        <p class="subsection-title">P1 — Persistent Banners &amp; RHR</p>
-        <p class="body-text mt-6">P1 alerts use persistent banners within the RHR that avoid disrupting workflows. Rather than relying on color alone, existing iconography and system colors denote the type and impact of each issue or recommendation. The RHR variant shown explores a full detail panel for surfacing actionable context without leaving the current workflow.</p>
+        <p class="cs-subsection">P1 — Persistent Banners &amp; RHR</p>
+        <p class="k40-body mt-6">P1 alerts use persistent banners within the RHR that avoid disrupting workflows. Rather than relying on color alone, existing iconography and system colors denote the type and impact of each issue or recommendation. The RHR variant shown explores a full detail panel for surfacing actionable context without leaving the current workflow.</p>
         <div class="img-wrap mt-6">
           <img src="/projects/google-hedwig/images/p1_rhr_full.png" alt="P1 RHR full" class="img-full" style="border:none;" />
-          <p class="img-caption">P1 — Full RHR panel</p>
+          <p class="k40-helper" style="margin-top: var(--k40-s-2); text-align: center;">P1 — Full RHR panel</p>
         </div>
       </div>
 
       <!-- Inline Actions -->
       <div class="mt-8">
-        <p class="subsection-title">Inline Actions</p>
-        <p class="body-text mt-6">Inline actions limit decisions to 1–2 primary actions ("Confirm," "Undo") with an optional "Learn More" link. Verb-driven labels replace generic terms. Complex inputs redirect to a task-specific page rather than attempting to fit into the alert.</p>
+        <p class="cs-subsection">Inline Actions</p>
+        <p class="k40-body mt-6">Inline actions limit decisions to 1–2 primary actions ("Confirm," "Undo") with an optional "Learn More" link. Verb-driven labels replace generic terms. Complex inputs redirect to a task-specific page rather than attempting to fit into the alert.</p>
         <div class="img-wrap mt-6">
           <img src="/projects/google-hedwig/images/inline_applying.png" alt="Inline applying" class="img-full" style="border:none;" />
-          <p class="img-caption">Inline applying — design framework</p>
+          <p class="k40-helper" style="margin-top: var(--k40-s-2); text-align: center;">Inline applying — design framework</p>
         </div>
       </div>
 
       <!-- Content IA + Direct Mapping -->
       <div class="mt-8">
-        <p class="subsection-title">Content Architecture &amp; Page Mapping</p>
-        <p class="body-text mt-6">A key challenge: the proposed framework showed global content that didn't change based on where the advertiser was in Google Ads. No design cues indicated the RHR content was tied to the current page — a critical gap for contextual relevance.</p>
+        <p class="cs-subsection">Content Architecture &amp; Page Mapping</p>
+        <p class="k40-body mt-6">A key challenge: the proposed framework showed global content that didn't change based on where the advertiser was in Google Ads. No design cues indicated the RHR content was tied to the current page — a critical gap for contextual relevance.</p>
         <div class="img-wrap mt-6">
           <img src="/projects/google-hedwig/images/direct_mapping.png" alt="Direct page mapping" class="img-full" style="border:none;" />
-          <p class="img-caption">Design mapping — notification-to-page context alignment</p>
+          <p class="k40-helper" style="margin-top: var(--k40-s-2); text-align: center;">Design mapping — notification-to-page context alignment</p>
         </div>
       </div>
 
@@ -533,51 +375,51 @@
   <!-- ══════════════════════════════════════════════════════════════
        RESEARCH
   ══════════════════════════════════════════════════════════════ -->
-  <div class="section">
-    <p class="section-label">Research</p>
-    <h2 class="section-title">Validating the Framework with Advertisers</h2>
+  <div class="cs-section">
+    <p class="k40-eyebrow cs-label">Research</p>
+    <h2 class="k40-h2" style="margin-bottom: var(--k40-s-7);">Validating the Framework with Advertisers</h2>
 
-    <p class="body-text">Following the workshop and iterative design phase, qualitative research was conducted with 7 external Google Ads advertisers to validate the proposed Hedwig framework. Three focus areas: Hedwig Identity (content organization and prioritization), High Priority P0 Alerts (prominence, persistence, and actionable steps), and In-line Recommendations (contextual application preferences).</p>
+    <p class="k40-body">Following the workshop and iterative design phase, qualitative research was conducted with 7 external Google Ads advertisers to validate the proposed Hedwig framework. Three focus areas: Hedwig Identity (content organization and prioritization), High Priority P0 Alerts (prominence, persistence, and actionable steps), and In-line Recommendations (contextual application preferences).</p>
 
     <div class="mt-7">
-      <p class="subsection-title">Methodology</p>
+      <p class="cs-subsection">Methodology</p>
       <div class="info-rows mt-6">
         <div class="info-row">
-          <span class="info-row-label">Format</span>
-          <p class="info-row-body">45-minute individual contextual interviews, conducted remotely via GVC video conference with screen recording (QuickTime).</p>
+          <span class="k40-eyebrow">Format</span>
+          <p class="k40-body">45-minute individual contextual interviews, conducted remotely via GVC video conference with screen recording (QuickTime).</p>
         </div>
         <div class="info-row">
-          <span class="info-row-label">Stimuli</span>
-          <p class="info-row-body">Static design mocks across two primary sections, each with two variants. Common design elements shown across sections and consolidated for analysis.</p>
+          <span class="k40-eyebrow">Stimuli</span>
+          <p class="k40-body">Static design mocks across two primary sections, each with two variants. Common design elements shown across sections and consolidated for analysis.</p>
         </div>
         <div class="info-row">
-          <span class="info-row-label">Participants</span>
-          <p class="info-row-body">n=7 external Google Ads users (LCS &amp; GSM). Business areas: Education, Creative Studio, Health &amp; Beauty, Hotels &amp; Travel. Experience: 3–15 years. Monthly spend: $3,000–$1M. Scope: single city/region accounts up to 700+ client global managers.</p>
+          <span class="k40-eyebrow">Participants</span>
+          <p class="k40-body">n=7 external Google Ads users (LCS &amp; GSM). Business areas: Education, Creative Studio, Health &amp; Beauty, Hotels &amp; Travel. Experience: 3–15 years. Monthly spend: $3,000–$1M. Scope: single city/region accounts up to 700+ client global managers.</p>
         </div>
         <div class="info-row">
-          <span class="info-row-label">Design Variants</span>
-          <p class="info-row-body">V1: Segmented notification panel + education panel with dedicated resolution page. V2: Continuous notification panel + education panel to new page. Feedback across both variants was consolidated and analyzed.</p>
+          <span class="k40-eyebrow">Design Variants</span>
+          <p class="k40-body">V1: Segmented notification panel + education panel with dedicated resolution page. V2: Continuous notification panel + education panel to new page. Feedback across both variants was consolidated and analyzed.</p>
         </div>
       </div>
     </div>
 
     <div class="mt-8">
-      <p class="subsection-title">Research Focus Areas</p>
+      <p class="cs-subsection">Research Focus Areas</p>
       <div class="card-grid-3 mt-6">
         <div class="content-card accent-top">
-          <span class="card-label">Hedwig Identity</span>
-          <h3 class="block-title">Content Organization &amp; Prioritization</h3>
-          <p class="card-body">User needs assessment to identify advertiser content requirements. Analyze optimal IA strategies (prioritization, categorization, segmentation) aligned with advertiser mental models.</p>
+          <span class="k40-eyebrow">Hedwig Identity</span>
+          <h3 class="k40-h3">Content Organization &amp; Prioritization</h3>
+          <p class="k40-body">User needs assessment to identify advertiser content requirements. Analyze optimal IA strategies (prioritization, categorization, segmentation) aligned with advertiser mental models.</p>
         </div>
         <div class="content-card accent-top">
-          <span class="card-label">High Priority Alerts (P0)</span>
-          <h3 class="block-title">Visibility, Persistence &amp; Actionability</h3>
-          <p class="card-body">Investigate expectations and contextual requirements for balancing alert visibility (visual hierarchy/salience) with duration (persistence/dismissal) — identifying thresholds where effectiveness meets minimal cognitive disruption.</p>
+          <span class="k40-eyebrow">High Priority Alerts (P0)</span>
+          <h3 class="k40-h3">Visibility, Persistence &amp; Actionability</h3>
+          <p class="k40-body">Investigate expectations and contextual requirements for balancing alert visibility (visual hierarchy/salience) with duration (persistence/dismissal) — identifying thresholds where effectiveness meets minimal cognitive disruption.</p>
         </div>
         <div class="content-card accent-top">
-          <span class="card-label">In-line Applying</span>
-          <h3 class="block-title">Mental Models &amp; Workflow Fit</h3>
-          <p class="card-body">Map advertiser mental models against recommendation implementation patterns to identify expectation gaps, trust calibration factors, and actionability friction.</p>
+          <span class="k40-eyebrow">In-line Applying</span>
+          <h3 class="k40-h3">Mental Models &amp; Workflow Fit</h3>
+          <p class="k40-body">Map advertiser mental models against recommendation implementation patterns to identify expectation gaps, trust calibration factors, and actionability friction.</p>
         </div>
       </div>
     </div>
@@ -586,54 +428,54 @@
   <!-- ══════════════════════════════════════════════════════════════
        RESULTS
   ══════════════════════════════════════════════════════════════ -->
-  <div class="section-full">
-    <div class="section-inner">
-      <p class="section-label">Results</p>
-      <h2 class="section-title">Key Findings</h2>
+  <div class="cs-full">
+    <div class="cs-full-inner">
+      <p class="k40-eyebrow cs-label">Results</p>
+      <h2 class="k40-h2" style="margin-bottom: var(--k40-s-6);">Key Findings</h2>
 
       <!-- P0 Alerts -->
       <div class="mt-6">
-        <p class="subsection-title">High Priority Alerts (P0)</p>
+        <p class="cs-subsection">High Priority Alerts (P0)</p>
         <div class="card-grid-3 mt-6">
           <div class="content-card">
-            <span class="card-label">Prominence</span>
-            <p class="card-body">Advertisers want high priority alerts to be prominent both outside and inside the proposed RHR framework. Alerts should be visible at-a-glance regardless of the advertiser's current location within Google Ads.</p>
+            <span class="k40-eyebrow">Prominence</span>
+            <p class="k40-body">Advertisers want high priority alerts to be prominent both outside and inside the proposed RHR framework. Alerts should be visible at-a-glance regardless of the advertiser's current location within Google Ads.</p>
           </div>
           <div class="content-card">
-            <span class="card-label">Persistence</span>
-            <p class="card-body">Advertisers generally wanted P0 alerts to be visually persistent and undismissable — while not interfering with their ability to navigate Google Ads. Alerts should remain readily accessible in the RHR.</p>
+            <span class="k40-eyebrow">Persistence</span>
+            <p class="k40-body">Advertisers generally wanted P0 alerts to be visually persistent and undismissable — while not interfering with their ability to navigate Google Ads. Alerts should remain readily accessible in the RHR.</p>
           </div>
           <div class="content-card">
-            <span class="card-label">Actionability</span>
-            <p class="card-body">Advertisers want P0 alerts to link directly to content ("Go to page…") with clear steps on how to resolve the alert. Note: actual page content is out of scope for this research, but findings direct what content should exist.</p>
+            <span class="k40-eyebrow">Actionability</span>
+            <p class="k40-body">Advertisers want P0 alerts to link directly to content ("Go to page…") with clear steps on how to resolve the alert. Note: actual page content is out of scope for this research, but findings direct what content should exist.</p>
           </div>
         </div>
       </div>
 
       <!-- Hedwig Identity -->
       <div class="mt-8">
-        <p class="subsection-title">Hedwig Identity</p>
+        <p class="cs-subsection">Hedwig Identity</p>
         <div class="card-grid-3 mt-6">
           <div class="content-card">
-            <span class="card-label">Content / Education</span>
-            <p class="card-body">Overall, Education content within the proposed Hedwig framework confused advertisers. This ties into the relationship between organization and actionability — Education was not seen as high priority vs. content that was hidden.</p>
+            <span class="k40-eyebrow">Content / Education</span>
+            <p class="k40-body">Overall, Education content within the proposed Hedwig framework confused advertisers. This ties into the relationship between organization and actionability — Education was not seen as high priority vs. content that was hidden.</p>
           </div>
           <div class="content-card">
-            <span class="card-label">Content / Organization</span>
-            <p class="card-body">Across both design variants, advertisers frequently mentioned the need for content within Hedwig to be organized based on priority. Pending Requests were prioritized above recommendations as a secondary example of this principle.</p>
+            <span class="k40-eyebrow">Content / Organization</span>
+            <p class="k40-body">Across both design variants, advertisers frequently mentioned the need for content within Hedwig to be organized based on priority. Pending Requests were prioritized above recommendations as a secondary example of this principle.</p>
           </div>
           <div class="content-card">
-            <span class="card-label">Design Mapping</span>
-            <p class="card-body">The proposed framework suggested global content that did not change based on where advertisers were within Google Ads. When navigating to "Keywords," there were no design cues to suggest the RHR content was tied to the current page.</p>
+            <span class="k40-eyebrow">Design Mapping</span>
+            <p class="k40-body">The proposed framework suggested global content that did not change based on where advertisers were within Google Ads. When navigating to "Keywords," there were no design cues to suggest the RHR content was tied to the current page.</p>
           </div>
         </div>
       </div>
 
       <!-- In-line Applying -->
       <div class="mt-8">
-        <p class="subsection-title">In-line Applying</p>
-        <div class="callout">
-          <p><strong>Actionability is context-dependent.</strong> Advertisers liked the ability to apply a recommendation directly within Hedwig — but this depended on the type of recommendation. Low-risk recommendations (perceived as simple or low-cost) were applied inline. High-risk recommendations (complex or high-cost, e.g., increase budget) prompted advertisers to navigate to a dedicated page before deciding. This aligns directly with the P0 priority findings.</p>
+        <p class="cs-subsection">In-line Applying</p>
+        <div class="k40-callout is-finding">
+          <p class="k40-callout-body"><strong>Actionability is context-dependent.</strong> Advertisers liked the ability to apply a recommendation directly within Hedwig — but this depended on the type of recommendation. Low-risk recommendations (perceived as simple or low-cost) were applied inline. High-risk recommendations (complex or high-cost, e.g., increase budget) prompted advertisers to navigate to a dedicated page before deciding. This aligns directly with the P0 priority findings.</p>
         </div>
       </div>
 
@@ -643,30 +485,30 @@
   <!-- ══════════════════════════════════════════════════════════════
        NEXT STEPS
   ══════════════════════════════════════════════════════════════ -->
-  <div class="section">
-    <p class="section-label">Next Steps</p>
-    <h2 class="section-title">Recommendations</h2>
+  <div class="cs-section">
+    <p class="k40-eyebrow cs-label">Next Steps</p>
+    <h2 class="k40-h2" style="margin-bottom: var(--k40-s-7);">Recommendations</h2>
 
     <div class="card-grid-2">
       <div class="content-card accent-top">
-        <span class="card-label">High Priority Alerts</span>
-        <h3 class="block-title">Prominence + Clear CTAs</h3>
-        <p class="card-body">Ensure P0 alerts are visually prominent while providing advertisers clear calls to action that meet expectations. Validate persistence behavior with interactive prototypes rather than static mocks.</p>
+        <span class="k40-eyebrow">High Priority Alerts</span>
+        <h3 class="k40-h3">Prominence + Clear CTAs</h3>
+        <p class="k40-body">Ensure P0 alerts are visually prominent while providing advertisers clear calls to action that meet expectations. Validate persistence behavior with interactive prototypes rather than static mocks.</p>
       </div>
       <div class="content-card accent-top">
-        <span class="card-label">Content IA</span>
-        <h3 class="block-title">Determine What Advertisers Want</h3>
-        <p class="card-body">Validate what content advertisers want within Hedwig and how they prioritize it. Ideate on visual organization focusing on glanceability and actionability — avoid hiding high-priority notifications behind lower-priority content.</p>
+        <span class="k40-eyebrow">Content IA</span>
+        <h3 class="k40-h3">Determine What Advertisers Want</h3>
+        <p class="k40-body">Validate what content advertisers want within Hedwig and how they prioritize it. Ideate on visual organization focusing on glanceability and actionability — avoid hiding high-priority notifications behind lower-priority content.</p>
       </div>
       <div class="content-card accent-top">
-        <span class="card-label">Design Mapping</span>
-        <h3 class="block-title">Strengthen Page-Context Signals</h3>
-        <p class="card-body">Visually strengthen the mapping of notifications shown to current page content. Balance organization of content based on previous findings — the RHR should reflect where advertisers are, not a global view.</p>
+        <span class="k40-eyebrow">Design Mapping</span>
+        <h3 class="k40-h3">Strengthen Page-Context Signals</h3>
+        <p class="k40-body">Visually strengthen the mapping of notifications shown to current page content. Balance organization of content based on previous findings — the RHR should reflect where advertisers are, not a global view.</p>
       </div>
       <div class="content-card accent-top">
-        <span class="card-label">In-line Applying</span>
-        <h3 class="block-title">Complexity-Based Apply Patterns</h3>
-        <p class="card-body">Ensure inline applying aligns with advertiser expectations based on perceived complexity and cost. Surface notifications with higher probability of inline acceptance as "quick wins" to facilitate higher adoption.</p>
+        <span class="k40-eyebrow">In-line Applying</span>
+        <h3 class="k40-h3">Complexity-Based Apply Patterns</h3>
+        <p class="k40-body">Ensure inline applying aligns with advertiser expectations based on perceived complexity and cost. Surface notifications with higher probability of inline acceptance as "quick wins" to facilitate higher adoption.</p>
       </div>
     </div>
   </div>

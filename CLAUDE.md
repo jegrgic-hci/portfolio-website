@@ -165,6 +165,113 @@ npm run build     # Static export to ./out/
 
 Cloudflare Pages auto-deploys on push to main branch.
 
+## Case Study HTML Migration (Kronos v4.0)
+
+All case study HTML files in `public/projects/{slug}/content/case-study.html` are injected
+directly into the Next.js page by `app/projects/[slug]/page.tsx` — the `<style>` blocks and
+`<body>` are extracted and rendered inside the app. This means **all `--k40-*` tokens and
+`k40-*` classes from `components.css` are already available** in every case study HTML.
+
+**McDonald's is the reference** — use it as the template when migrating others.
+
+### Migration goal
+Strip each file's `<style>` block down to:
+1. **2–3 project brand vars** (client accent colors only)
+2. **Case-study-specific layout patterns** not covered by Kronos (phone grids, screen blocks, etc.)
+
+Replace all custom classes in the HTML body with existing `k40-*` classes.
+
+### How to migrate a case study
+
+**Step 1 — Read the file and audit the `<style>` block**
+Identify: (a) custom color vars, (b) layout patterns unique to this project, (c) everything else
+that duplicates what Kronos already provides.
+
+**Step 2 — Slim the `<style>` block**
+Keep only:
+```css
+:root {
+  --brand-primary: #XXXXXX;   /* client accent */
+  --brand-accent:  #XXXXXX;   /* secondary if needed */
+}
+/* layout patterns not in Kronos (phone grids, screen blocks, etc.) */
+/* use --k40-* tokens for all colors/spacing inside these */
+/* reveal animations if used */
+```
+
+**Step 3 — Replace body classes using this mapping**
+
+| Old custom class / pattern | Kronos replacement |
+|---|---|
+| Section label (`font-mono, uppercase, border-bottom`) | `k40-eyebrow cs-label` |
+| Section title (`h2` sized) | `k40-h2` |
+| Sub-heading (`h3` sized) | `k40-h3` |
+| Body prose | `k40-body` |
+| Long-form editorial prose | `k40-body-long` |
+| Small label above a value | `k40-eyebrow` |
+| Monospace field value | `k40-label` |
+| Muted helper / caption text | `k40-helper` |
+| Tag / badge pill | `k40-tag` |
+| Accent-colored tag | `k40-tag is-accent` |
+| Numbered step label (`01`, `02`) | `k40-eyebrow is-accent` |
+| Card container | `k40-card` + `style="padding: var(--k40-s-5);"` |
+| Callout / highlight box | `k40-callout` |
+| Research finding callout | `k40-callout is-finding` |
+| Design decision callout | `k40-callout is-decision` |
+| Key insight callout | `k40-callout is-insight` |
+| Neutral note callout | `k40-callout is-note` |
+| Callout label | `k40-callout-label` |
+| Callout body text | `k40-callout-body` |
+| Pull quote | `k40-pull-quote` → `blockquote` + `cite` inside |
+| Image + caption block | `k40-figure` → `img` + `figcaption` with `.fig-label` + `.fig-text` |
+| Data table | `k40-table` |
+| KPI / stat block | `k40-kpi` with `.label`, `.num`, `.meta` inside |
+| Ghost / text button | `k40-btn k40-btn-ghost` |
+| Secondary button | `k40-btn k40-btn-secondary` |
+| Inline nav links | `k40-btn k40-btn-ghost` or just `k40-eyebrow` styled anchors |
+
+**Step 4 — Inline style cleanup**
+Replace hardcoded color/spacing values in `style=""` attributes:
+- Colors → `var(--k40-fg-1)`, `var(--k40-fg-3)`, `var(--k40-border-light)`, etc.
+- Spacing → `var(--k40-s-3)` through `var(--k40-s-9)`
+- Max widths → `var(--k40-content-max)` (1140px)
+- Horizontal padding → `var(--content-pad)` (40px / 24px mobile)
+
+**Step 5 — Section layout shell**
+Use these shared layout classes (define in the file's `<style>` block if not already there):
+```css
+.cs-section    { padding: var(--k40-s-8) var(--content-pad); max-width: var(--k40-content-max); margin: 0 auto; }
+.cs-full       { background: var(--k40-surface-2); border-top: 1px solid var(--k40-border-light); border-bottom: 1px solid var(--k40-border-light); padding: var(--k40-s-8) var(--content-pad); }
+.cs-full-inner { max-width: var(--k40-content-max); margin: 0 auto; }
+.cs-label      { display: block; margin-bottom: var(--k40-s-5); padding-bottom: var(--k40-s-3); border-bottom: 1px solid var(--k40-border-heavy); }
+```
+
+**Step 6 — Nav and footer**
+The nav (`#site-nav`) and footer (`#footer`) are hidden by `page.tsx` via CSS override —
+they don't need to be perfect, but keep them clean using `k40-eyebrow` for nav brand text.
+
+**Step 7 — Verify locally**
+```bash
+npm run dev
+# visit http://localhost:3000/projects/{slug}
+```
+Check: typography scale, card borders, callout colors, figure captions, table styling, responsive breakpoints.
+
+### Files remaining to migrate (as of May 2026)
+- `allstate/content/case-study.html` — partially on old `--k-*` vars, needs remapping to `--k40-*`
+- `cigna/content/case-study.html` — partially on `--k40-*`, needs cleanup
+- `google-editor/content/case-study.html` — partially on old vars
+- `google-hedwig/content/case-study.html` — partially on old vars
+- `verizon/content/case-study.html` — zero Kronos vars, full migration needed
+- `meta-benchmark/content/case-study.html` — ✅ migrated May 2026
+
+### Design system source files
+- Tokens: `design_system/kronos-design-system/tokens.css` (`--k40-*` vars)
+- Components: `design_system/kronos-design-system/components.css` (`k40-*` classes)
+- Portfolio globals: `app/globals.css` (imports both + portfolio-specific overrides)
+
+---
+
 ## Known Items / Future Work
 
 - Complete About page content

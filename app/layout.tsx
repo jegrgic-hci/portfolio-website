@@ -49,13 +49,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}>
             <a href="/" style={{
               fontFamily: "var(--k40-font-display)",
-              fontSize: "1.1rem",
-              letterSpacing: "0.12em",
+              fontSize: "0.78rem",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
               color: "var(--k40-fg-1)",
               textDecoration: "none",
             }}>
-              JG
+              Joseph Everett Grgic
             </a>
             <ul style={{ display: "flex", gap: "var(--k40-s-2)", listStyle: "none" }}>
               {navLinks.map(({ href, label }) => (

@@ -273,7 +273,7 @@ export default function Home() {
                     href={article.href}
                     className="je-writing-row"
                     style={{
-                      display: "flex", gap: "var(--k40-s-3)",
+                      display: "flex", gap: "var(--k40-s-5)",
                       padding: "var(--k40-s-4) var(--k40-s-2)", margin: "0 calc(-1 * var(--k40-s-2))",
                       borderBottom: "1px solid var(--k40-border-light)",
                       textDecoration: "none", color: "inherit",

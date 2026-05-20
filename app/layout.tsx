@@ -49,8 +49,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}>
             <a href="/" style={{
               fontFamily: "var(--k40-font-display)",
-              fontSize: "0.78rem",
-              letterSpacing: "0.08em",
+              fontSize: "1.3rem",
+              letterSpacing: "0.2em",
               textTransform: "uppercase",
               color: "var(--k40-fg-1)",
               textDecoration: "none",

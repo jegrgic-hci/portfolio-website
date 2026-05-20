@@ -70,7 +70,7 @@ export default function Work() {
                   <div style={{ position: "relative", height: "210px" }}>
                     <Image src={study.image} alt={study.title} fill style={{ objectFit: "cover", objectPosition: "center top" }} />
                   </div>
-                  <div style={{ padding: "var(--k40-s-5)" }}>
+                  <div style={{ padding: "var(--k40-s-5)", display: "flex", flexDirection: "column", height: "100%" }}>
                     <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-2)" }}>{study.company}</p>
                     <h3 className="k40-h3" style={{ marginBottom: "var(--k40-s-3)" }}>{study.title}</h3>
                     <p className="k40-body" style={{ maxWidth: "none", marginBottom: "var(--k40-s-4)" }}>{study.description}</p>
@@ -87,7 +87,9 @@ export default function Work() {
                         {study.metrics}
                       </p>
                     )}
-                    <span className="je-card-link">{study.linkLabel}</span>
+                    <div style={{ marginTop: "auto" }}>
+                      <span className="je-card-link">{study.linkLabel}</span>
+                    </div>
                   </div>
                 </a>
               ))}

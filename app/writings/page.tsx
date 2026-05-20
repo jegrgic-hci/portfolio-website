@@ -51,14 +51,14 @@ export default function Writings() {
                     {article.date}
                   </span>
                   <div>
-                    <p style={{
+                    <p className="je-writing-title" style={{
                       fontFamily: "var(--k40-font-body)",
                       fontSize: "var(--k40-text-sm)", fontWeight: 500,
                       color: "var(--k40-fg-1)", lineHeight: 1.4, marginBottom: "var(--k40-s-1)",
                     }}>
                       {article.title}
                     </p>
-                    <p style={{
+                    <p className="je-writing-desc" style={{
                       fontFamily: "var(--k40-font-body)",
                       fontSize: "var(--k40-text-xs)",
                       color: "var(--k40-fg-3)", lineHeight: 1.6,

@@ -80,7 +80,7 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
           style={{ objectFit: "cover", objectPosition: "center top" }}
         />
       </div>
-      <div style={{ padding: "var(--k40-s-5)" }}>
+      <div style={{ padding: "var(--k40-s-5)", display: "flex", flexDirection: "column", height: "100%" }}>
         <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-2)", display: "flex", alignItems: "center", gap: "var(--k40-s-2)" }}>
           {study.company} <Tag type={study.tag} />
         </p>
@@ -99,7 +99,9 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
             {study.metrics}
           </p>
         )}
-        <CardLink label="View case study →" />
+        <div style={{ marginTop: "auto" }}>
+          <CardLink label="View case study →" />
+        </div>
       </div>
     </a>
   );
@@ -107,7 +109,7 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
 
 function ResearchCard({ study }: { study: Project }) {
   return (
-    <div id={study.id} className="je-research-card" style={{ padding: "var(--k40-s-5)", scrollMarginTop: "24px" }}>
+    <div id={study.id} className="je-research-card" style={{ padding: "var(--k40-s-5)", scrollMarginTop: "24px", display: "flex", flexDirection: "column" }}>
       <div style={{ position: "relative", width: "100%", height: "120px", overflow: "hidden", marginBottom: "var(--k40-s-4)" }}>
         <Image src={study.images.hero} alt={study.title} fill style={{ objectFit: "cover", objectPosition: "center top" }} />
       </div>
@@ -131,7 +133,7 @@ function ResearchCard({ study }: { study: Project }) {
           )}
         </p>
       </div>
-      <a href={`/projects/${study.slug}`} className="je-research-link" style={{ marginTop: "var(--k40-s-4)" }}>
+      <a href={`/projects/${study.slug}`} className="je-research-link" style={{ marginTop: "auto", paddingTop: "var(--k40-s-4)", display: "inline-block" }}>
         View research deck →
       </a>
     </div>
@@ -190,12 +192,6 @@ export default function Home() {
 
         {/* CTAs */}
         <div style={{ display: "flex", gap: "var(--k40-s-3)", flexWrap: "wrap", marginBottom: "var(--k40-s-8)" }}>
-          <a href="mailto:jegrgic@gmail.com" className="k40-btn k40-btn-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-            </svg>
-            Get in touch
-          </a>
           {[
             { href: "/documents/jegrgic_UXResumeEN.pdf", label: "Resume (EN)" },
             { href: "/documents/jegrgic_UXResumeFR.pdf", label: "CV (FR)" },
@@ -284,14 +280,14 @@ export default function Home() {
                       {article.date}
                     </span>
                     <div>
-                      <p style={{
+                      <p className="je-writing-title" style={{
                         fontFamily: "var(--k40-font-body)",
                         fontSize: "var(--k40-text-sm)", fontWeight: 500,
                         color: "var(--k40-fg-1)", lineHeight: 1.4, marginBottom: "var(--k40-s-1)",
                       }}>
                         {article.title}
                       </p>
-                      <p style={{
+                      <p className="je-writing-desc" style={{
                         fontFamily: "var(--k40-font-body)",
                         fontSize: "var(--k40-text-xs)",
                         color: "var(--k40-fg-3)", lineHeight: 1.6, margin: 0,

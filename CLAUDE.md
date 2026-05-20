@@ -151,6 +151,11 @@ The goal is consistency: shared layout structure across all projects, with custo
 **All projects:** `app/work/page.tsx` (renders all projects, curated by category)
 **Articles:** `app/writings/page.tsx` (references `data/articles.json`)
 
+### Article copy limits
+The writing row layout enforces these via CSS `line-clamp` — copy beyond these limits will be silently truncated:
+- **Title:** max 90 characters
+- **Description (excerpt):** max 120 characters
+
 To update:
 1. Edit the JSON files (`data/projects.json`, `data/articles.json`)
 2. Changes auto-render on dependent pages

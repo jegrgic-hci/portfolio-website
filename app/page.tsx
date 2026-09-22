@@ -1,6 +1,7 @@
 import Image from "next/image";
 import projects from "@/data/projects.json";
 import articles from "@/data/articles.json";
+import TypeLine from "@/app/components/TypeLine";
 
 type Project = (typeof projects)[number];
 
@@ -20,8 +21,8 @@ const studioWork = [
     domain:  "tauthinking.com",
     href:    "https://tauthinking.com",
     status:  "In pilot · two US schools",
-    tagline: "AI should redefine how you think, not substitute it.",
-    body:    "A school-controlled AI chat platform for coursework that documents the thinking behind an assignment — showing teachers whether a student interrogated the AI, accepted its shortcuts, or built something of their own. Turn-by-turn transcript analysis and behavioral pattern detection, reported as evidence and counts rather than a single score.",
+    image:   "/images/tauthinking-card.png",
+    body:    "Designed and built end to end. Researched NLP transcript analysis and the literature on user agency, then translated both into something a teacher could act on: turn-by-turn analysis that reports how a student worked with the AI as evidence they can check, not a single score.",
     tags:    ["Prompting quality", "Selective use", "Calibrated skepticism", "Original contribution"],
   },
   {
@@ -29,8 +30,8 @@ const studioWork = [
     domain:  "vraifrench.com",
     href:    "https://vraifrench.com",
     status:  "In pilot · instructor and students",
-    tagline: "Sound like you live there.",
-    body:    "Pronunciation training that scores every word you speak against real French phonetic rules — liaisons, elisions, nasals — then explains each miss in plain English. Listen, speak, improve, with per-word feedback and a teacher dashboard behind it.",
+    image:   "/images/vraifrench-card.png",
+    body:    "Sole designer and developer. The problem: how to speak, listen and score pronunciation accurately enough to actually improve acquisition. Grounded in French phonetics and second-language research, the stack scores speech word by word — liaisons, elisions, nasals — and explains every miss in plain English.",
     tags:    ["Production effect", "Corrective feedback", "Motor learning"],
   },
 ];
@@ -56,7 +57,7 @@ function Tag({ type }: { type: string }) {
   };
   const label = labels[type];
   if (!label) return null;
-  return <span className="k40-tag is-accent">{label}</span>;
+  return <span className="je-meta-tag">{label}</span>;
 }
 
 function MethodBadge({ type, label }: { type: string; label?: string }) {
@@ -68,45 +69,58 @@ function MethodBadge({ type, label }: { type: string; label?: string }) {
   const text = label ?? defaults[type];
   if (!text) return null;
   return (
-    <span className="k40-tag" style={{ display: "inline-block", marginBottom: "var(--k40-s-3)" }}>
+    <span className="je-meta-tag" style={{ marginBottom: "var(--k40-s-3)", justifySelf: "start" }}>
       {text}
     </span>
   );
 }
 
-function CardLink({ label }: { label: string }) {
-  return <span className="je-card-link">{label}</span>;
+/**
+ * The only navigable element in a card. Cards themselves are not links —
+ * a whole-card hit area swallows text selection and gives no way to reach
+ * the card's content without leaving the page.
+ */
+function CardLink({ href, label, external }: { href: string; label: string; external?: boolean }) {
+  return (
+    <a
+      href={href}
+      className="je-card-link"
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+    >
+      {label}
+    </a>
+  );
 }
 
 function ProductCard({ study, featured }: { study: Project; featured?: boolean }) {
   return (
-    <a
-      href={`/projects/${study.slug}`}
+    <div
       id={study.id}
       className={featured ? "je-card je-grid-2" : "je-card"}
       style={{
         background: "var(--k40-surface)",
-        textDecoration: "none",
-        color: "inherit",
         display: featured ? "grid" : "flex",
-        scrollMarginTop: "24px",
+        scrollMarginTop: "80px",
         ...(featured
           ? { gridTemplateColumns: "1fr 1fr", overflow: "hidden", marginBottom: "var(--k40-s-4)" }
           : { flexDirection: "column" as const }),
       }}
     >
-      <div style={featured ? { position: "relative", minHeight: "240px" } : { position: "relative", height: "210px", flexShrink: 0 }}>
-        <Image
-          src={study.images.hero}
-          alt={study.title}
-          fill
-          style={{ objectFit: "cover", objectPosition: "center top" }}
-        />
+      <div className={`je-card-media ${featured ? "je-card-media--featured" : "je-card-media--std"}`} style={{ flexShrink: 0 }}>
+        <div className="je-card-media-inner">
+          <Image
+            src={study.images.hero}
+            alt={study.title}
+            fill
+            style={{ objectFit: "cover", objectPosition: "center top" }}
+          />
+        </div>
       </div>
       <div style={{ padding: "var(--k40-s-5)", display: "flex", flexDirection: "column", flex: 1, minWidth: 0 }}>
-        <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-2)", display: "flex", alignItems: "center", gap: "var(--k40-s-2)" }}>
-          {study.company} <Tag type={study.tag} />
-        </p>
+        <div className="je-card-brandrow">
+          <span className="je-card-brand">{study.company}</span>
+          <Tag type={study.tag} />
+        </div>
         <h3 className="k40-h3" style={{ marginBottom: "var(--k40-s-3)" }}>{study.title}</h3>
         <p className="k40-body" style={{ maxWidth: "none", marginBottom: "var(--k40-s-4)" }}>{study.description}</p>
         {study.metrics && (
@@ -123,25 +137,29 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
           </p>
         )}
         <div style={{ marginTop: "auto" }}>
-          <CardLink label="View case study →" />
+          <CardLink href={`/projects/${study.slug}`} label="View case study →" />
         </div>
       </div>
-    </a>
+    </div>
   );
 }
 
 function ResearchCard({ study }: { study: Project }) {
   return (
-    <div id={study.id} className="je-research-card" style={{ padding: "var(--k40-s-5)", scrollMarginTop: "24px", display: "flex", flexDirection: "column" }}>
-      <div style={{ position: "relative", width: "100%", height: "120px", overflow: "hidden", marginBottom: "var(--k40-s-4)" }}>
-        <Image src={study.images.hero} alt={study.title} fill style={{ objectFit: "cover", objectPosition: "center top" }} />
+    <div id={study.id} className="je-research-card" style={{ padding: "var(--k40-s-5)", scrollMarginTop: "80px" }}>
+      <div className="je-card-media je-card-media--research">
+        <div className="je-card-media-inner">
+          <Image src={study.images.hero} alt={study.title} fill style={{ objectFit: "cover", objectPosition: "center top" }} />
+        </div>
+      </div>
+      <div className="je-card-brandrow" style={{ marginBottom: "var(--k40-s-2)" }}>
+        <span className="je-card-brand">{study.company}</span>
       </div>
       <MethodBadge
         type={study.tag}
         label={"tagLabel" in study ? (study as { tagLabel?: string }).tagLabel : undefined}
       />
-      <h3 className="k40-h3" style={{ marginBottom: "var(--k40-s-1)" }}>{study.title}</h3>
-      <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-3)" }}>{study.company}</p>
+      <h3 className="k40-h3" style={{ marginBottom: "var(--k40-s-3)" }}>{study.title}</h3>
       <div style={{
         borderTop: "1px solid var(--k40-border-light)",
         paddingTop: "var(--k40-s-3)",
@@ -156,7 +174,7 @@ function ResearchCard({ study }: { study: Project }) {
           )}
         </p>
       </div>
-      <a href={`/projects/${study.slug}`} className="je-research-link" style={{ marginTop: "auto", paddingTop: "var(--k40-s-4)", display: "inline-block" }}>
+      <a href={`/projects/${study.slug}`} className="je-research-link" style={{ paddingTop: "var(--k40-s-4)", justifySelf: "start" }}>
         View research deck →
       </a>
     </div>
@@ -165,41 +183,32 @@ function ResearchCard({ study }: { study: Project }) {
 
 function StudioCard({ work }: { work: (typeof studioWork)[number] }) {
   return (
-    <a
-      href={work.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="je-research-card"
-      style={{
-        padding: "var(--k40-s-5)",
-        display: "flex",
-        flexDirection: "column",
-        textDecoration: "none",
-        color: "inherit",
-      }}
-    >
+    <div className="je-research-card je-studio-card">
+      <div className="je-card-media je-card-media--studio">
+        <div className="je-card-media-inner">
+          {/* Both sources are pre-cropped to 16:9 (see *-card.png), so cover
+              fills the frame exactly without cropping anything further. */}
+          <Image
+            src={work.image}
+            alt={`${work.name} interface`}
+            fill
+            style={{ objectFit: "cover", objectPosition: "center top" }}
+            sizes="(max-width: 860px) 100vw, 620px"
+          />
+        </div>
+      </div>
+
+      <div className="je-studio-body">
       <div style={{
         display: "flex", alignItems: "baseline", justifyContent: "space-between",
         gap: "var(--k40-s-3)", marginBottom: "var(--k40-s-3)",
         paddingBottom: "var(--k40-s-3)", borderBottom: "1px solid var(--k40-border-light)",
       }}>
-        <span className="k40-eyebrow">{work.domain} &#8599;</span>
+        <span className="k40-eyebrow">{work.domain}</span>
         <span className="k40-eyebrow" style={{ color: "var(--k40-fg-4)", flexShrink: 0 }}>{work.status}</span>
       </div>
 
       <h3 className="k40-h3" style={{ marginBottom: "var(--k40-s-2)" }}>{work.name}</h3>
-
-      <p style={{
-        fontFamily: "var(--k40-font-ui)",
-        fontSize: "var(--k40-text-xs)",
-        color: "var(--k40-fg-1)",
-        borderLeft: "3px solid var(--k40-accent-rail)",
-        paddingLeft: "var(--k40-s-3)",
-        marginBottom: "var(--k40-s-4)",
-        lineHeight: 1.5,
-      }}>
-        {work.tagline}
-      </p>
 
       <p className="k40-body" style={{ maxWidth: "none", marginBottom: "var(--k40-s-4)" }}>{work.body}</p>
 
@@ -208,22 +217,31 @@ function StudioCard({ work }: { work: (typeof studioWork)[number] }) {
       </div>
 
       <div style={{ marginTop: "auto" }}>
-        <CardLink label="Visit site →" />
+        <CardLink href={work.href} label="Visit site →" external />
       </div>
-    </a>
+      </div>
+    </div>
   );
 }
 
-function SectionHeader({ title, sub, subHref }: { title: string; sub: string; subHref?: string }) {
+/**
+ * `title` takes an array to set its own line breaks. The break point is a
+ * typographic decision (always after the "&"), not something to leave to
+ * whatever width the viewport happens to be.
+ */
+function SectionHeader({ title, sub, subHref }: { title: string | string[]; sub: string; subHref?: string }) {
+  const lines = Array.isArray(title) ? title : [title];
   return (
     <div className="section-label-row">
-      <span className="section-label-text">{title}</span>
+      <h2 className="section-label-text">
+        {lines.map((line, i) => <span key={i} className="section-label-line">{line}</span>)}
+      </h2>
       {subHref ? (
-        <a href={subHref} className="k40-eyebrow" style={{ color: "var(--k40-fg-3)", textDecoration: "none", flexShrink: 0 }}>
+        <a href={subHref} className="k40-eyebrow section-label-sub" style={{ color: "var(--k40-fg-3)", textDecoration: "none" }}>
           {sub}
         </a>
       ) : (
-        <span className="k40-eyebrow" style={{ color: "var(--k40-fg-4)", flexShrink: 0 }}>{sub}</span>
+        <TypeLine text={sub} className="k40-eyebrow section-label-sub" />
       )}
     </div>
   );
@@ -303,65 +321,58 @@ export default function Home() {
           borderTop: "1px solid var(--k40-border-heavy)",
           borderBottom: "1px solid var(--k40-border-heavy)",
           padding: "var(--k40-s-8) var(--content-pad)",
-          scrollMarginTop: "24px",
+          scrollMarginTop: "80px",
         }}
       >
         <div style={{ maxWidth: "var(--k40-content-max)", margin: "0 auto" }}>
 
-          <p className="k40-eyebrow is-accent" style={{ marginBottom: "var(--k40-s-3)" }}>
-            Studio &mdash; vraifactors
-          </p>
-          <h2 className="k40-h2" style={{ marginBottom: "var(--k40-s-4)", maxWidth: "700px" }}>
-            AI that earns the right to inform human judgment.
-          </h2>
-          <p className="k40-body" style={{ maxWidth: "620px", marginBottom: "var(--k40-s-7)" }}>
-            An applied AI studio combining human-computer interaction research, behavioral
-            science, and production-grade development. Observability, directability, and
-            human authority are treated as structural requirements rather than features.
-            Two tools are in active testing and peer review.
-          </p>
+          <SectionHeader
+            title={["Studio", "vraifactors"]}
+            sub="Founder · Full-stack product design · Human factors"
+          />
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--k40-s-4)" }} className="je-grid-2">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--k40-s-4)" }}>
             {studioWork.map((work) => <StudioCard key={work.domain} work={work} />)}
           </div>
 
         </div>
       </section>
 
-      {/* ── CONTENT WRAPPER ──────────────────────────────────────────────── */}
-      <div style={{ maxWidth: "var(--k40-content-max)", margin: "0 auto", padding: "0 var(--content-pad)" }}>
-
-        {/* ── PRODUCT DESIGN ── */}
-        <section style={{ padding: "var(--k40-s-8) 0" }} id="work">
-          <SectionHeader title="Product Design & Strategy" sub="Service blueprinting · Iterative prototyping" />
+      {/* ── PRODUCT DESIGN ── */}
+      <section className="band" id="work">
+        <div className="band-inner">
+          <SectionHeader title={["Product Design &", "Strategy"]} sub="Service blueprinting · Iterative prototyping" />
           <ProductCard study={productDesign[0]} featured />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--k40-s-4)" }} className="je-grid-2">
             {productDesign.slice(1).map((s) => <ProductCard key={s.id} study={s} />)}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── UX RESEARCH ── */}
-        <section style={{ padding: "var(--k40-s-8) 0", borderTop: "1px solid var(--k40-border-light)" }}>
-          <SectionHeader title="UX Research & Behavioral Insights" sub="Moderated testing · Cognitive walkthroughs · Benchmarking" />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--k40-s-4)" }} className="je-research-grid">
+      {/* ── UX RESEARCH (full-bleed tinted band) ── */}
+      <section className="band band--alt">
+        <div className="band-inner">
+          <SectionHeader title={["UX Research &", "Behavioral Insights"]} sub="Moderated testing · Cognitive walkthroughs · Benchmarking" />
+          <div className="je-research-grid">
             {uxResearch.map((s) => <ResearchCard key={s.id} study={s} />)}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── INFORMATION ARCHITECTURE ── */}
-        <section style={{ padding: "var(--k40-s-8) 0", borderTop: "1px solid var(--k40-border-light)" }}>
-          <SectionHeader title="Information Architecture & Complex Tooling" sub="Expert-user systems · Cognitive load reduction" />
+      {/* ── INFORMATION ARCHITECTURE ── */}
+      <section className="band">
+        <div className="band-inner">
+          <SectionHeader title={["Information Architecture &", "Complex Tooling"]} sub="Expert-user systems · Cognitive load reduction" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--k40-s-4)" }} className="je-grid-2">
             {iaTooling.map((s) => <ProductCard key={s.id} study={s} />)}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── WRITINGS ── */}
-        <section
-          style={{ padding: "var(--k40-s-8) 0", borderTop: "1px solid var(--k40-border-light)", scrollMarginTop: "24px" }}
-          id="writings"
-        >
-          <SectionHeader title="Writing on AI, Design & Human Factors" sub="View all ↗" subHref="/writings" />
+      {/* ── WRITINGS ── */}
+      <section className="band band--divided" id="writings" style={{ scrollMarginTop: "80px" }}>
+        <div className="band-inner">
+          <SectionHeader title={["Writing on AI, Design &", "Human Factors"]} sub="View all ↗" subHref="/writings" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--k40-s-6)" }} className="je-writings-grid">
             {writingThemes.map((theme) => (
               <div key={theme}>
@@ -409,9 +420,8 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </section>
-
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

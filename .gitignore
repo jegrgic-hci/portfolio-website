@@ -27,3 +27,9 @@ public/old/
 
 # VS Code settings
 .vscode/
+
+# Design lab — local review tool, must not deploy to jegrgic.com
+public/lab/
+
+# Build artifact
+tsconfig.tsbuildinfo

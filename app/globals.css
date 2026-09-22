@@ -31,7 +31,9 @@ html {
 body {
   line-height: 1.7;
   color: var(--k40-fg-1);
-  background-color: var(--k40-surface);
+  /* Warm paper, not pure white — this is the neutral the token ramp was built
+     around, and it lets white cards read as cards rather than as hairlines. */
+  background-color: var(--k40-bg);
   font-family: var(--k40-font-body);
 }
 
@@ -93,49 +95,324 @@ select:focus {
 }
 .footer-link:hover { color: var(--k40-fg-1); }
 
-/* ── Section label ──────────────────────────────────────────────────────── */
+/* ── Section header ─────────────────────────────────────────────────────── */
+/* Anton, the display face, previously appeared once (the hero) and then never
+   again. Section headers now carry it, giving the page a scroll rhythm of
+   large typographic beats instead of 0.65rem mono tags. */
 .section-label-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
+  gap: var(--k40-s-5);
+  flex-wrap: wrap;
   margin-bottom: var(--k40-s-6);
   padding-bottom: var(--k40-s-4);
-  border-bottom: 1px solid var(--k40-border-heavy);
+  border-bottom: 2px solid var(--k40-border-heavy);
 }
 
 .section-label-text {
-  font-family: var(--k40-font-ui);
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-family: var(--k40-font-display);
+  /* Breaks are set per title in SectionHeader rather than left to the
+     viewport, so the type can sit larger than it could when it was wrapping
+     on its own — each line is short by construction. */
+  font-size: clamp(28px, 4.2vw, 52px);
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.01em;
+  line-height: 0.96;
   color: var(--k40-fg-1);
-  white-space: nowrap;
+  margin: 0;
+  /* basis 0, not auto: with flex-wrap on, the row breaks on each item's
+     max-content width, so an auto basis pushes the sub-line onto its own
+     row before the title is ever allowed to shrink. At basis 0 the title
+     takes the leftover width and wraps its own text instead. */
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Each authored line is its own block, so the break is exactly where it was
+   written and never depends on available width. */
+.section-label-line { display: block; }
+
+.section-label-sub {
+  flex-shrink: 0;
+  color: var(--k40-fg-4);
+  padding-bottom: 4px;
+}
+
+/* ── Section bands ──────────────────────────────────────────────────────── */
+.band {
+  padding: var(--k40-s-8) var(--content-pad);
+}
+.band-inner {
+  max-width: var(--k40-content-max);
+  margin: 0 auto;
+}
+.band--divided .band-inner {
+  border-top: 1px solid var(--k40-border-light);
+  padding-top: var(--k40-s-8);
+  margin-top: calc(-1 * var(--k40-s-8));
+}
+/* A tinted band needs to clear the page background by enough to register;
+   surface-2 against the warm bg is only ~16 points apart and reads as nothing.
+   The white cards sitting on it are what actually sell the separation. */
+.band--alt {
+  background: var(--k40-n-200);
+  border-top: 1px solid var(--k40-border-mid);
+  border-bottom: 1px solid var(--k40-border-mid);
+}
+.band--alt .je-card,
+.band--alt .je-research-card {
+  background: var(--k40-surface);
+  border-color: var(--k40-border-mid);
+}
+
+/* ── Cursor sweep on section sub-lines ──────────────────────────────────── */
+/* The eyebrow sub-line is the most-skipped, highest-density text on the page.
+   The full line is present and legible from the start in the muted colour; a
+   cursor travels across it and the text it passes resolves to full contrast.
+   Nothing is ever concealed, no width is animated (so no glyph can be clipped),
+   and it survives a wrapped line — which a clip-based typewriter cannot.
+   `.is-armed` is added on mount, so with JS off the text simply renders at
+   full contrast. */
+.type-line { display: inline-block; }
+
+.is-armed .type-line {
+  position: relative;
+  background-image: linear-gradient(
+    to right,
+    var(--k40-fg-1) 0 50%,
+    var(--k40-fg-4) 50% 100%
+  );
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.is-armed.is-in .type-line {
+  animation: sweep-fill calc(var(--ch, 30) * var(--k40-motion-type, 26ms))
+             steps(var(--ch, 30)) forwards;
+}
+@keyframes sweep-fill {
+  to { background-position: 0% 0; }
+}
+
+.is-armed .type-line::after {
+  content: "";
+  position: absolute;
+  top: 0.1em; bottom: 0.1em; left: 0;
+  width: 1px;
+  background: var(--k40-accent-rail);
+  opacity: 0;
+}
+.is-armed.is-in .type-line::after {
+  animation: sweep-cursor calc(var(--ch, 30) * var(--k40-motion-type, 26ms))
+             steps(var(--ch, 30)) forwards;
+}
+@keyframes sweep-cursor {
+  0%   { left: 0;    opacity: 1; }
+  99%  { left: 100%; opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the information at full contrast; drop the travel. */
+  .is-armed .type-line {
+    background: none;
+    color: var(--k40-fg-1);
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+  }
+  .is-armed .type-line::after { display: none; }
+  .is-armed.is-in .type-line { animation: none; }
 }
 
 /* ── Cards ──────────────────────────────────────────────────────────────── */
-.je-card {
-  background: var(--k40-surface);
-  border: 1px solid var(--k40-border-light);
-  transition: border-color var(--k40-motion-base) var(--k40-ease);
-}
-.je-card:hover { border-color: var(--k40-border-heavy); }
-
+/* Cards are containers, not links. Navigation happens only through the
+   explicit link inside each one ("View case study", "View research deck",
+   "Visit site"), so no card takes a hover state — a card that highlights
+   under the cursor promises a click it doesn't accept. The link's own
+   hover is the affordance. */
+.je-card,
 .je-research-card {
   background: var(--k40-surface);
   border: 1px solid var(--k40-border-light);
-  transition: border-color var(--k40-motion-base) var(--k40-ease);
 }
-.je-research-card:hover { border-color: var(--k40-border-heavy); }
+
+/* ── Card media ─────────────────────────────────────────────────────────── */
+/* Screenshots sit ON the card rather than bleeding to its edge: a light mat
+   with padding, and the image lifted slightly off it. Bleeding a UI
+   screenshot to the card edge makes the card look like a crop of the app;
+   matting it reads as a specimen being presented. */
+.je-card-media {
+  background: var(--k40-n-100);
+  padding: var(--k40-s-5);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--k40-border-light);
+}
+
+.je-card-media-inner {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--k40-surface);
+  border: 1px solid var(--k40-border-light);
+  box-shadow: var(--k40-elev-1);
+}
+
+/* The featured card is side-by-side, so its mat divides on the vertical. */
+.je-card-media--featured {
+  border-bottom: 0;
+  border-right: 1px solid var(--k40-border-light);
+}
+
+.je-card-media--std      .je-card-media-inner { height: 230px; }
+.je-card-media--featured .je-card-media-inner { aspect-ratio: 16 / 10; }
+.je-card-media--research .je-card-media-inner { height: 170px; }
+/* Both studio captures are cropped to 16:9, so the frame matches and the two
+   cards carry equal visual weight despite very different source shapes. */
+.je-card-media--studio   .je-card-media-inner { aspect-ratio: 16 / 9; }
+
+/* Concept visuals are inline SVG rather than <Image>, so they need sizing. */
+.je-card-media-inner > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Research cards carry their own padding, so the mat is pulled out to the
+   card edges to match the product cards exactly. */
+.je-research-card .je-card-media {
+  margin: calc(-1 * var(--k40-s-5)) calc(-1 * var(--k40-s-5)) var(--k40-s-5);
+}
+
+/* ── Research card row alignment ────────────────────────────────────────── */
+/* The three cards carry brand names of different lengths ("Meta · Seller
+   Funded Initiatives" wraps, "Google · Ads Platform" doesn't), so every
+   element below the brand used to sit at a different height across the row.
+   Subgrid makes the three cards share one set of rows, so media, brand,
+   badge, title, body and link line up across all three regardless of how
+   any individual string wraps. */
+.je-research-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto auto auto 1fr auto;
+  gap: var(--k40-s-4);
+}
+.je-research-grid > .je-research-card {
+  grid-row: span 6;
+  display: grid;
+  grid-template-rows: subgrid;
+}
+
+/* ── Studio cards ───────────────────────────────────────────────────────── */
+/* Full width and stacked, with the 16:9 capture beside the copy rather than
+   above it. Two tall narrow cards became two short wide ones. */
+.je-studio-card {
+  display: grid;
+  /* Copy gets the wider column: it's what drives card height, and fewer
+     lines of body text is the only real lever on how tall these get. */
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: stretch;
+  padding: 0;
+  overflow: hidden;
+}
+.je-studio-card .je-card-media {
+  margin: 0;
+  border-bottom: 0;
+  border-right: 1px solid var(--k40-border-light);
+  height: 100%;
+}
+/* The capture keeps its 16:9 and centres in the mat. Stretching it to the
+   column height crops the sides off a 16:9 screenshot and loses the left
+   edge of the UI. */
+.je-studio-card .je-card-media--studio .je-card-media-inner {
+  aspect-ratio: 16 / 9;
+  height: auto;
+}
+.je-studio-body {
+  padding: var(--k40-s-5);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@media (max-width: 860px) {
+  .je-studio-card { grid-template-columns: 1fr; }
+  .je-studio-card .je-card-media {
+    border-right: 0;
+    border-bottom: 1px solid var(--k40-border-light);
+  }
+  .je-studio-card .je-card-media--studio .je-card-media-inner {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    min-height: 0;
+  }
+}
+
+/* ── Card brand row ─────────────────────────────────────────────────────── */
+/* The client brand is the scan target: the hero chips jump to #slug anchors,
+   so on arrival the brand name is what confirms you're in the right place.
+   It previously sat at 12px in fg-3 beside a filled accent tag, which took
+   the eye first. Brand now leads; the tag is demoted to a quiet outline.
+   ("Design + Research" is identical on 5 of 8 cards, so it distinguishes
+   nothing and shouldn't carry the card's heaviest treatment.) */
+.je-card-brandrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k40-s-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--k40-s-3);
+}
+
+.je-card-brand {
+  font-family: var(--k40-font-ui);
+  font-size: var(--k40-text-md);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  /* Steel blue at 500, not the text-safe 700: 700 is so near black it would
+     differentiate nothing. 500 is 6.73:1 on white and 5.24:1 on the tinted
+     band — AA for normal text in both — and reads unmistakably as blue.
+     Same value as the metric rail, so the two accent moments on a card agree. */
+  color: var(--k40-accent-500);
+  line-height: 1.2;
+}
+
+/* Research cards sit in a 3-up grid, so the brand gets a step down to keep
+   longer names (e.g. "Meta · Seller Funded Initiatives") from dominating. */
+.je-research-card .je-card-brand {
+  font-size: var(--k40-text-base);
+}
+
+.je-meta-tag {
+  font-family: var(--k40-font-ui);
+  font-size: var(--k40-text-2xs);
+  font-weight: 500;
+  letter-spacing: var(--k40-track-ui);
+  text-transform: uppercase;
+  color: var(--k40-fg-4);
+  background: transparent;
+  border: 1px solid var(--k40-border-light);
+  border-radius: var(--k40-radius-0);
+  padding: 2px 8px;
+  display: inline-block;
+  line-height: 1.6;
+  white-space: nowrap;
+}
 
 /* ── Card links ─────────────────────────────────────────────────────────── */
 .je-card-link,
 .je-research-link {
-  font-family: var(--k40-font-ui);
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: var(--k40-track-label);
-  text-transform: uppercase;
+  font-family: var(--k40-font-body);
+  font-size: var(--k40-text-sm);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--k40-fg-1);
   border: 1px solid var(--k40-border-heavy);
   padding: var(--k40-s-2) var(--k40-s-4);
@@ -152,12 +429,12 @@ select:focus {
 
 /* ── Hero chips — quick-nav anchors ─────────────────────────────────────── */
 .hero-chip {
-  font-family: var(--k40-font-ui);
-  font-size: var(--k40-text-2xs);
+  font-family: var(--k40-font-body);
+  font-size: var(--k40-text-sm);
   font-weight: 500;
-  letter-spacing: var(--k40-track-ui);
+  letter-spacing: 0;
   color: var(--k40-fg-3);
-  background: var(--k40-bg);
+  background: var(--k40-surface);
   border: 1px solid var(--k40-border-mid);
   padding: var(--k40-s-2) var(--k40-s-4);
   text-decoration: none;
@@ -198,8 +475,22 @@ select:focus {
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 860px) {
   :root { --content-pad: 24px; }
+  /* Featured card stacks below this width, so its mat divides horizontally. */
+  .je-card-media--featured {
+    border-right: 0;
+    border-bottom: 1px solid var(--k40-border-light);
+  }
   .je-grid-2        { grid-template-columns: 1fr !important; }
-  .je-research-grid { grid-template-columns: 1fr !important; }
+  /* Single column: no row to align across, so drop back to a plain stack. */
+  .je-research-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: none;
+  }
+  .je-research-grid > .je-research-card {
+    grid-row: auto;
+    display: flex;
+    flex-direction: column;
+  }
   .je-writings-grid { grid-template-columns: 1fr !important; }
 }
 

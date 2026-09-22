@@ -204,6 +204,7 @@
   --k40-motion-base:     200ms;
   --k40-motion-emphasis: 320ms;
   --k40-motion-enter:    420ms;
+  --k40-motion-type:      26ms;   /* per character, for the cursor sweep */
 
   /* ------------------------------------------------------------------
      ELEVATION

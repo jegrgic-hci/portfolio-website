@@ -14,6 +14,27 @@ const writingThemes = [
   "Design & Dark Patterns",
 ];
 
+const studioWork = [
+  {
+    name:    "TAU Thinking",
+    domain:  "tauthinking.com",
+    href:    "https://tauthinking.com",
+    status:  "In pilot · two US schools",
+    tagline: "AI should redefine how you think, not substitute it.",
+    body:    "A school-controlled AI chat platform for coursework that documents the thinking behind an assignment — showing teachers whether a student interrogated the AI, accepted its shortcuts, or built something of their own. Turn-by-turn transcript analysis and behavioral pattern detection, reported as evidence and counts rather than a single score.",
+    tags:    ["Prompting quality", "Selective use", "Calibrated skepticism", "Original contribution"],
+  },
+  {
+    name:    "VraiFrench",
+    domain:  "vraifrench.com",
+    href:    "https://vraifrench.com",
+    status:  "In pilot · instructor and students",
+    tagline: "Sound like you live there.",
+    body:    "Pronunciation training that scores every word you speak against real French phonetic rules — liaisons, elisions, nasals — then explains each miss in plain English. Listen, speak, improve, with per-word feedback and a teacher dashboard behind it.",
+    tags:    ["Production effect", "Corrective feedback", "Motor learning"],
+  },
+];
+
 const chipLinks = [
   { label: "Allstate",               href: "#allstate" },
   { label: "McDonald's",             href: "#mcdonalds" },
@@ -62,17 +83,19 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
     <a
       href={`/projects/${study.slug}`}
       id={study.id}
-      className="je-card"
+      className={featured ? "je-card je-grid-2" : "je-card"}
       style={{
         background: "var(--k40-surface)",
         textDecoration: "none",
         color: "inherit",
-        display: featured ? "grid" : "block",
+        display: featured ? "grid" : "flex",
         scrollMarginTop: "24px",
-        ...(featured && { gridTemplateColumns: "1fr 1fr", overflow: "hidden", marginBottom: "var(--k40-s-4)" }),
+        ...(featured
+          ? { gridTemplateColumns: "1fr 1fr", overflow: "hidden", marginBottom: "var(--k40-s-4)" }
+          : { flexDirection: "column" as const }),
       }}
     >
-      <div style={featured ? { position: "relative", minHeight: "240px" } : { position: "relative", height: "210px" }}>
+      <div style={featured ? { position: "relative", minHeight: "240px" } : { position: "relative", height: "210px", flexShrink: 0 }}>
         <Image
           src={study.images.hero}
           alt={study.title}
@@ -80,7 +103,7 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
           style={{ objectFit: "cover", objectPosition: "center top" }}
         />
       </div>
-      <div style={{ padding: "var(--k40-s-5)", display: "flex", flexDirection: "column", height: "100%" }}>
+      <div style={{ padding: "var(--k40-s-5)", display: "flex", flexDirection: "column", flex: 1, minWidth: 0 }}>
         <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-2)", display: "flex", alignItems: "center", gap: "var(--k40-s-2)" }}>
           {study.company} <Tag type={study.tag} />
         </p>
@@ -140,6 +163,57 @@ function ResearchCard({ study }: { study: Project }) {
   );
 }
 
+function StudioCard({ work }: { work: (typeof studioWork)[number] }) {
+  return (
+    <a
+      href={work.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="je-research-card"
+      style={{
+        padding: "var(--k40-s-5)",
+        display: "flex",
+        flexDirection: "column",
+        textDecoration: "none",
+        color: "inherit",
+      }}
+    >
+      <div style={{
+        display: "flex", alignItems: "baseline", justifyContent: "space-between",
+        gap: "var(--k40-s-3)", marginBottom: "var(--k40-s-3)",
+        paddingBottom: "var(--k40-s-3)", borderBottom: "1px solid var(--k40-border-light)",
+      }}>
+        <span className="k40-eyebrow">{work.domain} &#8599;</span>
+        <span className="k40-eyebrow" style={{ color: "var(--k40-fg-4)", flexShrink: 0 }}>{work.status}</span>
+      </div>
+
+      <h3 className="k40-h3" style={{ marginBottom: "var(--k40-s-2)" }}>{work.name}</h3>
+
+      <p style={{
+        fontFamily: "var(--k40-font-ui)",
+        fontSize: "var(--k40-text-xs)",
+        color: "var(--k40-fg-1)",
+        borderLeft: "3px solid var(--k40-accent-rail)",
+        paddingLeft: "var(--k40-s-3)",
+        marginBottom: "var(--k40-s-4)",
+        lineHeight: 1.5,
+      }}>
+        {work.tagline}
+      </p>
+
+      <p className="k40-body" style={{ maxWidth: "none", marginBottom: "var(--k40-s-4)" }}>{work.body}</p>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--k40-s-2)", marginBottom: "var(--k40-s-5)" }}>
+        {work.tags.map((tag) => <span key={tag} className="k40-tag">{tag}</span>)}
+      </div>
+
+      <div style={{ marginTop: "auto" }}>
+        <CardLink label="Visit site →" />
+      </div>
+    </a>
+  );
+}
+
 function SectionHeader({ title, sub, subHref }: { title: string; sub: string; subHref?: string }) {
   return (
     <div className="section-label-row">
@@ -167,7 +241,7 @@ export default function Home() {
       }}>
 
         <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-6)" }}>
-          Senior UX Designer &amp; Researcher &nbsp;&middot;&nbsp; M.S. Human Factors &nbsp;&middot;&nbsp; 14 years &nbsp;&middot;&nbsp; Marseille
+          Senior Product Designer &amp; UX Researcher &nbsp;&middot;&nbsp; M.S. Human Factors &nbsp;&middot;&nbsp; 14+ years &nbsp;&middot;&nbsp; Marseille
         </p>
 
         <h1 style={{
@@ -185,9 +259,11 @@ export default function Home() {
         </h1>
 
         <p className="k40-body" style={{ maxWidth: "520px", marginBottom: "var(--k40-s-7)" }}>
-          I apply human factors methodology to the full design cycle &mdash; research,
-          architecture, and interaction design &mdash; for teams building complex digital
-          systems at scale.
+          I&rsquo;m a product designer with a human factors background &mdash; I design and ship
+          features, flows, and the systems behind them, and the cognitive science is
+          what makes them hold up in real use. At my own studio, vraifactors, I design
+          for AI and build with it &mdash; personal products and experiments, two of them
+          now in pilot with real users.
         </p>
 
         {/* CTAs */}
@@ -219,11 +295,44 @@ export default function Home() {
 
       </section>
 
+      {/* ── STUDIO — VRAIFACTORS (full-bleed, distinct from client work) ──── */}
+      <section
+        id="vraifactors"
+        style={{
+          background: "var(--k40-surface-tint)",
+          borderTop: "1px solid var(--k40-border-heavy)",
+          borderBottom: "1px solid var(--k40-border-heavy)",
+          padding: "var(--k40-s-8) var(--content-pad)",
+          scrollMarginTop: "24px",
+        }}
+      >
+        <div style={{ maxWidth: "var(--k40-content-max)", margin: "0 auto" }}>
+
+          <p className="k40-eyebrow is-accent" style={{ marginBottom: "var(--k40-s-3)" }}>
+            Studio &mdash; vraifactors
+          </p>
+          <h2 className="k40-h2" style={{ marginBottom: "var(--k40-s-4)", maxWidth: "700px" }}>
+            AI that earns the right to inform human judgment.
+          </h2>
+          <p className="k40-body" style={{ maxWidth: "620px", marginBottom: "var(--k40-s-7)" }}>
+            An applied AI studio combining human-computer interaction research, behavioral
+            science, and production-grade development. Observability, directability, and
+            human authority are treated as structural requirements rather than features.
+            Two tools are in active testing and peer review.
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--k40-s-4)" }} className="je-grid-2">
+            {studioWork.map((work) => <StudioCard key={work.domain} work={work} />)}
+          </div>
+
+        </div>
+      </section>
+
       {/* ── CONTENT WRAPPER ──────────────────────────────────────────────── */}
       <div style={{ maxWidth: "var(--k40-content-max)", margin: "0 auto", padding: "0 var(--content-pad)" }}>
 
         {/* ── PRODUCT DESIGN ── */}
-        <section style={{ padding: "var(--k40-s-8) 0", borderTop: "1px solid var(--k40-border-light)" }} id="work">
+        <section style={{ padding: "var(--k40-s-8) 0" }} id="work">
           <SectionHeader title="Product Design & Strategy" sub="Service blueprinting · Iterative prototyping" />
           <ProductCard study={productDesign[0]} featured />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--k40-s-4)" }} className="je-grid-2">

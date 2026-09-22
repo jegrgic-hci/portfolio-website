@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Joseph Grgic | Senior UX Researcher & Designer",
+  title: "Joseph Grgic | Senior Product Designer & UX Researcher",
   description:
-    "Senior UX Researcher & Designer specializing in human factors, product design strategy, and complex information architecture for teams building trustworthy systems.",
+    "Senior Product Designer & UX Researcher specializing in human factors, product design strategy, and complex information architecture for teams building trustworthy systems.",
   openGraph: {
-    title: "Joseph Grgic | Senior UX Researcher & Designer",
+    title: "Joseph Grgic | Senior Product Designer & UX Researcher",
     description:
-      "Senior UX Researcher & Designer specializing in human factors, product design strategy, and complex information architecture for teams building trustworthy systems.",
+      "Senior Product Designer & UX Researcher specializing in human factors, product design strategy, and complex information architecture for teams building trustworthy systems.",
     url: "https://www.jegrgic.com",
     siteName: "Joseph Grgic",
     type: "website",
@@ -107,7 +107,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   lineHeight: 1.7,
                   maxWidth: "300px",
                 }}>
-                  Senior UX Researcher &amp; Designer specializing in human factors
+                  Senior Product Designer &amp; UX Researcher specializing in human factors
                   and complex information architecture.
                 </p>
               </div>

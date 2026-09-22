@@ -82,11 +82,23 @@ export default function About() {
         {/* Education */}
         <section style={{ gridColumn: "span 2" }}>
           <p className="k40-eyebrow" style={sectionLabel}>Education &amp; Background</p>
-          <div className="k40-callout is-finding">
-            <span className="k40-callout-label">M.S. in Human Factors</span>
-            <p className="k40-callout-body">
-              Masters degree focusing on cognitive psychology and human-computer interaction.
-            </p>
+          <div
+            className="je-grid-2"
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--k40-s-4)" }}
+          >
+            {about.education.map((degree) => (
+              <div key={degree.degree} className="k40-callout is-finding">
+                <span className="k40-callout-label">{degree.degree}</span>
+                <p className="k40-callout-body" style={{ marginBottom: "var(--k40-s-3)" }}>
+                  {degree.institution} &nbsp;&middot;&nbsp; {degree.year}
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--k40-s-2)" }}>
+                  {degree.focus.map((area) => (
+                    <span key={area} className="k40-tag">{area}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 

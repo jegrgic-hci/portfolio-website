@@ -3,7 +3,20 @@
   "title": "Senior Product Designer & UX Researcher",
   "location": "Marseille, France",
   "experience": "14+ years",
-  "education": "M.S. in Human Factors",
+  "education": [
+    {
+      "degree": "M.S. Human Factors",
+      "institution": "Missouri Western State University",
+      "year": "2011",
+      "focus": ["Interaction design", "Affordances and conventions", "OpenCV"]
+    },
+    {
+      "degree": "B.S. Psychology",
+      "institution": "Iowa State University",
+      "year": "2009",
+      "focus": ["Cognitive psychology", "Learning and memory", "Evolutionary psychology"]
+    }
+  ],
   "bio": "Senior product designer and UX researcher with experience at Google, Meta, Allstate and Cigna, now designing for AI and building my own products through my studio, vraifactors. I combine cognitive psychology, human factors engineering and applied AI to design systems where cognitive load and mental models are critical, delivering measurable outcomes across usability, engagement and adoption.",
   "expertise": [
     "Evidence-Based Design",
@@ -43,6 +56,8 @@
     "McDonald's",
     "Allstate",
     "Verizon",
-    "Cigna"
+    "Cigna",
+    "State Farm",
+    "Rocket Mortgage"
   ]
 }

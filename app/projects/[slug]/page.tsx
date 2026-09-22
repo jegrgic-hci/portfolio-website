@@ -50,7 +50,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-7)",
       borderBottom: "1px solid var(--k40-border-heavy)",
     }}>
-      <Link href="/work" className="k40-btn k40-btn-ghost" style={{ marginBottom: "var(--k40-s-5)", display: "inline-flex", alignItems: "center", gap: "var(--k40-s-2)" }}>
+      <Link href="/#work" className="k40-btn k40-btn-ghost" style={{ marginBottom: "var(--k40-s-5)", display: "inline-flex", alignItems: "center", gap: "var(--k40-s-2)" }}>
         ← Work
       </Link>
       <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-3)" }}>{project.company}</p>
@@ -360,7 +360,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Back link */}
         <div style={{ borderTop: "1px solid var(--k40-border-light)", paddingTop: "var(--k40-s-7)" }}>
-          <Link href="/work" className="k40-btn k40-btn-secondary">
+          <Link href="/#work" className="k40-btn k40-btn-secondary">
             ← Back to Work
           </Link>
         </div>

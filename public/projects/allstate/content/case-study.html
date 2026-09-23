@@ -67,8 +67,8 @@
     }
     .hero-meta { display: flex; flex-wrap: wrap; gap: var(--k40-s-6); margin-bottom: var(--k40-s-7); }
     .hero-meta-group { display: flex; flex-direction: column; gap: var(--k40-s-1); }
-    .hero-image-wrap { width: 100%; max-height: 520px; overflow: hidden; background: var(--k40-surface-2); }
-    .hero-image-wrap img { width: 100%; height: 520px; object-fit: cover; object-position: center top; display: block; }
+    .hero-image-wrap { width: 100%; overflow: hidden; background: var(--k40-surface-2); border: 1px solid var(--k40-border-light); }
+    .hero-image-wrap img { display: block; width: 100%; max-width: 888px; height: auto; margin: 0 auto; }
 
     /* ── SECTION LAYOUT ── */
     .cs-section { padding: var(--k40-s-8) var(--content-pad); max-width: var(--k40-content-max); margin: 0 auto; }
@@ -91,6 +91,14 @@
     .tldr-list li::before { content: '—'; position: absolute; left: 0; color: var(--k40-fg-4); font-size: 13px; }
 
     /* ── STATS ── */
+    /* ── LEAD RESULTS STRIP ── */
+    /* Sits above the TL;DR so the outcome is visible without scrolling to section 9.
+       Shares the 2px seam of .tldr-grid so the two read as one block. */
+    .lead-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--k40-border-light); margin-bottom: 2px; }
+    @media (max-width: 800px) { .lead-stats { grid-template-columns: 1fr; } }
+    .lead-stat { background: var(--k40-surface); padding: var(--k40-s-5) var(--k40-s-5) var(--k40-s-6); display: flex; flex-direction: column; gap: 6px; border-top: 3px solid var(--brand-primary); }
+    .lead-stat .stat-qual { display: block; margin-top: 3px; font-family: var(--k40-font-ui); font-size: 11px; line-height: 1.4; color: var(--k40-fg-4); }
+
     .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
     @media (max-width: 900px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 600px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
@@ -119,11 +127,25 @@
     /* ── SCREEN BLOCKS ── */
     .screens-container { display: flex; flex-direction: column; gap: var(--k40-s-9); }
     .screen-block { display: grid; grid-template-columns: 1fr 1fr; gap: var(--k40-s-7); align-items: center; }
+    /* Grid items default to min-width:auto and refuse to shrink below their content — which
+       lets the oversized scenario board blow the column (and the page) wide open. */
+    .screen-block > * { min-width: 0; }
     @media (max-width: 1000px) { .screen-block { grid-template-columns: 1fr; gap: var(--k40-s-6); } }
     .screen-block.reverse { direction: rtl; }
     .screen-block.reverse > * { direction: ltr; }
-    .screen-image { overflow: hidden; box-shadow: 0 8px 32px rgba(0,42,112,0.12); background: var(--k40-surface-2); border: 1px solid var(--k40-border-light); }
+    .screen-image { overflow: hidden; box-shadow: 0 8px 32px rgba(0,42,112,0.12); background: var(--k40-surface); border: 1px solid var(--k40-border-light); }
     .screen-image img { width: 100%; height: auto; display: block; }
+
+    /* Wide annotated boards: stack copy above a full-width image so detail stays legible */
+    .screen-block.is-wide { grid-template-columns: 1fr; gap: var(--k40-s-5); align-items: stretch; }
+    .screen-block.is-wide .screen-content { order: -1; max-width: 780px; }
+    .screen-block.is-wide .screen-image img { width: 100%; }
+
+    /* Phone mocks: never scale past native width */
+    /* Transparent-background cut-out: no frame, and a drop-shadow that follows the device
+       silhouette rather than a box-shadow around empty alpha. */
+    .screen-image.is-phone { max-width: 315px; margin: 0 auto; border: 0; background: none; box-shadow: none; overflow: visible; }
+    .screen-image.is-phone img { max-width: 315px; margin: 0 auto; filter: drop-shadow(0 14px 30px rgba(0,42,112,0.20)); }
     .screen-content h3 { font-size: var(--k40-text-md); font-weight: 600; color: var(--k40-fg-1); margin-bottom: var(--k40-s-4); }
     .screen-content p { font-size: 15px; line-height: 1.75; color: var(--k40-fg-2); margin-bottom: var(--k40-s-4); }
     .screen-content p:last-child { margin-bottom: 0; }
@@ -131,14 +153,87 @@
     .screen-highlights li { font-size: 14px; color: var(--k40-fg-2); padding-left: 24px; position: relative; line-height: 1.5; }
     .screen-highlights li::before { content: '✓'; position: absolute; left: 0; color: var(--brand-primary); font-weight: 600; }
 
+    /* ── FRAMELESS (TRANSPARENT PNG) ── */
+    /* The Sept PNGs have transparent surrounds, so a white box with a border just draws a
+       rectangle around empty alpha. Frame off; captions drop to plain text beneath. */
+    .cs-figure.is-bare { border: 0; background: none; box-shadow: none; overflow: visible; }
+    .cs-figure.is-bare figcaption { border-top: 0; background: none; padding: 10px 0 0; }
+    .screen-image.is-bare { border: 0; background: none; box-shadow: none; overflow: visible; }
+    /* Heatmaps are ~97% opaque page captures, so they keep a silhouette shadow for edge
+       definition; the annotated boards are scattered elements and read better with none. */
+    .heatmap-block.is-bare { border: 0; background: none; overflow: visible; }
+    .heatmap-block.is-bare img { background: none; filter: drop-shadow(0 8px 22px rgba(0,42,112,0.14)); }
+    .heatmap-block.is-bare .heatmap-block-caption { border-top: 0; background: none; padding: 12px 0 0; }
+
+    /* ── SCENARIO LIST + MODAL ── */
+    /* Six vertically stacked triggers; each opens its flow in a modal sized to fit the
+       viewport, so a 5.4:1 board is read in one view instead of by panning sideways. */
+    .scenario-viewer { position: relative; width: 100%; min-width: 0; max-width: 100%; }
+    .sc-toggle { position: absolute; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .sc-buttons { list-style: none; display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; }
+    .sc-buttons label {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      border: 1px solid var(--k40-border-light); background: var(--k40-surface);
+      font-size: 13px; line-height: 1.3; color: var(--k40-fg-1); cursor: pointer; user-select: none;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+    .sc-buttons label:hover { border-color: var(--brand-primary); box-shadow: 0 2px 10px rgba(0,163,224,0.10); }
+    .sc-buttons .sc-num { flex: none; }
+    .sc-buttons .sc-arrow { margin-left: auto; flex: none; color: var(--k40-fg-4); font-size: 14px; }
+    .sc-buttons label:hover .sc-arrow { color: var(--brand-primary); }
+    .sc-toggle:focus-visible + .sc-buttons label { outline: 2px solid var(--k40-fg-1); outline-offset: 2px; }
+    .sc-list-hint { font-size: 11px; color: var(--k40-fg-4); margin-top: 10px; }
+
+    /* Modal */
+    .sc-modal { display: none; position: fixed; inset: 0; z-index: 300; align-items: center; justify-content: center; padding: 3vh 2vw; }
+    .sc-backdrop { position: absolute; inset: 0; background: rgba(10,18,26,0.76); cursor: zoom-out; }
+    .sc-modal-inner { position: relative; display: flex; flex-direction: column; width: min(1500px, 96vw); max-height: 94vh; background: var(--k40-surface); border: 1px solid var(--k40-border-heavy); box-shadow: 0 24px 70px rgba(0,0,0,0.35); }
+    .sc-modal-head { display: flex; align-items: center; gap: 16px; padding: 13px 16px; border-bottom: 1px solid var(--k40-border-light); background: var(--k40-surface-2); }
+    .sc-modal-head .sc-modal-title { font-size: 13px; font-weight: 600; color: var(--k40-fg-1); }
+    .sc-close { margin-left: auto; flex: none; cursor: pointer; font-size: 18px; line-height: 1; padding: 5px 11px; border: 1px solid var(--k40-border-light); background: var(--k40-surface); color: var(--k40-fg-2); }
+    .sc-close:hover { border-color: var(--k40-fg-1); color: var(--k40-fg-1); }
+    .sc-modal-body { padding: 18px; background: var(--k40-surface-2); overflow-y: auto; }
+    .sc-modal-body img { display: block; width: 100%; height: auto; background: var(--k40-surface); }
+    .sc-modal-foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; padding: 11px 16px; border-top: 1px solid var(--k40-border-light); font-size: 11.5px; line-height: 1.5; color: var(--k40-fg-3); }
+    .sc-modal-foot a { color: var(--k40-fg-1); text-decoration: underline; text-underline-offset: 2px; }
+
+    #scm1:checked ~ .sc-modals .sc-modal:nth-of-type(1),
+    #scm2:checked ~ .sc-modals .sc-modal:nth-of-type(2),
+    #scm3:checked ~ .sc-modals .sc-modal:nth-of-type(3),
+    #scm4:checked ~ .sc-modals .sc-modal:nth-of-type(4),
+    #scm5:checked ~ .sc-modals .sc-modal:nth-of-type(5),
+    #scm6:checked ~ .sc-modals .sc-modal:nth-of-type(6) { display: flex; }
+
+    /* ── ERROR STATE STACK ── */
+    /* Sits in the right-hand column beside its description; all four assets share a ~850px
+       native width, so they stay edge-aligned with each other as the column scales them down. */
+    .error-stack { width: 100%; max-width: 850px; display: flex; flex-direction: column; gap: var(--k40-s-5); }
+    .screen-block.has-stack { align-items: start; }
+    /* Frameless: the checkout screen has a transparent background, and each banner already
+       carries its own red border as the outermost pixel of the artwork. */
+    .error-shot { border: 0; background: none; overflow: visible; }
+    .error-shot > img { display: block; width: 100%; height: auto; }
+    .error-shot.is-full > img { filter: drop-shadow(0 10px 26px rgba(0,42,112,0.14)); }
+    .error-shot figcaption { display: flex; align-items: baseline; gap: 8px; padding: 8px 0 0; font-size: 11.5px; line-height: 1.45; color: var(--k40-fg-3); }
+    .error-shot figcaption strong { font-weight: 600; color: var(--k40-fg-1); }
+    .error-shot figcaption .k40-eyebrow { flex: none; }
+    .error-ladder { display: flex; flex-direction: column; gap: var(--k40-s-5); }
+
     /* ── HEATMAP GRID ── */
-    .heatmap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--k40-s-5); }
+    .heatmap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--k40-s-5); align-items: stretch; }
     @media (max-width: 800px) { .heatmap-grid { grid-template-columns: 1fr; } }
-    .heatmap-block { border: 1px solid var(--k40-border-light); overflow: hidden; background: var(--k40-surface); }
-    .heatmap-block img { width: 100%; height: auto; display: block; }
+    .heatmap-block { border: 1px solid var(--k40-border-light); overflow: hidden; background: var(--k40-surface); display: flex; flex-direction: column; }
+    /* Fixed-height contain keeps the two panels the same height and their captions aligned */
+    .heatmap-block img { width: 100%; height: 440px; object-fit: contain; object-position: center; display: block; background: var(--k40-surface-2); flex: 1 1 auto; min-height: 0; }
+    @media (max-width: 800px) { .heatmap-block img { height: auto; max-height: 460px; } }
     .heatmap-block-caption { padding: var(--k40-s-4) 20px; border-top: 1px solid var(--k40-border-light); background: var(--k40-surface-2); }
     .heatmap-block-caption strong { display: block; font-size: 13px; font-weight: 600; color: var(--k40-fg-1); margin-bottom: 4px; }
     .heatmap-block-caption span { font-size: 12px; color: var(--k40-fg-3); }
+
+    /* ── STANDALONE FIGURES ── */
+    .cs-figure { border: 1px solid var(--k40-border-light); overflow: hidden; background: var(--k40-surface); box-shadow: 0 4px 24px rgba(0,42,112,0.07); }
+    .cs-figure img { display: block; width: 100%; height: auto; margin: 0 auto; }
+    .cs-figure figcaption { padding: 14px 24px; background: var(--k40-surface-2); border-top: 1px solid var(--k40-border-light); font-size: 12px; line-height: 1.5; color: var(--k40-fg-3); }
 
     /* ── OUTCOMES GRID ── */
     .outcomes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--k40-s-5); }
@@ -153,7 +248,9 @@
 
     /* ── REVEAL ANIMATIONS ── */
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    /* 'none', not translateY(0): a transform on an ancestor becomes the containing block for
+       position:fixed children, which would trap the scenario modal inside this element. */
+    .reveal.visible { opacity: 1; transform: none; }
     .reveal-delay-1 { transition-delay: 0.1s; }
     .reveal-delay-2 { transition-delay: 0.2s; }
     .reveal-delay-3 { transition-delay: 0.3s; }
@@ -177,7 +274,8 @@
 <nav id="site-nav">
   <a href="/" class="nav-brand">Joseph Grgic <span>/ Apple &amp; Google Pay</span></a>
   <div class="nav-links">
-    <a href="#overview" class="nav-link active">Overview</a>
+    <a href="#tldr" class="nav-link active">TL;DR</a>
+    <a href="#overview" class="nav-link">Overview</a>
     <a href="#background" class="nav-link">Background</a>
     <a href="#process" class="nav-link">Process</a>
     <a href="#decisions" class="nav-link">Key Decisions</a>
@@ -212,11 +310,30 @@
     </div>
   </div>
   <div class="hero-image-wrap">
-    <img src="/projects/allstate/images/allstate_hero.png" alt="Allstate Apple / Google Pay Integration" />
+    <img src="/projects/allstate/images/allstate_hero.png" alt="Allstate Apple / Google Pay Integration" width="888" height="401" />
   </div>
 </section>
 
-<!-- ─── 2. OVERVIEW / TL;DR ─── -->
+<!-- ─── 2. TL;DR ─── -->
+<section id="tldr" class="cs-section">
+  <div class="k40-eyebrow cs-label">TL;DR</div>
+  <div class="lead-stats reveal">
+    <div class="lead-stat">
+      <div class="stat-num">92%</div>
+      <div class="stat-label">Transaction success rate<span class="stat-qual">Post-launch monitoring</span></div>
+    </div>
+    <div class="lead-stat">
+      <div class="stat-num">6/7</div>
+      <div class="stat-label">User confidence rating<span class="stat-qual">On par with existing card checkout</span></div>
+    </div>
+    <div class="lead-stat">
+      <div class="stat-num">&lt;3mo</div>
+      <div class="stat-label">MVP to production<span class="stat-qual">Live on web and mobile web-view</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 3. OVERVIEW ─── -->
 <section id="overview" class="cs-section">
   <div class="k40-eyebrow cs-label">Overview</div>
   <div class="tldr-grid">
@@ -244,7 +361,7 @@
   </div>
 </section>
 
-<!-- ─── 3. BACKGROUND ─── -->
+<!-- ─── 4. BACKGROUND ─── -->
 <section id="background" class="cs-section">
   <div class="k40-eyebrow cs-label">Background</div>
   <div class="info-rows">
@@ -276,7 +393,7 @@
   </div>
 </section>
 
-<!-- ─── 4. RESEARCH & PROCESS ─── -->
+<!-- ─── 5. RESEARCH & PROCESS ─── -->
 <section id="process" class="cs-section">
   <div class="k40-eyebrow cs-label">Research &amp; Process</div>
   <div class="k40-h2" style="margin-bottom: var(--k40-s-7);">Map constraints before designing anything.</div>
@@ -379,15 +496,13 @@
 
 <!-- DESIGN SCOPE IMAGE -->
 <div style="max-width: var(--k40-content-max); margin: 0 auto; padding: 0 var(--content-pad) var(--k40-s-8);">
-  <div class="reveal" style="border: 1px solid var(--k40-border-light); overflow: hidden; box-shadow: 0 4px 24px rgba(0,42,112,0.07);">
-    <img src="/projects/allstate/images/Design scope.jpg" alt="Design scope mapping — constraints and opportunities" style="width: 100%; height: auto; display: block;" />
-    <div style="padding: 16px 24px; background: var(--k40-surface-2); border-top: 1px solid var(--k40-border-light);">
-      <span style="font-size: 12px; color: var(--k40-fg-3);">Scope mapping — constraints, technical limitations, and design opportunities surfaced from workshops</span>
-    </div>
-  </div>
+  <figure class="cs-figure is-bare reveal">
+    <img src="/projects/allstate/images/design-scope.png" alt="Design scope mapping — constraints and opportunities" width="1695" height="1895" />
+    <figcaption>Scope mapping — constraints, technical limitations, and design opportunities surfaced from workshops</figcaption>
+  </figure>
 </div>
 
-<!-- ─── 5. TECHNICAL COLLABORATION ─── -->
+<!-- ─── 6. TECHNICAL COLLABORATION ─── -->
 <div class="cs-full">
   <div class="cs-full-inner">
     <div class="k40-eyebrow cs-label">Technical Collaboration</div>
@@ -801,7 +916,7 @@
   </div>
 </div>
 
-<!-- ─── 6. KEY DESIGN DECISIONS ─── -->
+<!-- ─── 7. KEY DESIGN DECISIONS ─── -->
 <section id="decisions" class="cs-section">
   <div class="k40-eyebrow cs-label">Key Design Decisions</div>
   <div class="k40-h2" style="margin-bottom: var(--k40-s-6);">Four decisions that shaped the integration.</div>
@@ -848,16 +963,16 @@
   </div>
 </section>
 
-<!-- ─── 7. DESIGN WORK — SCREEN BLOCKS ─── -->
+<!-- ─── 8. DESIGN WORK — SCREEN BLOCKS ─── -->
 <div class="cs-full">
   <div class="cs-full-inner">
     <div class="k40-eyebrow cs-label">Design Work</div>
     <div class="k40-h2" style="margin-bottom: var(--k40-s-7);">From concepts to a constrained, tested solution.</div>
     <div class="screens-container">
 
-      <div class="screen-block reveal">
-        <div class="screen-image">
-          <img src="/projects/allstate/images/Initial designs 2.jpg" alt="Initial design concepts for Apple/Google Pay integration" />
+      <div class="screen-block is-wide reveal">
+        <div class="screen-image is-bare">
+          <img src="/projects/allstate/images/initial-iterations.png" alt="Initial design concepts for Apple/Google Pay integration" width="3352" height="1643" />
         </div>
         <div class="screen-content">
           <h3>Initial Design Concepts</h3>
@@ -870,9 +985,9 @@
         </div>
       </div>
 
-      <div class="screen-block reverse reveal">
-        <div class="screen-image">
-          <img src="/projects/allstate/images/iterations 2.jpg" alt="Design iterations and refinement" />
+      <div class="screen-block is-wide reveal">
+        <div class="screen-image is-bare">
+          <img src="/projects/allstate/images/refinements.png" alt="Design iterations and refinement" width="3428" height="1704" />
         </div>
         <div class="screen-content">
           <h3>Iterative Refinement</h3>
@@ -885,39 +1000,169 @@
         </div>
       </div>
 
-      <div class="screen-block reveal">
-        <div class="screen-image">
-          <img src="/projects/allstate/images/case scenarios.jpg" alt="Additional user flows and case scenarios" />
-        </div>
+      <div class="screen-block has-stack reveal">
         <div class="screen-content">
           <h3>Flow Mapping: All User Scenarios</h3>
           <p>Mapped user flows for new customer journeys, service flows, and payment updates — ensuring consistent experience across web, mobile web-views, and native app contexts.</p>
+          <p>The happy path was the smallest part of the work. Every wallet, failure mode and re-entry point was drawn end to end before anything went to build — six flows in total.</p>
           <ul class="screen-highlights">
             <li>New customer (FTU) with e-signature gate before payment authorization</li>
             <li>Existing customer updating payment method in service flow</li>
             <li>Failed payment and retry scenarios with wallet fallback</li>
           </ul>
         </div>
+        <div class="scenario-viewer" role="group" aria-label="User flow scenarios">
+          <input class="sc-toggle" type="checkbox" id="scm1" />
+          <input class="sc-toggle" type="checkbox" id="scm2" />
+          <input class="sc-toggle" type="checkbox" id="scm3" />
+          <input class="sc-toggle" type="checkbox" id="scm4" />
+          <input class="sc-toggle" type="checkbox" id="scm5" />
+          <input class="sc-toggle" type="checkbox" id="scm6" />
+          <ul class="sc-buttons">
+            <li><label for="scm1"><span class="k40-eyebrow is-accent sc-num">01</span> Apple Pay — happy path <span class="sc-arrow" aria-hidden="true">&#9974;</span></label></li>
+            <li><label for="scm2"><span class="k40-eyebrow is-accent sc-num">02</span> Apple Pay — three failed attempts <span class="sc-arrow" aria-hidden="true">&#9974;</span></label></li>
+            <li><label for="scm3"><span class="k40-eyebrow is-accent sc-num">03</span> Google Pay — happy path <span class="sc-arrow" aria-hidden="true">&#9974;</span></label></li>
+            <li><label for="scm4"><span class="k40-eyebrow is-accent sc-num">04</span> Google Pay — three failed attempts <span class="sc-arrow" aria-hidden="true">&#9974;</span></label></li>
+            <li><label for="scm5"><span class="k40-eyebrow is-accent sc-num">05</span> Autopay enrollment <span class="sc-arrow" aria-hidden="true">&#9974;</span></label></li>
+            <li><label for="scm6"><span class="k40-eyebrow is-accent sc-num">06</span> Manage payment method <span class="sc-arrow" aria-hidden="true">&#9974;</span></label></li>
+          </ul>
+          <p class="sc-list-hint">Six flows were drawn end to end before build. Open any one to view it full width.</p>
+          <div class="sc-modals">
+            <div class="sc-modal" role="dialog" aria-modal="true" aria-label="Apple Pay — happy path">
+              <label class="sc-backdrop" for="scm1" aria-label="Close"></label>
+              <div class="sc-modal-inner">
+                <div class="sc-modal-head">
+                  <span class="sc-modal-title">Apple Pay — happy path</span>
+                  <label class="sc-close" for="scm1" aria-label="Close">&times;</label>
+                </div>
+                <div class="sc-modal-body">
+                  <img src="/projects/allstate/images/scenarios/apple-happy-path.png" alt="Apple Pay — happy path — full user flow" width="3600" height="670" loading="lazy" />
+                </div>
+                <div class="sc-modal-foot">
+                  <span>End-to-end wallet checkout with no failures: selector, authorization sheet, confirmation.</span>
+                  <a href="/projects/allstate/images/scenarios/apple-happy-path.png" target="_blank" rel="noopener">Open full size &#8599;</a>
+                </div>
+              </div>
+            </div>
+            <div class="sc-modal" role="dialog" aria-modal="true" aria-label="Apple Pay — three failed attempts">
+              <label class="sc-backdrop" for="scm2" aria-label="Close"></label>
+              <div class="sc-modal-inner">
+                <div class="sc-modal-head">
+                  <span class="sc-modal-title">Apple Pay — three failed attempts</span>
+                  <label class="sc-close" for="scm2" aria-label="Close">&times;</label>
+                </div>
+                <div class="sc-modal-body">
+                  <img src="/projects/allstate/images/scenarios/apple-failure.png" alt="Apple Pay — three failed attempts — full user flow" width="3600" height="670" loading="lazy" />
+                </div>
+                <div class="sc-modal-foot">
+                  <span>Escalating error messaging across three declines, ending in a routed fallback.</span>
+                  <a href="/projects/allstate/images/scenarios/apple-failure.png" target="_blank" rel="noopener">Open full size &#8599;</a>
+                </div>
+              </div>
+            </div>
+            <div class="sc-modal" role="dialog" aria-modal="true" aria-label="Google Pay — happy path">
+              <label class="sc-backdrop" for="scm3" aria-label="Close"></label>
+              <div class="sc-modal-inner">
+                <div class="sc-modal-head">
+                  <span class="sc-modal-title">Google Pay — happy path</span>
+                  <label class="sc-close" for="scm3" aria-label="Close">&times;</label>
+                </div>
+                <div class="sc-modal-body">
+                  <img src="/projects/allstate/images/scenarios/google-happy-path.png" alt="Google Pay — happy path — full user flow" width="3600" height="670" loading="lazy" />
+                </div>
+                <div class="sc-modal-foot">
+                  <span>The same journey on Google's sheet, where the authorization step differs.</span>
+                  <a href="/projects/allstate/images/scenarios/google-happy-path.png" target="_blank" rel="noopener">Open full size &#8599;</a>
+                </div>
+              </div>
+            </div>
+            <div class="sc-modal" role="dialog" aria-modal="true" aria-label="Google Pay — three failed attempts">
+              <label class="sc-backdrop" for="scm4" aria-label="Close"></label>
+              <div class="sc-modal-inner">
+                <div class="sc-modal-head">
+                  <span class="sc-modal-title">Google Pay — three failed attempts</span>
+                  <label class="sc-close" for="scm4" aria-label="Close">&times;</label>
+                </div>
+                <div class="sc-modal-body">
+                  <img src="/projects/allstate/images/scenarios/google-failure.png" alt="Google Pay — three failed attempts — full user flow" width="3600" height="670" loading="lazy" />
+                </div>
+                <div class="sc-modal-foot">
+                  <span>Google's decline path, which surfaces different recovery controls than Apple's.</span>
+                  <a href="/projects/allstate/images/scenarios/google-failure.png" target="_blank" rel="noopener">Open full size &#8599;</a>
+                </div>
+              </div>
+            </div>
+            <div class="sc-modal" role="dialog" aria-modal="true" aria-label="Autopay enrollment">
+              <label class="sc-backdrop" for="scm5" aria-label="Close"></label>
+              <div class="sc-modal-inner">
+                <div class="sc-modal-head">
+                  <span class="sc-modal-title">Autopay enrollment</span>
+                  <label class="sc-close" for="scm5" aria-label="Close">&times;</label>
+                </div>
+                <div class="sc-modal-body">
+                  <img src="/projects/allstate/images/scenarios/autopay.png" alt="Autopay enrollment — full user flow" width="3600" height="670" loading="lazy" />
+                </div>
+                <div class="sc-modal-foot">
+                  <span>Recurring billing set up against a tokenized wallet rather than a stored card.</span>
+                  <a href="/projects/allstate/images/scenarios/autopay.png" target="_blank" rel="noopener">Open full size &#8599;</a>
+                </div>
+              </div>
+            </div>
+            <div class="sc-modal" role="dialog" aria-modal="true" aria-label="Manage payment method">
+              <label class="sc-backdrop" for="scm6" aria-label="Close"></label>
+              <div class="sc-modal-inner">
+                <div class="sc-modal-head">
+                  <span class="sc-modal-title">Manage payment method</span>
+                  <label class="sc-close" for="scm6" aria-label="Close">&times;</label>
+                </div>
+                <div class="sc-modal-body">
+                  <img src="/projects/allstate/images/scenarios/manage-payment-method.png" alt="Manage payment method — full user flow" width="3600" height="670" loading="lazy" />
+                </div>
+                <div class="sc-modal-foot">
+                  <span>Existing customer swapping payment method inside the service flow.</span>
+                  <a href="/projects/allstate/images/scenarios/manage-payment-method.png" target="_blank" rel="noopener">Open full size &#8599;</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="screen-block reverse reveal">
-        <div class="screen-image">
-          <img src="/projects/allstate/images/errors.jpg" alt="Error state designs" />
-        </div>
+      <div class="screen-block has-stack reveal">
         <div class="screen-content">
           <h3>Error States &amp; Edge Cases</h3>
-          <p>Designed comprehensive error handling for the intersection of Allstate's payment gateway and third-party wallet systems — a new failure mode category that didn't exist in the previous checkout.</p>
+          <p>Designed comprehensive error handling for the intersection of Allstate's payment gateway and third-party wallet systems — a new failure mode category that didn't exist in the previous checkout. Messaging escalates with each failed attempt, then routes the user to an alternate payment method rather than dead-ending.</p>
           <ul class="screen-highlights">
             <li>Fraud-prevention messaging co-designed with engineering</li>
             <li>Token expiry and declined authorization states with clear recovery paths</li>
             <li>Wallet unavailable fallback to legacy payment method</li>
           </ul>
         </div>
+        <div class="error-stack">
+          <figure class="error-shot is-full">
+            <img src="/projects/allstate/images/error-checkout-full.png" alt="Checkout screen showing a failed payment with two attempts remaining" width="850" height="531" />
+            <figcaption><span class="k40-eyebrow is-accent">01</span> <span><strong>Checkout — first failure.</strong> Inline above the pay button, preserving the reviewed terms and total.</span></figcaption>
+          </figure>
+          <div class="error-ladder">
+            <figure class="error-shot">
+              <img src="/projects/allstate/images/error-alert-one-attempt.png" alt="Inline alert reading one attempt remaining" width="849" height="68" />
+              <figcaption><span class="k40-eyebrow is-accent">02</span> <span><strong>Second failure.</strong> Attempt count drops before the wallet locks out.</span></figcaption>
+            </figure>
+            <figure class="error-shot">
+              <img src="/projects/allstate/images/error-checkout-exhausted.png" alt="Inline error directing the user back to payment to choose a different method" width="849" height="68" />
+              <figcaption><span class="k40-eyebrow is-accent">03</span> <span><strong>Attempts exhausted.</strong> Copy names the only recovery path on this screen.</span></figcaption>
+            </figure>
+            <figure class="error-shot">
+              <img src="/projects/allstate/images/error-selector-exhausted.png" alt="Inline error on the payment selector asking the user to choose a different payment method" width="849" height="68" />
+              <figcaption><span class="k40-eyebrow is-accent">04</span> <span><strong>Payment selector.</strong> Same failure, copy adapted to on-screen controls.</span></figcaption>
+            </figure>
+          </div>
+        </div>
       </div>
 
       <div class="screen-block reveal">
-        <div class="screen-image">
-          <img src="/projects/allstate/images/iphone_error.jpg" alt="Mobile error implementation on iPhone" />
+        <div class="screen-image is-phone">
+          <img src="/projects/allstate/images/error-phone.png" alt="Apple Pay sheet on iPhone showing a failed payment with a prompt to select a different payment method" width="315" height="644" />
         </div>
         <div class="screen-content">
           <h3>Mobile Implementation</h3>
@@ -938,29 +1183,27 @@
 <div style="max-width: var(--k40-content-max); margin: 0 auto; padding: var(--k40-s-8) var(--content-pad) 0;">
   <div class="k40-eyebrow cs-label">Final Payment Architecture</div>
   <div class="k40-h2" style="margin-bottom: var(--k40-s-6);">The integrated flow, without disrupting the existing checkout.</div>
-  <div class="reveal" style="border: 1px solid var(--k40-border-light); overflow: hidden; box-shadow: 0 4px 24px rgba(0,42,112,0.07);">
-    <img src="/projects/allstate/images/updated payment flow.jpg" alt="Final payment flow architecture" style="width: 100%; height: auto; display: block;" />
-    <div style="padding: 16px 24px; background: var(--k40-surface-2); border-top: 1px solid var(--k40-border-light);">
-      <span style="font-size: 12px; color: var(--k40-fg-3);">Final payment flow — Apple/Google Pay integrated without disrupting existing checkout sequencing or legal requirements</span>
-    </div>
-  </div>
+  <figure class="cs-figure reveal">
+    <img src="/projects/allstate/images/updated payment flow.jpg" alt="Final payment flow architecture" width="1241" height="198" />
+    <figcaption>Final payment flow — Apple/Google Pay integrated without disrupting existing checkout sequencing or legal requirements</figcaption>
+  </figure>
 </div>
 
-<!-- ─── 8. USABILITY TESTING ─── -->
+<!-- ─── 9. USABILITY TESTING ─── -->
 <section id="testing" class="cs-section">
   <div class="k40-eyebrow cs-label">Usability Testing &amp; Validation</div>
   <div class="k40-h2" style="margin-bottom: var(--k40-s-7);">Heatmap analysis surfaced the paymarks decision.</div>
 
   <div class="heatmap-grid" style="margin-bottom: var(--k40-s-6);">
-    <div class="heatmap-block reveal">
-      <img src="/projects/allstate/images/checkout_nopaymark_heatmap.jpg" alt="Checkout page heatmap" />
+    <div class="heatmap-block is-bare reveal">
+      <img src="/projects/allstate/images/checkout-heatmap.png" alt="Checkout page heatmap" width="1213" height="904" />
       <div class="heatmap-block-caption">
         <strong>Checkout Page — Attention Distribution</strong>
         <span>Without paymarks, user attention concentrated on the payment selector CTA — reducing misclicks on adjacent legal text</span>
       </div>
     </div>
-    <div class="heatmap-block reveal reveal-delay-1">
-      <img src="/projects/allstate/images/payment_nopaymark_heatmap.jpg" alt="Payment selector heatmap" />
+    <div class="heatmap-block is-bare reveal reveal-delay-1">
+      <img src="/projects/allstate/images/select-heatmap.png" alt="Payment selector heatmap" width="1216" height="1267" />
       <div class="heatmap-block-caption">
         <strong>Payment Selector — Interaction Hotspots</strong>
         <span>Users fixated on branded button text rather than inline icons, confirming the no-paymark design direction</span>
@@ -968,12 +1211,10 @@
     </div>
   </div>
 
-  <div class="reveal" style="border: 1px solid var(--k40-border-light); overflow: hidden; margin-bottom: var(--k40-s-6); box-shadow: 0 4px 24px rgba(0,42,112,0.07);">
-    <img src="/projects/allstate/images/results_paymark.jpg" alt="Test results — impact of design changes" style="width: 100%; height: auto; display: block;" />
-    <div style="padding: 16px 24px; background: var(--k40-surface-2); border-top: 1px solid var(--k40-border-light);">
-      <span style="font-size: 12px; color: var(--k40-fg-3);">Test results — branded buttons vs. no-paymark design across task success and user confidence metrics</span>
-    </div>
-  </div>
+  <figure class="cs-figure is-bare reveal" style="margin-bottom: var(--k40-s-6);">
+    <img src="/projects/allstate/images/research-findings.png" alt="Task success and first-click rates across four paymark and button-style variants" width="2802" height="1830" />
+    <figcaption>Task success and first-click rates across four variants — the no-paymark branded button led on both measures</figcaption>
+  </figure>
 
   <div class="k40-callout is-insight reveal" style="margin-bottom: var(--k40-s-6);">
     <div class="k40-callout-label">Key Insight</div>
@@ -988,7 +1229,7 @@
   </div>
 </section>
 
-<!-- ─── 9. OUTCOMES & IMPACT ─── -->
+<!-- ─── 10. OUTCOMES & IMPACT ─── -->
 <div class="cs-full" id="outcomes">
   <div class="cs-full-inner">
     <div class="k40-eyebrow cs-label" style="color: var(--brand-primary);">Outcomes &amp; Impact</div>
@@ -1110,6 +1351,13 @@
   window.addEventListener('scroll', () => {
     const total = document.documentElement.scrollHeight - window.innerHeight;
     bar.style.width = (window.scrollY / total * 100) + '%';
+  });
+
+  // Scenario modals close on Escape. The modal itself is pure CSS (checkbox + :checked),
+  // so this is enhancement only — clicking the backdrop or × works without it.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.sc-toggle:checked').forEach(t => { t.checked = false; });
   });
 
   // Reveal on scroll

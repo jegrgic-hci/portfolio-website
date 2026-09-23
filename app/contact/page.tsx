@@ -2,13 +2,39 @@
 
 import { useState } from "react";
 
-export default function Contact() {
-  const [submitted, setSubmitted] = useState(false);
+/** idle → sending → sent, or an error string to show instead. */
+type Status = "idle" | "sending" | "sent" | "error";
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+export default function Contact() {
+  const [status, setStatus] = useState<Status>("idle");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    const form = e.currentTarget;
+    const values = Object.fromEntries(new FormData(form));
+
+    setStatus("sending");
+    setError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      const body = await res.json().catch(() => ({}));
+
+      if (!res.ok) throw new Error(body.error || "The message could not be sent.");
+
+      /* Only clear the fields once the send is confirmed — wiping them on a
+         failure would lose someone's message with no way to get it back. */
+      form.reset();
+      setStatus("sent");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "The message could not be sent.");
+      setStatus("error");
+    }
   };
 
   return (
@@ -55,21 +81,45 @@ export default function Contact() {
             <textarea id="message" name="message" rows={6} required className="k40-input" placeholder="Tell me about your project..." style={{ resize: "vertical" }} />
           </div>
 
-          <button type="submit" className="k40-btn k40-btn-primary">
+          {/* Honeypot: hidden from people, irresistible to bots that fill
+              every field. Not type="hidden" — plenty of bots skip those. */}
+          <div aria-hidden="true" style={{ position: "absolute", left: "-9999px" }}>
+            <label htmlFor="company">Company</label>
+            <input type="text" id="company" name="company" tabIndex={-1} autoComplete="off" />
+          </div>
+
+          <button type="submit" className="k40-btn k40-btn-primary" disabled={status === "sending"}>
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
             </svg>
-            Send Message
+            {status === "sending" ? "Sending…" : "Send Message"}
           </button>
 
-          {submitted && (
-            <div className="k40-banner is-success">
-              <div className="k40-banner-body">
-                <span className="k40-banner-title">Message sent</span>
-                <span className="k40-banner-msg">I&apos;ll get back to you soon.</span>
+          {/* aria-live so the outcome is announced, not just drawn. */}
+          <div aria-live="polite">
+            {status === "sent" && (
+              <div className="k40-banner is-success">
+                <div className="k40-banner-body">
+                  <span className="k40-banner-title">Message sent</span>
+                  <span className="k40-banner-msg">I&apos;ll get back to you soon.</span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {status === "error" && (
+              <div className="k40-banner is-error">
+                <div className="k40-banner-body">
+                  <span className="k40-banner-title">Message not sent</span>
+                  {/* The fallback address matters more than the reason — it is
+                      the one thing that still works when this is broken. */}
+                  <span className="k40-banner-msg">
+                    {error} Please email me directly at{" "}
+                    <a href="mailto:jegrgic@gmail.com" className="k40-link">jegrgic@gmail.com</a>.
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
         </form>
 
         {/* Info panel */}

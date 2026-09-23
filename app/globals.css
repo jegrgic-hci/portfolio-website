@@ -466,6 +466,61 @@ select:focus {
   color: var(--k40-fg-3);
 }
 
+/* Linked titles sit one step darker than the unlinked ones. That contrast
+   step is the whole affordance at rest — an underline on seven of ten items
+   would read as damage, where a weight of colour reads as a set. */
+.hero-titles-list a {
+  color: var(--k40-fg-2);
+  text-decoration: none;
+  /* Reserved at rest so the underline on hover costs no layout. */
+  border-bottom: 1px solid transparent;
+  transition:
+    color        var(--k40-motion-quick) var(--k40-ease),
+    border-color var(--k40-motion-quick) var(--k40-ease);
+}
+
+.hero-titles-list a:hover,
+.hero-titles-list a:focus-visible {
+  color: var(--k40-accent-text);
+  border-bottom-color: var(--k40-accent-rail);
+  outline: none;
+}
+
+/* ── Jump arrival highlight ─────────────────────────────────────────────── */
+/* Fires for anything landed on by an in-page anchor, so it serves the hero
+   titles and the sticky case-study bar from one rule — the chips previously
+   dropped you at a card with no confirmation you'd hit the right one.
+   box-shadow rather than background or border: the cards set those inline
+   from page.tsx, and inline styles would win. */
+/* Holds at full for the first third, then fades. A ring that starts
+   dissolving the instant it appears reads as a glitch rather than a marker. */
+@keyframes k40-jump-arrive {
+  0%, 35% { box-shadow: 0 0 0 2px var(--k40-accent-rail), 0 0 0 8px var(--k40-accent-bg); }
+  100%    { box-shadow: 0 0 0 2px transparent,             0 0 0 8px transparent; }
+}
+
+.je-card:target,
+.je-research-card:target,
+#vraifactors:target {
+  /* The delay covers the smooth scroll set on :root — without it the fade
+     runs while the page is still travelling and the ring is half spent on
+     arrival. `both` rather than `forwards` so the backwards fill paints the
+     ring during the delay: it is already lit when the card comes to rest,
+     and the 2.4s is spent where it is meant to be, after the scroll. */
+  animation: k40-jump-arrive 2.4s var(--k40-ease) 0.6s both;
+}
+
+/* Without motion the ring simply stays — the arrival still has to be
+   findable, so this drops the fade, not the highlight. */
+@media (prefers-reduced-motion: reduce) {
+  .je-card:target,
+  .je-research-card:target,
+  #vraifactors:target {
+    animation: none;
+    box-shadow: 0 0 0 2px var(--k40-accent-rail);
+  }
+}
+
 /* Below this the description column takes the full width, so the aside drops
    underneath and squares up with everything else. */
 @media (max-width: 860px) {

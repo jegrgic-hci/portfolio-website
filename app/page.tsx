@@ -12,18 +12,52 @@ const iaTooling     = projects.filter((s) => s.category === "ia-tooling");
 /** Product Designer leads because it is the title most people are searching
  *  for. The three that aren't job titles sit at 3, 6 and 10 — spread far
  *  enough apart to read as part of the same list rather than a second one,
- *  and their short words break up the rag of a right-aligned column. */
-const jobTitles = [
-  "Product Designer",
-  "UX Researcher",
-  "Mentor",
-  "Interaction Designer",
-  "Information Architect",
-  "Leader",
-  "Human Factors Specialist",
-  "Creative Technologist",
-  "Content Designer",
-  "Collaborator",
+ *  and their short words break up the rag of a right-aligned column.
+ *
+ *  A title links to the one case study that best evidences it, so the list
+ *  reads as a set of claims with receipts rather than a list of labels. The
+ *  three non-titles carry no link on purpose: they run through every project,
+ *  so sending them to any single one would undersell them. That split is also
+ *  why the plain items need to look deliberate rather than broken — see
+ *  .hero-titles-list in globals.css. */
+const jobTitles: { label: string; href?: string }[] = [
+  { label: "Product Designer",         href: "#allstate" },
+  { label: "UX Researcher",            href: "#meta-benchmark" },
+  { label: "Mentor" },
+  { label: "Interaction Designer",     href: "#mcdonalds" },
+  { label: "Information Architect",    href: "#cigna" },
+  { label: "Leader" },
+  { label: "Human Factors Specialist", href: "#meta-sfi" },
+  { label: "Creative Technologist",    href: "#vraifactors" },
+  { label: "Content Designer",         href: "#google-hedwig" },
+  { label: "Collaborator" },
+];
+
+/** 13px stroked glyphs so the CTA row reads as one set, LinkedIn included. */
+const iconProps = {
+  xmlns: "http://www.w3.org/2000/svg", width: 13, height: 13, viewBox: "0 0 24 24",
+  fill: "none", stroke: "currentColor", strokeWidth: 2,
+  strokeLinecap: "round" as const, strokeLinejoin: "round" as const,
+};
+
+const docIcon = (
+  <svg {...iconProps}>
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 10 9"/>
+  </svg>
+);
+
+const linkedInIcon = (
+  <svg {...iconProps}>
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+  </svg>
+);
+
+/** LinkedIn sits last: the two documents belong together, and it's the one
+ *  link that leaves the site. */
+const ctaLinks = [
+  { href: "/documents/jegrgic_UXResumeEN.pdf", label: "Resume (EN)", icon: docIcon },
+  { href: "/documents/jegrgic_UXResumeFR.pdf", label: "CV (FR)",     icon: docIcon },
+  { href: "https://www.linkedin.com/in/jgrgic", label: "LinkedIn",   icon: linkedInIcon },
 ];
 
 const jumpLinks = [
@@ -116,7 +150,7 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
       style={{
         background: "var(--k40-surface)",
         display: featured ? "grid" : "flex",
-        scrollMarginTop: "112px",
+        scrollMarginTop: "116px",
         ...(featured
           ? { gridTemplateColumns: "1fr 1fr", overflow: "hidden", marginBottom: "var(--k40-s-4)" }
           : { flexDirection: "column" as const }),
@@ -162,7 +196,7 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
 
 function ResearchCard({ study }: { study: Project }) {
   return (
-    <div id={study.id} className="je-research-card" style={{ padding: "var(--k40-s-5)", scrollMarginTop: "112px" }}>
+    <div id={study.id} className="je-research-card" style={{ padding: "var(--k40-s-5)", scrollMarginTop: "116px" }}>
       <div className="je-card-media je-card-media--research">
         <div className="je-card-media-inner">
           <Image src={study.images.hero} alt={study.title} fill style={{ objectFit: "cover", objectPosition: "center top" }} />
@@ -302,14 +336,9 @@ export default function Home() {
 
             {/* CTAs */}
             <div style={{ display: "flex", gap: "var(--k40-s-3)", flexWrap: "wrap" }}>
-              {[
-                { href: "/documents/jegrgic_UXResumeEN.pdf", label: "Resume (EN)" },
-                { href: "/documents/jegrgic_UXResumeFR.pdf", label: "CV (FR)" },
-              ].map(({ href, label }) => (
+              {ctaLinks.map(({ href, label, icon }) => (
                 <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="k40-btn k40-btn-secondary">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 10 9"/>
-                  </svg>
+                  {icon}
                   {label}
                 </a>
               ))}
@@ -323,7 +352,11 @@ export default function Home() {
           <aside className="hero-titles">
             <p className="k40-eyebrow hero-titles-label">Hats I wear</p>
             <ul className="hero-titles-list">
-              {jobTitles.map((t) => <li key={t}>{t}</li>)}
+              {jobTitles.map(({ label, href }) => (
+                <li key={label}>
+                  {href ? <a href={href}>{label}</a> : label}
+                </li>
+              ))}
             </ul>
           </aside>
       </div>
@@ -352,7 +385,7 @@ export default function Home() {
           borderTop: "1px solid var(--k40-border-heavy)",
           borderBottom: "1px solid var(--k40-border-heavy)",
           padding: "var(--k40-s-8) var(--content-pad)",
-          scrollMarginTop: "112px",
+          scrollMarginTop: "116px",
         }}
       >
         <div style={{ maxWidth: "var(--k40-content-max)", margin: "0 auto" }}>
@@ -370,7 +403,7 @@ export default function Home() {
       </section>
 
       {/* ── PRODUCT DESIGN ── */}
-      <section className="band" id="work" style={{ scrollMarginTop: "112px" }}>
+      <section className="band" id="work" style={{ scrollMarginTop: "116px" }}>
         <div className="band-inner">
           <SectionHeader title={["Product Design &", "Strategy"]} sub="Service blueprinting · Iterative prototyping" />
           <ProductCard study={productDesign[0]} featured />
@@ -381,7 +414,7 @@ export default function Home() {
       </section>
 
       {/* ── UX RESEARCH (full-bleed tinted band) ── */}
-      <section className="band band--alt" id="research" style={{ scrollMarginTop: "112px" }}>
+      <section className="band band--alt" id="research" style={{ scrollMarginTop: "116px" }}>
         <div className="band-inner">
           <SectionHeader title={["UX Research &", "Behavioral Insights"]} sub="Moderated testing · Cognitive walkthroughs · Benchmarking" />
           <div className="je-research-grid">
@@ -391,7 +424,7 @@ export default function Home() {
       </section>
 
       {/* ── INFORMATION ARCHITECTURE ── */}
-      <section className="band" id="architecture" style={{ scrollMarginTop: "112px" }}>
+      <section className="band" id="architecture" style={{ scrollMarginTop: "116px" }}>
         <div className="band-inner">
           <SectionHeader title={["Information Architecture &", "Complex Tooling"]} sub="Expert-user systems · Cognitive load reduction" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--k40-s-4)" }} className="je-grid-2">
@@ -401,7 +434,7 @@ export default function Home() {
       </section>
 
       {/* ── WRITINGS ── */}
-      <section className="band band--divided" id="writings" style={{ scrollMarginTop: "112px" }}>
+      <section className="band band--divided" id="writings" style={{ scrollMarginTop: "116px" }}>
         <div className="band-inner">
           <SectionHeader title={["Writing on AI, Design &", "Human Factors"]} sub="View all ↗" subHref="/writings" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--k40-s-6)" }} className="je-writings-grid">

@@ -66,30 +66,46 @@ export async function onRequestPost({ request, env }) {
     return json(500, { error: "Mail is not configured." });
   }
 
-  const res = await fetch("https://api.smtp2go.com/v3/email/send", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Smtp2go-Api-Key": apiKey,
-    },
-    body: JSON.stringify({
-      sender: env.CONTACT_FROM || DEFAULT_FROM,
-      to: [env.CONTACT_TO || DEFAULT_TO],
-      /* Reply-To is the visitor, so hitting reply in the inbox answers them
-         directly. The From stays on the verified domain — putting a stranger's
-         address there is what gets mail marked as spoofed. */
-      custom_headers: [{ header: "Reply-To", value: `${name} <${email}>` }],
-      subject: `Portfolio contact — ${name}`,
-      text_body: `From: ${name} <${email}>\n\n${message}`,
-    }),
-  });
+  let res;
+  let result = {};
+  try {
+    res = await fetch("https://api.smtp2go.com/v3/email/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Smtp2go-Api-Key": apiKey,
+      },
+      body: JSON.stringify({
+        sender: env.CONTACT_FROM || DEFAULT_FROM,
+        to: [env.CONTACT_TO || DEFAULT_TO],
+        /* Reply-To is the visitor, so hitting reply in the inbox answers them
+           directly. The From stays on the verified domain — putting a
+           stranger's address there is what gets mail marked as spoofed. */
+        custom_headers: [{ header: "Reply-To", value: `${name} <${email}>` }],
+        subject: `Portfolio contact — ${name}`,
+        text_body: `From: ${name} <${email}>\n\n${message}`,
+      }),
+    });
+    result = await res.json().catch(() => ({}));
+  } catch (err) {
+    /* The request never completed — DNS, TLS, a timeout. Distinct from
+       SMTP2GO answering with a refusal, and worth separating in the log. */
+    console.error("SMTP2GO request failed:", err?.message, err?.stack);
+    return json(502, { error: "The message could not be sent.", detail: String(err?.message || err) });
+  }
 
-  const result = await res.json().catch(() => ({}));
   const sent = result?.data?.succeeded;
 
   if (!res.ok || !sent) {
-    console.error("SMTP2GO rejected the send:", JSON.stringify(result));
-    return json(502, { error: "The message could not be sent." });
+    console.error("SMTP2GO rejected the send:", res.status, JSON.stringify(result));
+    /* TEMPORARY: surfaces SMTP2GO's own reason (unverified sender, bad key
+       scope) so a failure is diagnosable without dashboard log access.
+       Remove once the form is confirmed working. */
+    return json(502, {
+      error: "The message could not be sent.",
+      status: res.status,
+      detail: result?.data?.error || result?.error || JSON.stringify(result).slice(0, 300),
+    });
   }
 
   return json(200, { ok: true });

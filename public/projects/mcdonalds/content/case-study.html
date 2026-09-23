@@ -17,12 +17,44 @@
     .cs-full        { background: var(--k40-surface-2); border-top: 1px solid var(--k40-border-light); border-bottom: 1px solid var(--k40-border-light); padding: var(--k40-s-8) var(--content-pad); margin-bottom: 0; }
     .cs-full-inner  { max-width: var(--k40-content-max); margin: 0 auto; }
 
+    /* ── Jump nav (sits below the portfolio's own sticky header) ── */
+    .cs-jump {
+      position: sticky; top: 56px; z-index: 40;
+      background: rgba(255,255,255,0.94); backdrop-filter: blur(12px);
+      border-top: 1px solid var(--k40-border-light);
+      border-bottom: 1px solid var(--k40-border-light);
+    }
+    .cs-jump-inner {
+      max-width: var(--k40-content-max); margin: 0 auto;
+      padding: 0 var(--content-pad); height: 46px;
+      display: flex; align-items: center; gap: var(--k40-s-2);
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .cs-jump-inner::-webkit-scrollbar { display: none; }
+    .cs-jump-eyebrow { color: var(--k40-fg-4); white-space: nowrap; flex-shrink: 0; }
+    .cs-jump-link {
+      font-family: var(--k40-font-ui); font-size: var(--k40-text-2xs);
+      font-weight: 500; letter-spacing: var(--k40-track-ui); text-transform: uppercase;
+      color: var(--k40-fg-3); text-decoration: none;
+      padding: 6px 10px; white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .cs-jump-link:hover { color: var(--k40-fg-1); }
+    .cs-jump-link.active { color: var(--mcd-red); border-bottom-color: var(--mcd-red); }
+
+    /* Keep anchored sections clear of both sticky bars */
+    .cs-section, .cs-full { scroll-margin-top: 110px; }
+
     /* ── Section label row ── */
     .cs-label { display: block; margin-bottom: var(--k40-s-5); padding-bottom: var(--k40-s-3); border-bottom: 1px solid var(--k40-border-heavy); }
 
     /* ── TL;DR / outcomes / principles grids ── */
     .tldr-grid       { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--k40-border-mid); overflow: hidden; }
     .outcomes-grid   { display: grid; grid-template-columns: 1fr 1fr; gap: var(--k40-s-5); }
+    .outcome-card    { text-decoration: none; color: inherit; transition: border-color 0.2s var(--k40-ease); }
+    .outcome-card:hover { border-color: var(--mcd-red); }
+    .outcome-jump    { color: var(--mcd-red); margin-top: auto; padding-top: var(--k40-s-3); border-top: 1px solid var(--k40-border-light); }
     .principles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--k40-s-4); }
 
     /* ── Screen blocks ── */
@@ -69,6 +101,11 @@
     .tech-panel.open { display: block; }
     .tech-panel-label { margin-bottom: var(--k40-s-4); padding-bottom: var(--k40-s-3); border-bottom: 1px solid var(--k40-border-accent); }
 
+    /* ── Validation stages ── */
+    .stage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--k40-s-4); }
+    .stage-card { display: flex; flex-direction: column; gap: var(--k40-s-3); border-top: 3px solid var(--mcd-red); }
+    .stage-meta { display: flex; flex-direction: column; gap: var(--k40-s-1); padding-top: var(--k40-s-3); border-top: 1px solid var(--k40-border-light); margin-top: auto; }
+
     /* ── Principle bullet list ── */
     .principle-list { list-style: none; display: flex; flex-direction: column; gap: var(--k40-s-2); margin-top: var(--k40-s-2); }
     .principle-list li { font-family: var(--k40-font-body); font-size: var(--k40-text-sm); line-height: 1.6; color: var(--k40-fg-2); padding-left: var(--k40-s-4); position: relative; }
@@ -91,6 +128,7 @@
       .tldr-grid { grid-template-columns: 1fr; }
       .outcomes-grid { grid-template-columns: 1fr; }
       .principles-grid { grid-template-columns: 1fr; }
+      .stage-grid { grid-template-columns: 1fr; }
       .phone-grid { grid-template-columns: repeat(2, 1fr); }
       .phone-grid-3 { grid-template-columns: repeat(2, 1fr); }
       .tech-panel { padding: var(--k40-s-5) var(--k40-s-4); }
@@ -116,6 +154,7 @@
     <a href="#service-design"   class="nav-link" style="font-family: var(--k40-font-ui); font-size: var(--k40-text-2xs); font-weight: 500; letter-spacing: var(--k40-track-ui); text-transform: uppercase; color: var(--k40-fg-3); text-decoration: none; padding: 6px 12px; white-space: nowrap; transition: color 0.2s;">Service Design</a>
     <a href="#badge"            class="nav-link" style="font-family: var(--k40-font-ui); font-size: var(--k40-text-2xs); font-weight: 500; letter-spacing: var(--k40-track-ui); text-transform: uppercase; color: var(--k40-fg-3); text-decoration: none; padding: 6px 12px; white-space: nowrap; transition: color 0.2s;">Badge System</a>
     <a href="#post-fulfillment" class="nav-link" style="font-family: var(--k40-font-ui); font-size: var(--k40-text-2xs); font-weight: 500; letter-spacing: var(--k40-track-ui); text-transform: uppercase; color: var(--k40-fg-3); text-decoration: none; padding: 6px 12px; white-space: nowrap; transition: color 0.2s;">Post-Fulfillment</a>
+    <a href="#validation"       class="nav-link" style="font-family: var(--k40-font-ui); font-size: var(--k40-text-2xs); font-weight: 500; letter-spacing: var(--k40-track-ui); text-transform: uppercase; color: var(--k40-fg-3); text-decoration: none; padding: 6px 12px; white-space: nowrap; transition: color 0.2s;">Validation</a>
   </div>
 </nav>
 
@@ -143,10 +182,23 @@
     </div>
     <div style="display: flex; flex-direction: column; gap: var(--k40-s-1);">
       <span class="k40-eyebrow">Methods</span>
-      <span class="k40-label">Research · Stakeholder Interviews · Service Blueprinting · Usability Testing</span>
+      <span class="k40-label">Research · Stakeholder Interviews · Service Blueprinting · Usability Testing · In-Market Validation</span>
     </div>
   </div>
 </section>
+
+<!-- ─── JUMP NAV ─── -->
+<nav class="cs-jump" aria-label="Jump to section">
+  <div class="cs-jump-inner">
+    <span class="k40-eyebrow cs-jump-eyebrow">Jump to</span>
+    <a href="#outcomes"         class="cs-jump-link">Outcomes</a>
+    <a href="#service-design"   class="cs-jump-link">Service Design</a>
+    <a href="#access"           class="cs-jump-link">In-App Access</a>
+    <a href="#badge"            class="cs-jump-link">Badge System</a>
+    <a href="#post-fulfillment" class="cs-jump-link">Post-Fulfillment</a>
+    <a href="#validation"       class="cs-jump-link">Testing</a>
+  </div>
+</nav>
 
 <!-- ─── 1. OVERVIEW ─── -->
 <section id="overview" class="cs-section">
@@ -171,26 +223,26 @@
 <section id="outcomes" class="cs-section">
   <p class="k40-eyebrow cs-label">Key Outcomes</p>
   <div class="outcomes-grid">
-    <div class="k40-card reveal" style="padding: var(--k40-s-5); display: flex; flex-direction: column; gap: var(--k40-s-3);">
+    <a href="#service-design" class="k40-card outcome-card reveal" style="padding: var(--k40-s-5); display: flex; flex-direction: column; gap: var(--k40-s-3);">
       <p class="k40-h3">Integrated Account-Based Ordering</p>
       <p class="k40-body" style="max-width: none;">Reframed the value of a McDonald's account to both customers and operations. Simplified access via geofencing-triggered Voice Codes for a frictionless sign-in experience.</p>
-    </div>
-    <div class="k40-card reveal reveal-delay-1" style="padding: var(--k40-s-5); display: flex; flex-direction: column; gap: var(--k40-s-3);">
-      <p class="k40-h3">Enhanced Customer-Oriented Display</p>
-      <p class="k40-body" style="max-width: none;">Developed a display that showcases favorites and recent orders at the restaurant, reducing steps and improving order speed and accuracy. Emphasized branded design elements for a personalized experience.</p>
-    </div>
-    <div class="k40-card reveal reveal-delay-2" style="padding: var(--k40-s-5); display: flex; flex-direction: column; gap: var(--k40-s-3);">
+      <span class="k40-eyebrow outcome-jump">See the service design ↓</span>
+    </a>
+    <a href="#access" class="k40-card outcome-card reveal reveal-delay-1" style="padding: var(--k40-s-5); display: flex; flex-direction: column; gap: var(--k40-s-3);">
       <p class="k40-h3">Innovative Animation &amp; Interaction Design</p>
       <p class="k40-body" style="max-width: none;">Introduced the Moments Panel animation featuring falling coins that respond to device gestures, encouraging natural interactions like shaking the phone. Created subtle menu animations drawing attention to Payment &amp; Loyalty access without cluttering the interface.</p>
-    </div>
-    <div class="k40-card reveal reveal-delay-3" style="padding: var(--k40-s-5); display: flex; flex-direction: column; gap: var(--k40-s-3);">
+      <span class="k40-eyebrow outcome-jump">See the in-app access ↓</span>
+    </a>
+    <a href="#badge" class="k40-card outcome-card reveal reveal-delay-2" style="padding: var(--k40-s-5); display: flex; flex-direction: column; gap: var(--k40-s-3);">
       <p class="k40-h3">Flexible "Badge" System for Payment &amp; Loyalty</p>
       <p class="k40-body" style="max-width: none;">A dual-sided badge combining Loyalty, Payment, Arch Card, and Deal redemption into one reusable module. Multiple states (voice code, QR code, saved payment methods) with on-demand instructions via an accessible "?" icon.</p>
-    </div>
-    <div class="k40-card reveal" style="padding: var(--k40-s-5); display: flex; flex-direction: column; gap: var(--k40-s-3); grid-column: 1 / -1;">
+      <span class="k40-eyebrow outcome-jump">See the badge system ↓</span>
+    </a>
+    <a href="#post-fulfillment" class="k40-card outcome-card reveal reveal-delay-3" style="padding: var(--k40-s-5); display: flex; flex-direction: column; gap: var(--k40-s-3);">
       <p class="k40-h3">Robust Post-Fulfillment Experience</p>
       <p class="k40-body" style="max-width: none;">Designed a dynamic eReceipt celebrating loyalty milestones and rewards alongside order details. Incorporated a Help &amp; Support system that streamlines order corrections and directs drive-thru users to in-app support. Established a feedback mechanism (star ratings and Voice Surveys) to capture customer experiences shortly after meal completion.</p>
-    </div>
+      <span class="k40-eyebrow outcome-jump">See the post-fulfillment work ↓</span>
+    </a>
   </div>
 </section>
 
@@ -298,7 +350,7 @@
 </div>
 
 <!-- ─── 5. GMA ACCESS ─── -->
-<section class="cs-section">
+<section id="access" class="cs-section">
   <div class="screen-block reveal">
     <div class="screen-image" style="background: var(--k40-surface-2); border-radius: 12px; padding: var(--k40-s-5);">
       <img src="/projects/mcdonalds/images/branded-phone.png" alt="Branded phone GMA" />
@@ -690,6 +742,60 @@
   </div>
 </section>
 
+<!-- ─── 7. VALIDATION ─── -->
+<div class="cs-full" id="validation">
+  <div class="cs-full-inner">
+    <p class="k40-eyebrow cs-label">Testing &amp; Validation</p>
+    <h2 class="k40-h2" style="margin-bottom: var(--k40-s-4);">Three rounds, each one closer to a real drive-thru.</h2>
+    <p class="k40-body" style="margin-bottom: var(--k40-s-7);">
+      A badge you hold up at a menu board behaves nothing like a badge you tap through on a couch. So testing escalated in fidelity and in realism — from a phone rig on a desk, to a mock drive-thru running live account data, to a real car on a real road. Each round answered a question the previous one couldn't.
+    </p>
+
+    <div class="stage-grid" style="margin-bottom: var(--k40-s-7);">
+      <div class="k40-card stage-card reveal" style="padding: var(--k40-s-5);">
+        <p class="k40-eyebrow is-accent">01 — In-house guerrilla testing</p>
+        <h3 class="k40-h3">Does the feature have a home in the app?</h3>
+        <p class="k40-body" style="max-width: none;">
+          We built early interactive prototypes and tested them in-house using a Mr Tappy rig over a handset, capturing screen and hand together. Rounds focused on placement, whether the interactions worked as intended, and how quickly a first-time user learned account-based ordering and payment without instruction.
+        </p>
+        <div class="stage-meta">
+          <span class="k40-eyebrow">Objective</span>
+          <span class="k40-helper">Establish how the new feature and functionality could live inside the Global Mobile App.</span>
+        </div>
+      </div>
+
+      <div class="k40-card stage-card reveal reveal-delay-1" style="padding: var(--k40-s-5);">
+        <p class="k40-eyebrow is-accent">02 — Mock drive-thru, Chicago lab</p>
+        <h3 class="k40-h3">Does it hold up against real data and real crew?</h3>
+        <p class="k40-body" style="max-width: none;">
+          After several prototype iterations and stakeholder approval, we rebuilt the prototype inside McDonald's test environment so it ran on actual account and ordering data and processes rather than mocked screens. That build was tested in the mock drive-thru at McDonald's Chicago lab — with crew on the other side of the window, not just participants.
+        </p>
+        <div class="stage-meta">
+          <span class="k40-eyebrow">Objective</span>
+          <span class="k40-helper">Observe how the feature would be used in a real situation, and surface friction points for both customer and restaurant staff.</span>
+        </div>
+      </div>
+
+      <div class="k40-card stage-card reveal reveal-delay-2" style="padding: var(--k40-s-5);">
+        <p class="k40-eyebrow is-accent">03 — Live drive-thru</p>
+        <h3 class="k40-h3">Does it work in a real car, in real traffic?</h3>
+        <p class="k40-body" style="max-width: none;">
+          The final prototype was tested in an operating drive-thru with participants in actual vehicles on public roads. For legal and liability reasons the sessions were run by a third-party vendor; I wrote the testing protocol and objectives the vendor executed against, so the study still answered our design questions rather than theirs.
+        </p>
+        <div class="stage-meta">
+          <span class="k40-eyebrow">Objective</span>
+          <span class="k40-helper">Validate the design in a natural real-world environment and confirm the feature worked as expected end to end.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="k40-callout is-decision">
+      <p class="k40-callout-label">Why escalate rather than test once</p>
+      <p class="k40-callout-body">Guerrilla testing is cheap enough to run on an idea that may not survive the week — the right tool for placement and learnability. But learnability in a quiet room says nothing about a customer holding up a phone with a car behind them and a crew member waiting. Moving the same design through a mock drive-thru and then a live one meant each round of findings cost what the question was worth, and the expensive real-world test was spent on validation rather than discovery.</p>
+    </div>
+  </div>
+</div>
+
 <!-- ─── FOOTER ─── -->
 <footer id="footer" style="background: var(--k40-surface-2); border-top: 1px solid var(--k40-border-light); padding: var(--k40-s-7) var(--content-pad);">
   <div style="max-width: var(--k40-content-max); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: var(--k40-s-5); flex-wrap: wrap;">
@@ -718,12 +824,12 @@
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
   const sections = document.querySelectorAll('section[id], div[id]');
-  const navLinks = document.querySelectorAll('.nav-link');
+  const navLinks = document.querySelectorAll('.cs-jump-link');
   const navObserver = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
         navLinks.forEach(l => l.classList.remove('active'));
-        const link = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        const link = document.querySelector(`.cs-jump-link[href="#${e.target.id}"]`);
         if (link) link.classList.add('active');
       }
     });

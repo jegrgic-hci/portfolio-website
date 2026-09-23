@@ -23,7 +23,7 @@ const jobTitles = [
   "Human Factors Specialist",
   "Creative Technologist",
   "Content Designer",
-  "Teammate",
+  "Collaborator",
 ];
 
 const jumpLinks = [

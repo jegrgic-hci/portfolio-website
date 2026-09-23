@@ -8,14 +8,17 @@
  * SMTP2GO's HTTP API rather than SMTP: Workers have no raw TCP for port 587,
  * and the REST endpoint needs nothing but fetch.
  *
- * Required environment variable (set in the Pages dashboard, not in code):
+ * Required environment variables (set in the Pages dashboard, not in code):
  *   SMTP2GO_API_KEY   — a "send email" key from SMTP2GO
+ *   CONTACT_TO        — inbox that receives the mail
  * Optional:
- *   CONTACT_TO        — inbox that receives the mail (default below)
  *   CONTACT_FROM      — sender, must be on a domain verified in SMTP2GO
+ *
+ * CONTACT_TO has no fallback in source on purpose: this repository is
+ * public, and a destination address committed here is as harvestable as
+ * one published on the site.
  */
 
-const DEFAULT_TO = "jegrgic@gmail.com";
 const DEFAULT_FROM = "contact@jegrgic.com";
 
 /** Long enough for a real enquiry, short enough that nobody posts a novel. */
@@ -59,10 +62,13 @@ export async function onRequestPost({ request, env }) {
   }
 
   const apiKey = env.SMTP2GO_API_KEY;
-  if (!apiKey) {
+  const recipient = env.CONTACT_TO;
+  if (!apiKey || !recipient) {
     /* Misconfiguration, not a visitor error — say so in the log and give the
        visitor the fallback rather than a silent success. */
-    console.error("SMTP2GO_API_KEY is not set on this environment.");
+    console.error(
+      `Mail is not configured: ${!apiKey ? "SMTP2GO_API_KEY" : "CONTACT_TO"} is not set.`,
+    );
     return json(500, { error: "Mail is not configured." });
   }
 
@@ -77,7 +83,7 @@ export async function onRequestPost({ request, env }) {
       },
       body: JSON.stringify({
         sender: env.CONTACT_FROM || DEFAULT_FROM,
-        to: [env.CONTACT_TO || DEFAULT_TO],
+        to: [recipient],
         /* Reply-To is the visitor, so hitting reply in the inbox answers them
            directly. The From stays on the verified domain — putting a
            stranger's address there is what gets mail marked as spoofed. */

@@ -1,13 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import articles from "@/data/articles.json";
+
+/** The newest article in each theme, so the three suggestions after a send
+ *  cover the range of subjects rather than three takes on one. Themes keep
+ *  the order they appear in the data, which is the order the home page
+ *  lists them in. */
+const themes = [...new Set(articles.map((a) => a.theme))];
+
+const nextReads = themes.map(
+  (theme) =>
+    articles
+      .filter((a) => a.theme === theme)
+      /* Dates read "Apr 2026", which Date.parse handles once given a day. */
+      .sort((a, b) => Date.parse(`1 ${b.date}`) - Date.parse(`1 ${a.date}`))[0],
+);
 
 /** idle → sending → sent, or an error string to show instead. */
 type Status = "idle" | "sending" | "sent" | "error";
 
 export default function Contact() {
   const [status, setStatus] = useState<Status>("idle");
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -15,7 +29,6 @@ export default function Contact() {
     const values = Object.fromEntries(new FormData(form));
 
     setStatus("sending");
-    setError("");
 
     try {
       const res = await fetch("/api/contact", {
@@ -32,7 +45,10 @@ export default function Contact() {
       form.reset();
       setStatus("sent");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "The message could not be sent.");
+      /* The visitor gets fixed copy rather than the server's reason — it is
+         never actionable for them. Logged so a failure is still diagnosable
+         from the browser console. */
+      console.error("Contact form send failed:", err);
       setStatus("error");
     }
   };
@@ -64,7 +80,94 @@ export default function Contact() {
         alignItems: "start",
       }}>
 
-        {/* Form */}
+        {/* Once the message is away the form has nothing left to do, so the
+            whole thing is replaced rather than a banner stacked under it —
+            no ambiguity about whether it still needs submitting. */}
+        {status === "sent" ? (
+          <div aria-live="polite">
+            <p className="k40-eyebrow is-accent" style={{ marginBottom: "var(--k40-s-3)" }}>
+              Sent
+            </p>
+            <h2 className="k40-h2" style={{ marginBottom: "var(--k40-s-4)" }}>
+              Message sent successfully
+            </h2>
+            <p className="k40-body" style={{ marginBottom: "var(--k40-s-7)" }}>
+              I read everything that arrives here and will get back to you.
+            </p>
+
+            <p
+              className="k40-h3"
+              style={{
+                marginBottom: "var(--k40-s-5)",
+                paddingBottom: "var(--k40-s-3)",
+                borderBottom: "1px solid var(--k40-border-heavy)",
+              }}
+            >
+              so......now what?
+            </p>
+
+            {/* One per theme rather than the three most recent — the spread
+                shows the range of what there is to read. */}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {nextReads.map((article) => (
+                <a
+                  key={article.id}
+                  href={article.href}
+                  className="je-writing-row"
+                  style={{
+                    display: "flex",
+                    gap: "var(--k40-s-5)",
+                    padding: "var(--k40-s-4) var(--k40-s-2)",
+                    margin: "0 calc(-1 * var(--k40-s-2))",
+                    borderBottom: "1px solid var(--k40-border-light)",
+                    textDecoration: "none",
+                    color: "inherit",
+                  }}
+                >
+                  <span
+                    className="k40-eyebrow"
+                    style={{ color: "var(--k40-fg-4)", whiteSpace: "nowrap", paddingTop: "2px", minWidth: "52px" }}
+                  >
+                    {article.date}
+                  </span>
+                  <div>
+                    <p
+                      className="je-writing-title"
+                      style={{
+                        fontFamily: "var(--k40-font-body)",
+                        fontSize: "var(--k40-text-sm)",
+                        fontWeight: 500,
+                        color: "var(--k40-fg-1)",
+                        lineHeight: 1.4,
+                        marginBottom: "var(--k40-s-1)",
+                      }}
+                    >
+                      {article.title}
+                    </p>
+                    <p
+                      className="je-writing-desc"
+                      style={{
+                        fontFamily: "var(--k40-font-body)",
+                        fontSize: "var(--k40-text-xs)",
+                        color: "var(--k40-fg-3)",
+                        lineHeight: 1.6,
+                        margin: 0,
+                      }}
+                    >
+                      {article.description}
+                    </p>
+                  </div>
+                </a>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", gap: "var(--k40-s-3)", flexWrap: "wrap", marginTop: "var(--k40-s-6)" }}>
+              <a href="/writings" className="k40-btn k40-btn-secondary">All writing →</a>
+              <a href="/" className="k40-btn k40-btn-ghost">Back to work</a>
+            </div>
+          </div>
+        ) : (
+        /* Form */
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--k40-s-5)" }}>
           <div>
             <label htmlFor="name" className="k40-eyebrow" style={{ display: "block", marginBottom: "var(--k40-s-2)" }}>Name</label>
@@ -95,32 +198,32 @@ export default function Contact() {
             {status === "sending" ? "Sending…" : "Send Message"}
           </button>
 
-          {/* aria-live so the outcome is announced, not just drawn. */}
+          {/* aria-live so the outcome is announced, not just drawn. Success
+              is handled above by replacing the form outright. */}
           <div aria-live="polite">
-            {status === "sent" && (
-              <div className="k40-banner is-success">
-                <div className="k40-banner-body">
-                  <span className="k40-banner-title">Message sent</span>
-                  <span className="k40-banner-msg">I&apos;ll get back to you soon.</span>
-                </div>
-              </div>
-            )}
-
             {status === "error" && (
               <div className="k40-banner is-error">
                 <div className="k40-banner-body">
                   <span className="k40-banner-title">Message not sent</span>
-                  {/* The fallback address matters more than the reason — it is
-                      the one thing that still works when this is broken. */}
+                  {/* LinkedIn rather than an address, so the failure path does
+                      not undo the decision not to publish one. */}
                   <span className="k40-banner-msg">
-                    {error} Please email me directly at{" "}
-                    <a href="mailto:jegrgic@gmail.com" className="k40-link">jegrgic@gmail.com</a>.
+                    Email is an archaic technology that sometimes glitches. Try reaching me on{" "}
+                    <a
+                      href="https://www.linkedin.com/in/jgrgic"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="k40-link"
+                    >
+                      LinkedIn
+                    </a>.
                   </span>
                 </div>
               </div>
             )}
           </div>
         </form>
+        )}
 
         {/* Info panel */}
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--k40-s-6)" }}>
@@ -138,10 +241,20 @@ export default function Contact() {
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--k40-s-4)" }}>
+              {/* No address in the markup, here or anywhere else on the site —
+                  a mailto: is the cheapest thing a scraper can harvest. The
+                  form reaches the same inbox, and LinkedIn is the fallback
+                  when someone would rather not use a form at all. */}
               <div>
-                <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-1)" }}>Email</p>
-                <a href="mailto:jegrgic@gmail.com" className="k40-link" style={{ fontFamily: "var(--k40-font-ui)", fontSize: "var(--k40-text-sm)" }}>
-                  jegrgic@gmail.com
+                <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-1)" }}>LinkedIn</p>
+                <a
+                  href="https://www.linkedin.com/in/jgrgic"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="k40-link"
+                  style={{ fontFamily: "var(--k40-font-ui)", fontSize: "var(--k40-text-sm)" }}
+                >
+                  linkedin.com/in/jgrgic
                 </a>
               </div>
 

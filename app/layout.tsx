@@ -126,9 +126,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* Contact */}
               <div>
                 <p className="k40-eyebrow" style={{ color: "var(--k40-fg-on-dark-3)", marginBottom: "var(--k40-s-4)" }}>Contact</p>
-                <a href="mailto:jegrgic@gmail.com" className="footer-link"
+                {/* The form and LinkedIn instead of an address: a mailto in
+                    the footer sits on every page of the site, which makes it
+                    the single easiest thing here for a scraper to collect. */}
+                <a href="/contact" className="footer-link"
                   style={{ display: "block", marginBottom: "var(--k40-s-2)", color: "var(--k40-fg-on-dark-2)" }}>
-                  jegrgic@gmail.com
+                  Send a message
+                </a>
+                <a href="https://www.linkedin.com/in/jgrgic" target="_blank" rel="noopener noreferrer" className="footer-link"
+                  style={{ display: "block", marginBottom: "var(--k40-s-2)", color: "var(--k40-fg-on-dark-2)" }}>
+                  LinkedIn
                 </a>
                 <p className="k40-eyebrow" style={{ color: "var(--k40-fg-on-dark-3)" }}>Marseille, France</p>
               </div>

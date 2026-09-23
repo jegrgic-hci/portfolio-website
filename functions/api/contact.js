@@ -97,21 +97,17 @@ export async function onRequestPost({ request, env }) {
     /* The request never completed — DNS, TLS, a timeout. Distinct from
        SMTP2GO answering with a refusal, and worth separating in the log. */
     console.error("SMTP2GO request failed:", err?.message, err?.stack);
-    return json(502, { error: "The message could not be sent.", detail: String(err?.message || err) });
+    return json(502, { error: "The message could not be sent." });
   }
 
   const sent = result?.data?.succeeded;
 
   if (!res.ok || !sent) {
+    /* The reason stays in the log rather than the response: it names the
+       sender and key configuration, which is nothing a caller should learn
+       from probing the endpoint. Readable under Workers & Pages → Logs. */
     console.error("SMTP2GO rejected the send:", res.status, JSON.stringify(result));
-    /* TEMPORARY: surfaces SMTP2GO's own reason (unverified sender, bad key
-       scope) so a failure is diagnosable without dashboard log access.
-       Remove once the form is confirmed working. */
-    return json(502, {
-      error: "The message could not be sent.",
-      status: res.status,
-      detail: result?.data?.error || result?.error || JSON.stringify(result).slice(0, 300),
-    });
+    return json(502, { error: "The message could not be sent." });
   }
 
   return json(200, { ok: true });

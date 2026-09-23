@@ -9,6 +9,34 @@ const productDesign = projects.filter((s) => s.category === "product-design");
 const uxResearch    = projects.filter((s) => s.category === "ux-research");
 const iaTooling     = projects.filter((s) => s.category === "ia-tooling");
 
+/** Product Designer leads because it is the title most people are searching
+ *  for. The three that aren't job titles sit at 3, 6 and 10 — spread far
+ *  enough apart to read as part of the same list rather than a second one,
+ *  and their short words break up the rag of a right-aligned column. */
+const jobTitles = [
+  "Product Designer",
+  "UX Researcher",
+  "Mentor",
+  "Interaction Designer",
+  "Information Architect",
+  "Leader",
+  "Human Factors Specialist",
+  "Creative Technologist",
+  "Content Designer",
+  "Teammate",
+];
+
+const jumpLinks = [
+  { label: "Allstate",               href: "#allstate" },
+  { label: "McDonald's",             href: "#mcdonalds" },
+  { label: "Verizon",                href: "#verizon" },
+  { label: "Meta SFI",               href: "#meta-sfi" },
+  { label: "Meta Commerce Manager",  href: "#meta-benchmark" },
+  { label: "Google Hedwig",          href: "#google-hedwig" },
+  { label: "Google Editor",          href: "#google-editor" },
+  { label: "Cigna",                  href: "#cigna" },
+];
+
 const writingThemes = [
   "AI & Agentic Systems",
   "Human Factors & Cognition",
@@ -34,18 +62,6 @@ const studioWork = [
     body:    "Sole designer and developer. The problem: how to speak, listen and score pronunciation accurately enough to actually improve acquisition. Grounded in French phonetics and second-language research, the stack scores speech word by word — liaisons, elisions, nasals — and explains every miss in plain English.",
     tags:    ["Production effect", "Corrective feedback", "Motor learning"],
   },
-];
-
-const chipLinks = [
-  { label: "Allstate",               href: "#allstate" },
-  { label: "McDonald's",             href: "#mcdonalds" },
-  { label: "Verizon",                href: "#verizon" },
-  { label: "Meta SFI",               href: "#meta-sfi" },
-  { label: "Meta Commerce Manager",  href: "#meta-benchmark" },
-  { label: "Google Hedwig",          href: "#google-hedwig" },
-  { label: "Google Editor",          href: "#google-editor" },
-  { label: "Cigna",                  href: "#cigna" },
-  { label: "AI Articles",            href: "#writings" },
 ];
 
 // ── Sub-components ────────────────────────────────────────────────────────
@@ -100,7 +116,7 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
       style={{
         background: "var(--k40-surface)",
         display: featured ? "grid" : "flex",
-        scrollMarginTop: "80px",
+        scrollMarginTop: "112px",
         ...(featured
           ? { gridTemplateColumns: "1fr 1fr", overflow: "hidden", marginBottom: "var(--k40-s-4)" }
           : { flexDirection: "column" as const }),
@@ -146,7 +162,7 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
 
 function ResearchCard({ study }: { study: Project }) {
   return (
-    <div id={study.id} className="je-research-card" style={{ padding: "var(--k40-s-5)", scrollMarginTop: "80px" }}>
+    <div id={study.id} className="je-research-card" style={{ padding: "var(--k40-s-5)", scrollMarginTop: "112px" }}>
       <div className="je-card-media je-card-media--research">
         <div className="je-card-media-inner">
           <Image src={study.images.hero} alt={study.title} fill style={{ objectFit: "cover", objectPosition: "center top" }} />
@@ -253,65 +269,80 @@ export default function Home() {
     <div>
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section style={{
-        maxWidth: "var(--k40-content-max)", margin: "0 auto",
-        padding: "var(--k40-s-9) var(--content-pad) var(--k40-s-8)",
-      }}>
+      {/* Same band/band-inner structure as every section below — pad the outer
+          box, cap the inner one. Capping and padding the same element instead
+          would inset the hero by --content-pad against the rest of the page. */}
+      <section className="band" style={{ paddingTop: "var(--k40-s-9)" }}>
+      {/* The aside is a sibling of the whole left column, headline included, so
+          it centres against the hero's full height rather than against the
+          description alone. */}
+      <div className="band-inner hero-row">
+          <div className="hero-row-main">
 
-        <p className="k40-eyebrow" style={{ marginBottom: "var(--k40-s-6)" }}>
-          Senior Product Designer &amp; UX Researcher &nbsp;&middot;&nbsp; M.S. Human Factors &nbsp;&middot;&nbsp; 14+ years &nbsp;&middot;&nbsp; Marseille
-        </p>
+            {/* The real heading, for search engines and screen readers. The
+                visible headline states the offer, not the name. */}
+            <h1 className="sr-only">
+              Joseph Everett Grgic — product designer and UX researcher
+            </h1>
 
-        <h1 style={{
-          fontFamily: "var(--k40-font-display)",
-          fontSize: "clamp(48px, 7vw, 88px)",
-          fontWeight: 400,
-          lineHeight: 1.0,
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-          color: "var(--k40-fg-1)",
-          marginBottom: "var(--k40-s-6)",
-          maxWidth: "820px",
-        }}>
-          Designing systems<br />people trust.
-        </h1>
+            <p className="hero-type">
+              <span className="hero-type-line">Data-driven product design</span>
+              <span className="hero-type-line is-accent">from research to delivery.</span>
+            </p>
 
-        <p className="k40-body" style={{ maxWidth: "520px", marginBottom: "var(--k40-s-7)" }}>
-          I&rsquo;m a product designer with a human factors background &mdash; I design and ship
-          features, flows, and the systems behind them, and the cognitive science is
-          what makes them hold up in real use. At my own studio, vraifactors, I design
-          for AI and build with it &mdash; personal products and experiments, two of them
-          now in pilot with real users.
-        </p>
+            <p
+              className="k40-body"
+              style={{ maxWidth: "620px", fontSize: "var(--k40-text-md)", marginBottom: "var(--k40-s-7)" }}
+            >
+              Fourteen years across Google, Meta, McDonald&rsquo;s, Verizon and Allstate &mdash;
+              payments, ordering, ads tooling, seller platforms, AI integration. The user,
+              the problem space, the business objectives: when those are clear, the best
+              design becomes obvious.
+            </p>
 
-        {/* CTAs */}
-        <div style={{ display: "flex", gap: "var(--k40-s-3)", flexWrap: "wrap", marginBottom: "var(--k40-s-8)" }}>
-          {[
-            { href: "/documents/jegrgic_UXResumeEN.pdf", label: "Resume (EN)" },
-            { href: "/documents/jegrgic_UXResumeFR.pdf", label: "CV (FR)" },
-          ].map(({ href, label }) => (
-            <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="k40-btn k40-btn-secondary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 10 9"/>
-              </svg>
-              {label}
-            </a>
-          ))}
-        </div>
+            {/* CTAs */}
+            <div style={{ display: "flex", gap: "var(--k40-s-3)", flexWrap: "wrap" }}>
+              {[
+                { href: "/documents/jegrgic_UXResumeEN.pdf", label: "Resume (EN)" },
+                { href: "/documents/jegrgic_UXResumeFR.pdf", label: "CV (FR)" },
+              ].map(({ href, label }) => (
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="k40-btn k40-btn-secondary">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 10 9"/>
+                  </svg>
+                  {label}
+                </a>
+              ))}
+            </div>
 
-        {/* Quick-nav chips */}
-        <div>
-          <p className="k40-eyebrow" style={{ color: "var(--k40-fg-4)", marginBottom: "var(--k40-s-3)" }}>
-            Jump to case study
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--k40-s-2)" }}>
-            {chipLinks.map((chip) => (
-              <a key={chip.href} href={chip.href} className="hero-chip">{chip.label}</a>
+          </div>
+
+          {/* Job titles the field keeps renaming, mixed with three roles that
+              aren't titles at all. Also puts the variants a recruiter searches
+              on — information architect, content designer — into the page. */}
+          <aside className="hero-titles">
+            <p className="k40-eyebrow hero-titles-label">Hats I wear</p>
+            <ul className="hero-titles-list">
+              {jobTitles.map((t) => <li key={t}>{t}</li>)}
+            </ul>
+          </aside>
+      </div>
+      </section>
+
+      {/* ── JUMP TO CASE STUDY ───────────────────────────────────────────── */}
+      {/* Sits below the hero in the flow and pins under the 56px header once
+          the hero scrolls past — so it costs the hero nothing and stays
+          reachable for the whole page. Pinning is CSS only, no JS. */}
+      <nav className="jump-bar" aria-label="Case studies">
+        <div className="jump-bar-inner">
+          <p className="k40-eyebrow jump-bar-label">Case studies</p>
+          <div className="jump-bar-chips">
+            {jumpLinks.map((chip) => (
+              <a key={chip.href} href={chip.href} className="jump-chip">{chip.label}</a>
             ))}
           </div>
         </div>
-
-      </section>
+      </nav>
 
       {/* ── STUDIO — VRAIFACTORS (full-bleed, distinct from client work) ──── */}
       <section
@@ -321,7 +352,7 @@ export default function Home() {
           borderTop: "1px solid var(--k40-border-heavy)",
           borderBottom: "1px solid var(--k40-border-heavy)",
           padding: "var(--k40-s-8) var(--content-pad)",
-          scrollMarginTop: "80px",
+          scrollMarginTop: "112px",
         }}
       >
         <div style={{ maxWidth: "var(--k40-content-max)", margin: "0 auto" }}>
@@ -339,7 +370,7 @@ export default function Home() {
       </section>
 
       {/* ── PRODUCT DESIGN ── */}
-      <section className="band" id="work">
+      <section className="band" id="work" style={{ scrollMarginTop: "112px" }}>
         <div className="band-inner">
           <SectionHeader title={["Product Design &", "Strategy"]} sub="Service blueprinting · Iterative prototyping" />
           <ProductCard study={productDesign[0]} featured />
@@ -350,7 +381,7 @@ export default function Home() {
       </section>
 
       {/* ── UX RESEARCH (full-bleed tinted band) ── */}
-      <section className="band band--alt">
+      <section className="band band--alt" id="research" style={{ scrollMarginTop: "112px" }}>
         <div className="band-inner">
           <SectionHeader title={["UX Research &", "Behavioral Insights"]} sub="Moderated testing · Cognitive walkthroughs · Benchmarking" />
           <div className="je-research-grid">
@@ -360,7 +391,7 @@ export default function Home() {
       </section>
 
       {/* ── INFORMATION ARCHITECTURE ── */}
-      <section className="band">
+      <section className="band" id="architecture" style={{ scrollMarginTop: "112px" }}>
         <div className="band-inner">
           <SectionHeader title={["Information Architecture &", "Complex Tooling"]} sub="Expert-user systems · Cognitive load reduction" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--k40-s-4)" }} className="je-grid-2">
@@ -370,7 +401,7 @@ export default function Home() {
       </section>
 
       {/* ── WRITINGS ── */}
-      <section className="band band--divided" id="writings" style={{ scrollMarginTop: "80px" }}>
+      <section className="band band--divided" id="writings" style={{ scrollMarginTop: "112px" }}>
         <div className="band-inner">
           <SectionHeader title={["Writing on AI, Design &", "Human Factors"]} sub="View all ↗" subHref="/writings" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--k40-s-6)" }} className="je-writings-grid">

@@ -427,27 +427,177 @@ select:focus {
   color: var(--k40-surface);
 }
 
-/* ── Hero chips — quick-nav anchors ─────────────────────────────────────── */
-.hero-chip {
+/* ── Hero row — description beside the titles aside ─────────────────────── */
+.hero-row {
+  display: flex;
+  /* The aside is the taller of the two, so centring balances the row on its
+     midline rather than hanging the shorter column from the top edge. */
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k40-s-7);
+}
+
+/* No max-width: this column holds the headline, which needs the full width
+   left over after the aside. The description keeps its own 620px cap. */
+.hero-row-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hero-titles {
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+.hero-titles-label {
+  color: var(--k40-fg-4);
+  margin: 0 0 var(--k40-s-3);
+  padding-bottom: var(--k40-s-3);
+  border-bottom: 1px solid var(--k40-border-light);
+}
+
+.hero-titles-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--k40-font-ui);
+  font-size: var(--k40-text-xs);
+  line-height: 2;
+  color: var(--k40-fg-3);
+}
+
+/* Below this the description column takes the full width, so the aside drops
+   underneath and squares up with everything else. */
+@media (max-width: 860px) {
+  /* Stacked, the columns align on their left edge — centring would indent
+     the aside against everything above it. */
+  .hero-row { flex-direction: column; align-items: stretch; gap: var(--k40-s-6); }
+  .hero-titles { text-align: left; }
+}
+
+/* ── Hero headline ──────────────────────────────────────────────────────── */
+/* The display block, same brand element as .section-label-text — Anton,
+   uppercase, tight leading — set larger so the hero outranks the section
+   headers it shares a system with. Breaks are authored per line in the
+   markup, never left to the viewport.
+   The page's real <h1> is screen-reader only, so search engines and assistive
+   tech still get a proper heading. */
+.hero-type {
+  font-family: var(--k40-font-display);
+  /* Sized against the column left after the titles aside, not the full page.
+     Above roughly 5.4vw the headline overruns that column between 880px and
+     1100px and wraps to a third line. */
+  font-size: clamp(36px, 5.2vw, 68px);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.96;
+  letter-spacing: 0.01em;
+  color: var(--k40-fg-1);
+  /* s-7 is the old padding + margin combined, so dropping the rule leaves the
+     gap to the description exactly where it was. */
+  margin: 0 0 var(--k40-s-7);
+}
+
+/* Each authored line is its own block, so the break lands where it was
+   written. No nowrap: at the small end a line is allowed to wrap rather
+   than push the page into a horizontal scroll. */
+.hero-type-line { display: block; }
+
+/* The second line carries the accent, so the claim and the arc it spans read
+   as two things rather than one long sentence. accent-500 rather than the
+   darker accent-700, which sits too close to --k40-fg-1 to register as a
+   colour change at display size; it holds 6.8:1 on the page background. */
+.hero-type-line.is-accent { color: var(--k40-accent-500); }
+
+
+/* Visually hidden, still announced and still indexed. */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Jump-to-case-study bar ─────────────────────────────────────────────── */
+/* Pins beneath the 56px header once the hero scrolls past. Sticking is pure
+   CSS, so it needs no JS and cannot break. */
+/* Inverted, so a bar that is on screen for the whole page reads as a fixed
+   rail rather than as another band of content — and so it holds its own edge
+   over the tinted sections that scroll beneath it. */
+.jump-bar {
+  position: sticky;
+  top: 56px;
+  z-index: 40;
+  background: var(--k40-fg-1);
+}
+
+.jump-bar-inner {
+  max-width: var(--k40-content-max);
+  margin: 0 auto;
+  padding: 0 var(--content-pad);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: var(--k40-s-4);
+  /* A pinned bar has to stay one row high — nine chips wrap to two rows well
+     before a phone, so the row scrolls sideways instead of growing. */
+  overflow: hidden;
+}
+
+.jump-bar-label {
+  flex-shrink: 0;
+  /* Warm gold, the system's complement to the steel-blue accent. comp-300
+     rather than the comp-500 "primary": on this near-black bar the 500 lands
+     at 2.96:1 and fails for label-sized text, where the 300 holds 8.3:1. */
+  color: var(--k40-comp-300);
+  margin: 0;
+}
+
+.jump-bar-chips {
+  display: flex;
+  gap: var(--k40-s-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.jump-bar-chips::-webkit-scrollbar { display: none; }
+
+/* The label costs a third of a phone's width, and the chips name themselves. */
+@media (max-width: 640px) {
+  .jump-bar-label { display: none; }
+}
+
+.jump-chip {
+  flex-shrink: 0;
+  white-space: nowrap;
   font-family: var(--k40-font-body);
   font-size: var(--k40-text-sm);
   font-weight: 500;
   letter-spacing: 0;
-  color: var(--k40-fg-3);
-  background: var(--k40-surface);
-  border: 1px solid var(--k40-border-mid);
+  color: var(--k40-fg-on-dark-2);
+  background: transparent;
+  /* Transparent rather than removed, so the pill keeps its box and the row
+     does not shift by a pixel when the border appears on hover. */
+  border: 1px solid transparent;
+  border-radius: var(--k40-radius-pill);
   padding: var(--k40-s-2) var(--k40-s-4);
   text-decoration: none;
   display: inline-block;
   transition:
-    background     var(--k40-motion-quick) var(--k40-ease),
-    color          var(--k40-motion-quick) var(--k40-ease),
-    border-color   var(--k40-motion-quick) var(--k40-ease);
+    background   var(--k40-motion-quick) var(--k40-ease),
+    color        var(--k40-motion-quick) var(--k40-ease),
+    border-color var(--k40-motion-quick) var(--k40-ease);
 }
-.hero-chip:hover {
-  background: var(--k40-fg-1);
-  border-color: var(--k40-fg-1);
-  color: var(--k40-surface);
+/* The outline is the whole hover state — no fill, no colour change on the
+   word itself. Same gold as the bar's label, so the pill that appears reads
+   as part of the bar rather than as a new colour arriving. focus-visible
+   matches it, so keyboard users get the identical affordance. */
+.jump-chip:hover,
+.jump-chip:focus-visible {
+  border-color: var(--k40-comp-300);
+  outline: none;
 }
 
 /* ── Writing rows ───────────────────────────────────────────────────────── */

@@ -3,6 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import type { Components } from "react-markdown";
 import { notFound } from "next/navigation";
 import articles from "@/data/articles.json";
 
@@ -15,8 +16,101 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const article = articles.find((a) => a.id === params.slug);
   if (!article) return {};
-  return { title: article.title, description: article.description };
+  const { title, description } = article;
+  // openGraph/twitter replace the layout's objects wholesale, so without these
+  // every article would share the homepage's og tags.
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://www.jegrgic.com${article.href}`,
+      siteName: "Joseph Grgic",
+      type: "article",
+    },
+    twitter: { card: "summary", title, description },
+  };
 }
+
+// A trailing "References" heading (optionally preceded by a rule) is split off
+// and rendered in a smaller style after the article body.
+const REFERENCES_RE = /\n(?:-{3,}\s*\n+)?#{2,3}\s+References\s*\n/;
+
+const markdownComponents: Components = {
+  h2: ({ children }) => (
+    <h2 className="k40-eyebrow" style={{
+      marginTop: "var(--k40-s-8)",
+      marginBottom: "var(--k40-s-4)",
+      paddingBottom: "var(--k40-s-3)",
+      borderBottom: "1px solid var(--k40-border-light)",
+    }}>{children}</h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="k40-eyebrow" style={{
+      color: "var(--k40-fg-3)",
+      marginTop: "var(--k40-s-6)",
+      marginBottom: "var(--k40-s-3)",
+    }}>{children}</h3>
+  ),
+  p: ({ children }) => (
+    <p className="k40-body-long" style={{ marginBottom: "var(--k40-s-5)", maxWidth: "none" }}>{children}</p>
+  ),
+  blockquote: ({ children }) => (
+    <div className="k40-pull-quote is-accent">
+      <blockquote>{children}</blockquote>
+    </div>
+  ),
+  img: ({ src, alt }) => (
+    <figure className="k40-figure" style={{ margin: "var(--k40-s-7) 0" }}>
+      <img src={src} alt={alt} />
+      {alt && (
+        <figcaption>
+          <span className="fig-label">Fig</span>
+          {alt}
+        </figcaption>
+      )}
+    </figure>
+  ),
+  a: ({ href, children }) => (
+    <a href={href} className="k40-link">{children}</a>
+  ),
+  strong: ({ children }) => <strong>{children}</strong>,
+  ul: ({ children }) => (
+    <ul style={{ paddingLeft: "var(--k40-s-5)", marginBottom: "var(--k40-s-5)", display: "flex", flexDirection: "column", gap: "var(--k40-s-2)" }}>{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol style={{ paddingLeft: "var(--k40-s-5)", marginBottom: "var(--k40-s-5)", display: "flex", flexDirection: "column", gap: "var(--k40-s-2)" }}>{children}</ol>
+  ),
+  li: ({ children }) => (
+    <li className="k40-body-long" style={{ maxWidth: "none" }}>{children}</li>
+  ),
+  hr: () => (
+    <hr style={{ border: "none", borderTop: "1px solid var(--k40-border-light)", margin: "var(--k40-s-7) 0" }} />
+  ),
+  table: ({ children }) => (
+    <div style={{ overflowX: "auto", margin: "var(--k40-s-6) 0 var(--k40-s-7)" }}>
+      <table className="k40-table">{children}</table>
+    </div>
+  ),
+};
+
+const referenceComponents: Components = {
+  ...markdownComponents,
+  ul: ({ children }) => (
+    <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "var(--k40-s-3)" }}>{children}</ul>
+  ),
+  li: ({ children }) => (
+    <li style={{
+      fontFamily: "var(--k40-font-body)",
+      fontSize: "var(--k40-text-xs)",
+      lineHeight: 1.6,
+      color: "var(--k40-fg-3)",
+      paddingLeft: "var(--k40-s-5)",
+      textIndent: "calc(-1 * var(--k40-s-5))",
+    }}>{children}</li>
+  ),
+};
 
 export default function ArticlePage({ params }: { params: { slug: string } }) {
   const article = articles.find((a) => a.id === params.slug);
@@ -26,6 +120,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
   if (!fs.existsSync(filePath)) notFound();
 
   const { content } = matter(fs.readFileSync(filePath, "utf8"));
+  const [body, references] = content.split(REFERENCES_RE);
 
   return (
     <div style={{ background: "var(--k40-bg)", minHeight: "100vh" }}>
@@ -74,63 +169,24 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         margin: "0 auto",
         padding: "var(--k40-s-8) var(--content-pad) var(--k40-s-9)",
       }}>
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          components={{
-            h2: ({ children }) => (
-              <h2 className="k40-eyebrow" style={{
-                marginTop: "var(--k40-s-8)",
-                marginBottom: "var(--k40-s-4)",
-                paddingBottom: "var(--k40-s-3)",
-                borderBottom: "1px solid var(--k40-border-light)",
-              }}>{children}</h2>
-            ),
-            h3: ({ children }) => (
-              <h3 className="k40-eyebrow" style={{
-                color: "var(--k40-fg-3)",
-                marginTop: "var(--k40-s-6)",
-                marginBottom: "var(--k40-s-3)",
-              }}>{children}</h3>
-            ),
-            p: ({ children }) => (
-              <p className="k40-body-long" style={{ marginBottom: "var(--k40-s-5)", maxWidth: "none" }}>{children}</p>
-            ),
-            blockquote: ({ children }) => (
-              <div className="k40-pull-quote is-accent">
-                <blockquote>{children}</blockquote>
-              </div>
-            ),
-            img: ({ src, alt }) => (
-              <figure className="k40-figure" style={{ margin: "var(--k40-s-7) 0" }}>
-                <img src={src} alt={alt} />
-                {alt && (
-                  <figcaption>
-                    <span className="fig-label">Fig</span>
-                    {alt}
-                  </figcaption>
-                )}
-              </figure>
-            ),
-            a: ({ href, children }) => (
-              <a href={href} className="k40-link">{children}</a>
-            ),
-            strong: ({ children }) => <strong>{children}</strong>,
-            ul: ({ children }) => (
-              <ul style={{ paddingLeft: "var(--k40-s-5)", marginBottom: "var(--k40-s-5)", display: "flex", flexDirection: "column", gap: "var(--k40-s-2)" }}>{children}</ul>
-            ),
-            ol: ({ children }) => (
-              <ol style={{ paddingLeft: "var(--k40-s-5)", marginBottom: "var(--k40-s-5)", display: "flex", flexDirection: "column", gap: "var(--k40-s-2)" }}>{children}</ol>
-            ),
-            li: ({ children }) => (
-              <li className="k40-body-long" style={{ maxWidth: "none" }}>{children}</li>
-            ),
-            hr: () => (
-              <hr style={{ border: "none", borderTop: "1px solid var(--k40-border-light)", margin: "var(--k40-s-7) 0" }} />
-            ),
-          }}
-        >
-          {content}
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+          {body}
         </ReactMarkdown>
+
+        {references && (
+          <section style={{
+            marginTop: "var(--k40-s-8)",
+            paddingTop: "var(--k40-s-5)",
+            borderTop: "1px solid var(--k40-border-light)",
+          }}>
+            <h2 className="k40-eyebrow" style={{ color: "var(--k40-fg-3)", marginBottom: "var(--k40-s-4)" }}>
+              References
+            </h2>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={referenceComponents}>
+              {references}
+            </ReactMarkdown>
+          </section>
+        )}
       </article>
 
     </div>

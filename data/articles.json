@@ -32,20 +32,12 @@
     "href": "/writings/coactive-author"
   },
   {
-    "id": "compliance-bridge",
+    "id": "calibrated-skepticism",
     "theme": "Human Factors & Cognition",
-    "date": "Dec 2025",
-    "title": "The Compliance Bridge: Designing Beyond the Halo Effect of Agentic AI",
-    "description": "Replacing automation bias with calibrated human intuition in AI interfaces.",
-    "href": "/writings/compliance-bridge"
-  },
-  {
-    "id": "velocity-of-doubt",
-    "theme": "Human Factors & Cognition",
-    "date": "Nov 2025",
-    "title": "The Velocity of Doubt: A Perspective on the AI Multiplier",
-    "description": "How AI destroys trust calibration and what verifiable interface design can do about it.",
-    "href": "/writings/velocity-of-doubt"
+    "date": "Oct 2026",
+    "title": "Designing for Calibrated Skepticism: A Human Factors Perspective on AI Reliance",
+    "description": "People rely on cues to judge what they cannot verify. AI's most persuasive cues are its least valid ones, so we should design for users who are skeptical rather than trusting.",
+    "href": "/writings/calibrated-skepticism"
   },
   {
     "id": "ai-in-ux-research",

@@ -26,7 +26,7 @@ npm run build        # Static export to ./out/
 │   └── globals.css           # Global styles & hover states
 ├── data/
 │   ├── case-studies.json     # 8 case studies with metrics
-│   └── articles.json         # 6 articles grouped by theme
+│   └── articles.json         # Article listings grouped by theme
 ├── public/
 │   ├── images/
 │   │   ├── hero.jpg          # Hero background
@@ -106,8 +106,11 @@ Find the hero `<section>` tag in `app/page.tsx` (~line 218). Contains:
 3. Cards auto-render from data in three sections
 
 ### Editing Articles
-1. Update `data/articles.json` (theme, date, title, description, href)
-2. Articles auto-group by theme in writings section
+1. Article content lives in `content/articles/{slug}.md`
+2. Update `data/articles.json` (theme, date, title, description, href)
+3. Articles auto-group by theme in writings section
+
+See `WRITINGS.md` for rendering details, the house style, and the status of each article.
 
 ## Dev Notes
 

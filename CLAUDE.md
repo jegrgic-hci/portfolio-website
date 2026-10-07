@@ -151,6 +151,9 @@ The goal is consistency: shared layout structure across all projects, with custo
 **All projects:** `app/work/page.tsx` (renders all projects, curated by category)
 **Articles:** `app/writings/page.tsx` (references `data/articles.json`)
 
+### Articles
+**Always follow `WRITINGS.md`** when writing or editing articles: it has the house style, rendering details, and the updated / for-review lists. Update those lists when an article changes.
+
 ### Article copy limits
 The writing row layout enforces these via CSS `line-clamp` — copy beyond these limits will be silently truncated:
 - **Title:** max 90 characters

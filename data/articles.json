@@ -2,34 +2,18 @@
   {
     "id": "efficiency-metric",
     "theme": "AI & Agentic Systems",
-    "date": "Oct 2026",
+    "date": "Apr 2026",
     "title": "The Efficiency Metric: Why AI Should Be Measured by Human Decision-Making",
     "description": "AI should help people make better decisions faster, not make decisions for them. Two DOGE projects show the difference.",
     "href": "/writings/efficiency-metric"
   },
   {
-    "id": "unseen-hand",
-    "theme": "AI & Agentic Systems",
-    "date": "Mar 2026",
-    "title": "The Unseen Hand: From Autonomous Shadow to Collaborative Partner",
-    "description": "Why the future of service design is coactive, not just proactive.",
-    "href": "/writings/unseen-hand"
-  },
-  {
     "id": "agentic-architecture",
     "theme": "AI & Agentic Systems",
     "date": "Jan 2026",
-    "title": "The Agentic Architecture: Service Design as the Foundation for Successful AI Integration",
-    "description": "Why Human Factors is the critical link in successful AI implementation across MedTech and Logistics.",
+    "title": "The Agentic Architecture: Keeping People in Control of AI That Acts",
+    "description": "When AI acts on people's behalf, the question becomes whether they know what it is doing and how to step in.",
     "href": "/writings/agentic-architecture"
-  },
-  {
-    "id": "coactive-author",
-    "theme": "AI & Agentic Systems",
-    "date": "Feb 2026",
-    "title": "The Coactive Author: My Framework for AI-Augmented Research",
-    "description": "How I use AI as a collaborative intelligence partner while keeping the core thinking entirely my own.",
-    "href": "/writings/coactive-author"
   },
   {
     "id": "calibrated-skepticism",
@@ -42,7 +26,7 @@
   {
     "id": "ai-in-ux-research",
     "theme": "Human Factors & Cognition",
-    "date": "Oct 2026",
+    "date": "Oct 2025",
     "title": "AI in Qualitative UX Research: Fewer Compromises, Not Fewer Researchers",
     "description": "AI can increase the velocity, breadth and depth of research findings. Sound methodology turns that into impact.",
     "href": "/writings/ai-in-ux-research"
@@ -50,7 +34,7 @@
   {
     "id": "empathy-gap",
     "theme": "Design & Dark Patterns",
-    "date": "Oct 2026",
+    "date": "Jan 2026",
     "title": "The Empathy Gap: When AI Passes as a Person",
     "description": "Why it feels like deception to find out the person on the line was AI, and what honest disclosure should look like.",
     "href": "/writings/empathy-gap"
@@ -58,7 +42,7 @@
   {
     "id": "decline-user-agency",
     "theme": "Human Factors & Cognition",
-    "date": "Oct 2026",
+    "date": "Mar 2026",
     "title": "The Decline of User Agency: When AI Is Built to Do the Thinking",
     "description": "Why AI products drift toward agreeable, effortless answers, and how to design for the thinking users still need to do.",
     "href": "/writings/decline-user-agency"

@@ -81,6 +81,8 @@ Rubber-stamping performs well in usability testing because it is easy. Evaluatio
 
 Reliance follows cues. Generative AI presents cues that are persuasive but weakly valid, in a social register that invites the trust we reserve for friends. Reliance on it should therefore begin from skepticism, calibrated to stakes and the cost of verification. The task for design is to support that stance: make valid evidence easy to reach, concentrate scrutiny where errors matter, and ensure every interface can answer the question users should be asking: why should I accept this?
 
+*This piece is about how we should approach AI output. For how AI systems should be built to support decisions rather than make them, see [The Efficiency Metric](/writings/efficiency-metric).*
+
 ---
 
 ### References

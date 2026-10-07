@@ -54,7 +54,7 @@ Screen recordings are the more reliable of the two, because they capture observa
 
 Video of participants' faces calls for much more caution. Tools that read emotion from facial expressions exist and their output looks precise, but the science behind them is weak. A large review of the evidence found that facial movements don't reliably map to specific emotions. People often don't make the expected expression when they feel an emotion, the same expression can mean different things in different contexts, and the patterns vary across individuals and cultures (Barrett et al., 2019). A furrowed brow can mean confusion, or it can mean concentration on a task that's going well. If the tool labels it "frustration," that false positive gets counted, charted and presented as a finding.
 
-The ethics are a concern as well. Participants who agreed to be recorded didn't necessarily agree to have their faces analyzed for emotion, so consent has to cover that analysis specifically, along with how long the data is kept and who can see it. Regulators are taking this seriously: the EU AI Act prohibits emotion recognition in workplaces and education, with limited exceptions (Regulation (EU) 2024/1689, Art. 5). Most UX research falls outside that ban, but research involving employees or students may not, and regulation in this area is likely to tighten.
+The ethics are a concern as well. Participants who agreed to be recorded didn't necessarily agree to have their faces analyzed for emotion, so consent has to cover that analysis specifically, along with how long the data is kept and who can see it. Regulators are taking this seriously: since February 2025, the EU AI Act has prohibited AI that infers people's emotions in workplaces and education, except for medical or safety reasons (Regulation (EU) 2024/1689, Art. 5(1)(f)). Most UX research falls outside that ban, but research involving employees or students may not, and regulation in this area is likely to tighten.
 
 > If you do use expression analysis, treat its output as a pointer to moments worth watching, never as a measurement of how someone felt.
 
@@ -74,6 +74,6 @@ Every study will still involve compromises, but with AI, fewer of them are force
 
 - Barrett, L. F., Adolphs, R., Marsella, S., Martinez, A. M., & Pollak, S. D. (2019). Emotional expressions reconsidered: Challenges to inferring emotion from human facial movements. *Psychological Science in the Public Interest, 20*(1), 1–68.
 - Lucas, G. M., Gratch, J., King, A., & Morency, L.-P. (2014). It's only a computer: Virtual humans increase willingness to disclose. *Computers in Human Behavior, 37*, 94–100.
-- Nass, C., Moon, Y., & Carney, P. (1999). Are people polite to computers? Responses to computer-based interviewing systems. *Journal of Applied Social Psychology, 29*(5), 1093–1110.
-- Reeves, B., & Nass, C. (1996). *The Media Equation: How People Treat Computers, Television, and New Media Like Real People and Places.* Cambridge University Press.
+- Nass, C., Moon, Y., & Carney, P. (1999). Are people polite to computers? Responses to computer-based interviewing systems. *Journal of Applied Social Psychology, 29*(5), 1093–1109.
+- Reeves, B., & Nass, C. (1996). *The Media Equation: How People Treat Computers, Television, and New Media Like Real People and Places.* CSLI Publications and Cambridge University Press.
 - Regulation (EU) 2024/1689 of the European Parliament and of the Council (Artificial Intelligence Act). *Official Journal of the European Union*, L, 12 July 2024.

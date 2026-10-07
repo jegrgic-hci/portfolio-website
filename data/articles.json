@@ -51,16 +51,16 @@
     "id": "empathy-gap",
     "theme": "Design & Dark Patterns",
     "date": "Oct 2026",
-    "title": "The Empathy Gap in Our Wallets",
-    "description": "How AI shopping assistants can lower the pain of paying, and where persuasion becomes manipulation.",
+    "title": "The Empathy Gap: When AI Passes as a Person",
+    "description": "Why it feels like deception to find out the person on the line was AI, and what honest disclosure should look like.",
     "href": "/writings/empathy-gap"
   },
   {
     "id": "decline-user-agency",
-    "theme": "Design & Dark Patterns",
-    "date": "Mar 2026",
-    "title": "The Decline of User Agency and the Rise of Dark AI",
-    "description": "How AI transforms static dark patterns into dynamic, personalized psychological traps.",
+    "theme": "Human Factors & Cognition",
+    "date": "Oct 2026",
+    "title": "The Decline of User Agency: When AI Is Built to Do the Thinking",
+    "description": "Why AI products drift toward agreeable, effortless answers, and how to design for the thinking users still need to do.",
     "href": "/writings/decline-user-agency"
   }
 ]

@@ -69,7 +69,7 @@ If correct decision-making is the metric, it should be measured directly. Before
 
 This applies well beyond government. As AI becomes part of everyday work, more people spend their time reviewing, editing and acting on its output. The tools they use should be judged by the same standard: are the people using them making correct decisions? If not, the system is not efficient, however fast it runs.
 
-*This piece is about how AI should be built. For how we should approach what it produces, see [Designing for Calibrated Skepticism](/writings/calibrated-skepticism).*
+*One of four articles on human-AI interaction, each about a signal mistaken for what it is meant to indicate: [Designing for Calibrated Skepticism](/writings/calibrated-skepticism) on fluency mistaken for correctness, The Efficiency Metric on throughput mistaken for good decisions, [The Decline of User Agency](/writings/decline-user-agency) on approval mistaken for benefit, and [The Empathy Gap](/writings/empathy-gap) on human-like cues mistaken for a person.*
 
 ---
 

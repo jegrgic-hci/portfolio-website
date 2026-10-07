@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
+import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import articles from "@/data/articles.json";
 
@@ -37,9 +38,27 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 // and rendered in a smaller style after the article body.
 const REFERENCES_RE = /\n(?:-{3,}\s*\n+)?#{2,3}\s+References\s*\n/;
 
+// Section headings get an id from their text (minus any "IV." numbering) so
+// articles can link to them, e.g. "## II. Interviews" → #interviews.
+function textOf(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(textOf).join("");
+  if (node && typeof node === "object" && "props" in node) return textOf(node.props.children);
+  return "";
+}
+
+function headingId(children: ReactNode): string {
+  return textOf(children)
+    .replace(/^[IVX]+\.\s+/, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 const markdownComponents: Components = {
   h2: ({ children }) => (
-    <h2 className="k40-eyebrow" style={{
+    <h2 id={headingId(children)} className="k40-eyebrow" style={{
+      scrollMarginTop: "80px",
       marginTop: "var(--k40-s-8)",
       marginBottom: "var(--k40-s-4)",
       paddingBottom: "var(--k40-s-3)",

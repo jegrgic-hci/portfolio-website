@@ -2,6 +2,14 @@ import articles from "@/data/articles.json";
 
 const themes = ["AI & Agentic Systems", "Human Factors & Cognition", "Design & Dark Patterns"];
 
+// Dates are "Mon YYYY" strings; sort newest first within each theme.
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const dateKey = (date: string) => {
+  const [month, year] = date.split(" ");
+  return Number(year) * 12 + MONTHS.indexOf(month);
+};
+const byNewest = (a: { date: string }, b: { date: string }) => dateKey(b.date) - dateKey(a.date);
+
 export default function Writings() {
   return (
     <div>
@@ -34,7 +42,7 @@ export default function Writings() {
               }}>
                 {theme}
               </p>
-              {articles.filter((a) => a.theme === theme).map((article) => (
+              {articles.filter((a) => a.theme === theme).sort(byNewest).map((article) => (
                 <a
                   key={article.id}
                   href={article.href}

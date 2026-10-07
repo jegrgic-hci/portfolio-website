@@ -36,15 +36,15 @@
     "theme": "Human Factors & Cognition",
     "date": "Oct 2026",
     "title": "Designing for Calibrated Skepticism: A Human Factors Perspective on AI Reliance",
-    "description": "People rely on cues to judge what they cannot verify. AI's most persuasive cues are its least valid ones, so we should design for users who are skeptical rather than trusting.",
+    "description": "AI's most persuasive cues about its own reliability are its least valid ones, so design for skepticism, not trust.",
     "href": "/writings/calibrated-skepticism"
   },
   {
     "id": "ai-in-ux-research",
     "theme": "Human Factors & Cognition",
-    "date": "Oct 2025",
-    "title": "AI in UX Research: Supercharging Insights While Navigating the Nuances",
-    "description": "Why AI is a co-pilot not a captain — and how to deploy it without losing the soul of research.",
+    "date": "Oct 2026",
+    "title": "AI in Qualitative UX Research: Fewer Compromises, Not Fewer Researchers",
+    "description": "AI can increase the velocity, breadth and depth of research findings. Sound methodology turns that into impact.",
     "href": "/writings/ai-in-ux-research"
   },
   {

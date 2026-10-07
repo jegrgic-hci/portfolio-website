@@ -1,3 +1,5 @@
+> *Companion piece: [The Unseen Hand](/writings/unseen-hand) applies the framework introduced here—translating these pillars into dialogue patterns, the phygital hand-off, and a practitioner checklist.*
+
 *Why Human Factors is the Critical Link in Successful AI Implementation*
 
 As we transition from "tools" to "agents," the industry is hyper-focused on the "intelligence" of the model. However, in professional environments like MedTech and Logistics, intelligence is secondary to integration.

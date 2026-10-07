@@ -1,3 +1,5 @@
+> *Recommended reading first: [The Agentic Architecture](/writings/agentic-architecture) — it defines the framework this piece builds on (Coactive Design, Mode Confusion, the Fiduciary Design Model). This article picks up where that one leaves off, applying the framework through dialogue patterns and a practitioner checklist.*
+
 *Why the Future of Service Design is Coactive, Not Just Proactive*
 
 We are transitioning from an era of "tools" to an era of "agents." For decades, User Experience (UX) has been defined by reaction: the user acts, and the system responds. However, as AI begins to mimic human agency, the interaction model is shifting to the "Unseen Hand"—a proactive service layer where digital resources are aware of us and our needs before we even engage.
@@ -12,7 +14,7 @@ We have all experienced a moment where a system anticipates a need with surgical
 
 If an AI agent were perfectly altruistic—loyal exclusively to the user's best interest—then proactivity would simply be a discussion of data consent. However, even before computers, there has always been a calculated game played between the honesty of a service and the pressure to meet a KPI.
 
-In the Agentic Era, the only way to balance this is through Coactive Design. This means the AI doesn't just execute; it collaborates. It treats the user as a partner with a changing context, not a static data point. This shift from "extracting a click" to "earning confidence" is the only sustainable way to maintain brand equity.
+In the Agentic Era, the only way to balance this is through Coactive Design—a shift from "extracting a click" to "earning confidence," and the only sustainable way to maintain brand equity.
 
 ## The Ethical Dilemma of the "Subtle Nudge"
 
@@ -24,7 +26,7 @@ This nudge is further camouflaged by the Mimicry Trap. As AI agents adopt human 
 
 ## The Architecture of Feedback: Keeping the Human in the Loop
 
-To build trust, a proactive agent must be a master of the feedback loop through Coactive Design. This requires two distinct streams of communication:
+To build trust, a proactive agent must be a master of the feedback loop. This requires two distinct streams of communication:
 
 ### 1. Seeking Feedback (The Check-In)
 
@@ -44,7 +46,7 @@ The Result: This provides the "Why" behind the "What," trading the illusion of m
 
 ## The Integrity of Brutal Honesty
 
-In the CASA Paradigm, we treat social actors with high expectations of honesty. If an AI agent mimics a human but hides its limitations, the betrayal of trust is permanent. A collaborative agent must be brutally honest about its uncertainty. If an AI says, *"I have 60% confidence in this recommendation,"* it isn't failing; it is providing the user with the necessary information to exercise their own agency.
+In the CASA Paradigm, we treat social actors with high expectations of honesty. If an AI agent mimics a human but hides its limitations, the betrayal of trust is permanent. This is where the Fiduciary Design Model demands brutal honesty about uncertainty—if an AI says, *"I have 60% confidence in this recommendation,"* it isn't failing; it is providing the user with the necessary information to exercise their own agency.
 
 ## Orchestrating the "Phygital" Hand-off
 

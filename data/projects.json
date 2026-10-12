@@ -153,6 +153,34 @@
     "tags": ["Product Design", "Flow Optimization", "Regulatory"]
   },
   {
+    "id": "fr-language-tool",
+    "slug": "fr-language-tool",
+    "title": "vraiFrench",
+    "company": "vraiFrench",
+    "category": "product-design",
+    "tag": "both",
+    "featured": false,
+    "description": "Designed and built a French pronunciation tutor that scores speech word by word, then spent five months making that scoring trustworthy enough for learners and their teacher.",
+    "challenge": "Language learners have no way to practise speaking with immediate, accurate feedback outside a paid lesson, and speech recognition marks correct French wrong often enough to break trust.",
+    "solution": "A practice tool built on deliberate practice and working-memory research, with deterministic scoring rules for elision and homophones, features removed where the tool could not grade honestly, and a teacher dashboard built around the next lesson.",
+    "impact": "In use by a French teacher and about 10 students; English in testing, Italian planned",
+    "metrics": "1-week proof of concept · 5 months to production · 1 teacher, ~10 students",
+    "clientBrand": {
+      "colors": {
+        "primary": "#2D6CB3",
+        "accent": "#B07A12",
+        "light": "#EEF1FA"
+      }
+    },
+    "images": {
+      "hero": "/images/vraifrench-card.png",
+      "featured": []
+    },
+    "contentUrl": "/projects/fr-language-tool/content/case-study.html",
+    "externalLink": "https://vraifrench.com",
+    "tags": ["Product Design", "Speech Technology", "Human Factors"]
+  },
+  {
     "id": "meta-sfi",
     "slug": "meta-sfi",
     "title": "SFI Email Capture Adoption",

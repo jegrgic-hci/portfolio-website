@@ -64,6 +64,7 @@ const jumpLinks = [
   { label: "Allstate",               href: "#allstate" },
   { label: "McDonald's",             href: "#mcdonalds" },
   { label: "Verizon",                href: "#verizon" },
+  { label: "vraiFrench",             href: "#fr-language-tool" },
   { label: "Meta SFI",               href: "#meta-sfi" },
   { label: "Meta Commerce Manager",  href: "#meta-benchmark" },
   { label: "Google Hedwig",          href: "#google-hedwig" },
@@ -91,6 +92,7 @@ const studioWork = [
     name:    "VraiFrench",
     domain:  "vraifrench.com",
     href:    "https://vraifrench.com",
+    caseStudy: "/projects/fr-language-tool",
     status:  "In pilot · instructor and students",
     image:   "/images/vraifrench-card.png",
     body:    "Sole designer and developer. The problem: how to speak, listen and score pronunciation accurately enough to actually improve acquisition. Grounded in French phonetics and second-language research, the stack scores speech word by word — liaisons, elisions, nasals — and explains every miss in plain English.",
@@ -186,8 +188,9 @@ function ProductCard({ study, featured }: { study: Project; featured?: boolean }
             {study.metrics}
           </p>
         )}
-        <div style={{ marginTop: "auto" }}>
+        <div style={{ marginTop: "auto", display: "flex", flexWrap: "wrap", gap: "var(--k40-s-5)" }}>
           <CardLink href={`/projects/${study.slug}`} label="View case study →" />
+          {study.externalLink && <CardLink href={study.externalLink} label="Visit site →" external />}
         </div>
       </div>
     </div>
@@ -266,7 +269,8 @@ function StudioCard({ work }: { work: (typeof studioWork)[number] }) {
         {work.tags.map((tag) => <span key={tag} className="k40-tag">{tag}</span>)}
       </div>
 
-      <div style={{ marginTop: "auto" }}>
+      <div style={{ marginTop: "auto", display: "flex", flexWrap: "wrap", gap: "var(--k40-s-5)" }}>
+        {work.caseStudy && <CardLink href={work.caseStudy} label="View case study →" />}
         <CardLink href={work.href} label="Visit site →" external />
       </div>
       </div>
